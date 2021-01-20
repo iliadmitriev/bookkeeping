@@ -9,9 +9,11 @@
 
       </div>
 
-      <ul class="right">
+      <ul
+        class="right">
         <li>
           <a
+            ref="dropdownProfile"
             class="dropdown-trigger"
             href="#"
             data-target="dropdown"
@@ -22,13 +24,13 @@
 
           <ul id='dropdown' class='dropdown-content'>
             <li>
-              <a href="#" class="black-text">
+              <router-link to="/profile" class="black-text">
                 <i class="material-icons">account_circle</i>Профиль
-              </a>
+              </router-link>
             </li>
             <li class="divider" tabindex="-1"></li>
             <li>
-              <a href="#" class="black-text">
+              <a href="#" class="black-text" @click.prevent="logout">
                 <i class="material-icons">assignment_return</i>Выйти
               </a>
             </li>
@@ -41,7 +43,29 @@
 
 <script>
 export default {
-name: "Navbar"
+  name: "Navbar",
+  data: () => ({
+    datetime: new Date(),
+    interval: null,
+    dropdown: null
+  }),
+  methods: {
+    logout() {
+      console.log('Logout')
+      this.$router.push('/login?message=logout')
+    }
+  },
+  mounted() {
+
+    this.dropdown = M.Dropdown.init(this.$refs.dropdownProfile, {
+      constrainWidth: true
+    })
+  },
+  beforeDestroy() {
+    if (this.dropdown && this.dropdown.destroy) {
+      this.dropdown.destroy()
+    }
+  }
 }
 </script>
 
@@ -49,5 +73,9 @@ name: "Navbar"
 .navbar-header {
   font-size: 2rem;
   cursor: pointer;
+}
+.datetime {
+  text-align: center;
+  margin-left: 20px;
 }
 </style>
