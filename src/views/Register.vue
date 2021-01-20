@@ -1,5 +1,5 @@
 <template>
-  <form class="card auth-card" @submit.prevent="submitRegister">
+  <form class="card" @submit.prevent="submitRegister">
     <div class="card-content">
       <span class="card-title">Домашняя бухгалтерия</span>
       <div class="input-field">
