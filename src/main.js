@@ -12,14 +12,17 @@ import numberFilter from "@/filters/number.filter"
 
 import messagePlugin from "@/utils/message.plugin"
 
+import tooltipDirective from "@/directives/tooltip.directive"
+
 import {fbAuth} from "@/utils/firebase"
 
-
 Vue.use(messagePlugin)
+Vue.use(Vuelidate)
+
+Vue.directive('tooltip', tooltipDirective)
 Vue.filter('date', dateFilter)
 Vue.filter('currency', currencyFilter)
 Vue.filter('number', numberFilter)
-Vue.use(Vuelidate)
 
 Vue.config.productionTip = false
 

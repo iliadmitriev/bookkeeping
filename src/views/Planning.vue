@@ -2,28 +2,101 @@
   <div>
     <div class="page-title">
       <h3>Планирование</h3>
-      <h4>12 212</h4>
+      <h4>{{ info.bill | number }}</h4>
     </div>
-    <section>
-      <div>
+
+    <Loader v-if="loading"/>
+
+    <div
+      v-else-if="!categories.length"
+      class="center">
+      <p>Категорий пока нет, возможно вы еще их не добавили</p>
+      <router-link tag="a" class="btn" to="/categories">
+        Добавить новую категорию
+      </router-link>
+    </div>
+
+
+    <section
+      v-else
+    >
+      <div v-for="cat of categories" :key="cat.id">
         <p>
-          <strong>Девушка:</strong>
-          12 122 из 14 0000
+          <strong>{{ cat.title }}:</strong>
+          {{ cat.totalSpend | number }} из {{ cat.limit | number }}
         </p>
-        <div class="progress">
+        <div
+          class="progress"
+          v-tooltip="cat.tooltip"
+        >
           <div
-            class="determinate green"
-            style="width:40%"
+            class="determinate"
+            :class="cat.progressColor"
+            :style="{width: cat.progressPercent + '%' }"
           ></div>
         </div>
       </div>
     </section>
+
   </div>
 </template>
 
 <script>
+import Loader from "@/components/app/Loader";
+import {mapGetters} from 'vuex'
+import numberFilter from "@/filters/number.filter";
+
 export default {
-  name: "Planning"
+  name: "Planning",
+  components: {Loader},
+  data: () => ({
+    loading: true,
+    categories: []
+  }),
+  async mounted() {
+    const records = await this.$store.dispatch('fetchRecords')
+    const categories = await this.$store.dispatch('fetchCategories')
+
+    this.categories = categories.map(cat => {
+      const totalSpend = records
+        .filter(r => r.categoryId === cat.id)
+        .filter(r => r.type === 'outcome')
+        .reduce((total, rec) => {
+          return total += +rec.amount
+        }, 0)
+
+      const percent = 100 * totalSpend / cat.limit
+      const progressPercent = percent > 100 ? 100 : percent
+
+      // < 60% - green
+      // < 100% - yellow
+      // > 100% - red
+
+      const progressColor = percent < 60
+      ? 'green'
+        : percent < 100
+          ? 'yellow'
+          : 'red'
+
+
+      const tooltipValue = cat.limit - totalSpend
+      const tooltip = `${tooltipValue < 0 ? 'Превышение на' : 'Осталось'} ${numberFilter(Math.abs(tooltipValue)) }`
+
+      return {
+        ...cat,
+        totalSpend,
+        tooltip,
+        progressPercent,
+        progressColor
+      }
+
+    })
+
+    this.loading = false
+  },
+  computed: {
+    ...mapGetters(['info'])
+  }
 }
 </script>
 
