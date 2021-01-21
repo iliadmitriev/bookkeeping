@@ -13,12 +13,12 @@
     <div v-else class="row">
 
       <HomeAccount
-        :rates="currency.rates"
+        :rates="currency.Valute"
       />
 
       <HomeCurrency
-        :rates="currency.rates"
-        :date="currency.date"
+        :rates="currency.Valute"
+        :date="currency.Timestamp"
       />
 
     </div>

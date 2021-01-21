@@ -44,7 +44,7 @@ export default {
   },
   methods: {
     getCurrency(currency) {
-      return (this.base / this.rates[currency]).toFixed(4)
+      return currency==='RUB' ? 1 : this.rates[currency].Value
     },
     getDate() {
       return new Date(this.date).toLocaleDateString()
