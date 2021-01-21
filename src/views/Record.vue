@@ -21,6 +21,7 @@
       <div class="input-field">
         <select
           ref="selectCategory"
+          v-model="category"
         >
           <option
             v-for="cat in categories"

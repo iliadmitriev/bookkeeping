@@ -2,6 +2,16 @@ import {db} from '@/utils/firebase'
 
 export default {
   actions: {
+    async fetchRecords({dispatch, commit}) {
+      try {
+        const uid = await dispatch('getUid')
+        const records = (await db.ref(`/users/${uid}/records`).once('value')).val() || {}
+        return Object.entries(records).map(el=>({id:el[0], ...el[1]}))
+      } catch (e) {
+        commit('setError', e)
+        throw e
+      }
+    },
     async createRecord({dispatch, commit}, record) {
       try {
         const uid = await dispatch('getUid')

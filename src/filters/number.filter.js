@@ -1,6 +1,5 @@
 export default function numberFilter(value) {
   return new Intl.NumberFormat('ru-RU', {
-    style: 'decimal',
-    useGrouping: true
+    style: 'currency', currency: 'RUB'
   }).format(value)
 }
