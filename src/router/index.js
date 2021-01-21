@@ -30,7 +30,7 @@ const routes = [
     component: () => import('@/views/Categories')
   },
   {
-    path: '/detail/:id',
+    path: '/detail/:recordId',
     name: 'detail',
     meta: {layout: 'main', auth: true},
     component: () => import('@/views/DetailRecord')
