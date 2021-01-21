@@ -98,7 +98,7 @@ export default {
     accepted: {checked: v => v}
   },
   methods: {
-    submitRegister() {
+    async submitRegister() {
       if (this.$v.$invalid) {
         this.$v.$touch()
         return
@@ -109,7 +109,13 @@ export default {
         name: this.name,
         accepted: this.accepted
       }
-      this.$router.push('/')
+
+      try {
+        await this.$store.dispatch('register', registerFormData)
+        await this.$router.push('/')
+      } catch (e) {}
+
+
     }
   }
 

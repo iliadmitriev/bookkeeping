@@ -50,9 +50,9 @@ export default {
     dropdown: null
   }),
   methods: {
-    logout() {
-      console.log('Logout')
-      this.$router.push('/login?message=logout')
+    async logout() {
+      await this.$store.dispatch('logout')
+      await this.$router.push('/login?message=logout')
     }
   },
   mounted() {
@@ -73,9 +73,5 @@ export default {
 .navbar-header {
   font-size: 2rem;
   cursor: pointer;
-}
-.datetime {
-  text-align: center;
-  margin-left: 20px;
 }
 </style>
