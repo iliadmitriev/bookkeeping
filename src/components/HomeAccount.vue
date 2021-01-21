@@ -27,12 +27,13 @@ name: "HomeAccount",
   }),
   computed: {
     base() {
-      return this.$store.getters.info.bill / (this.rates['RUB'] / this.rates['EUR'])
+      return this.$store.getters.info.bill
     }
   },
   methods: {
     getCurrency(currency) {
-      return Math.floor(this.base * this.rates[currency])
+      const val = currency==='RUB' ? 1 : this.rates[currency].Value
+      return Math.floor(this.base / val)
     }
   }
 }
