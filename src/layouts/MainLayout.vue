@@ -26,6 +26,7 @@ import Navbar from "@/components/app/Navbar";
 import Sidebar from "@/components/app/Sidebar";
 import FloatButton from "@/components/app/FloatButton";
 import Loader from "@/components/app/Loader";
+import messages from "@/utils/messages";
 
 export default {
   name: 'MainLayout',
@@ -38,6 +39,16 @@ export default {
       await this.$store.dispatch('fetchInfo')
     }
     this.loading = false
+  },
+  computed: {
+    error() {
+      return this.$store.getters.error
+    }
+  },
+  watch: {
+    error(fbError) {
+      this.$error(messages[fbError.code] || fbError.code)
+    }
   },
   components: {
     Loader,
