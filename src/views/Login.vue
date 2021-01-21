@@ -87,7 +87,7 @@ export default {
       }
       try {
         await this.$store.dispatch('login', loginFormData)
-        await this.$router.push('/')
+        this.$router.push('/')
       } catch (err) {}
     }
   }

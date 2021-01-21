@@ -9,34 +9,34 @@
 
       </div>
 
-      <ul
-        class="right">
-        <li>
-          <a
-            ref="dropdownProfile"
-            class="dropdown-trigger"
-            href="#"
-            data-target="dropdown"
-          >
-            USER NAME
-            <i class="material-icons right">arrow_drop_down</i>
-          </a>
+      <div
+        class="right"
+        ref="dropDownContainer"
+      >
+        <a
+          ref="dropdownProfile"
+          class="dropdown-trigger"
+          href="#"
+          data-target="dropdown"
+        >
+          {{ name }}
+          <i class="material-icons right">arrow_drop_down</i>
+        </a>
 
-          <ul id='dropdown' class='dropdown-content'>
-            <li>
-              <router-link to="/profile" class="black-text">
-                <i class="material-icons">account_circle</i>Профиль
-              </router-link>
-            </li>
-            <li class="divider" tabindex="-1"></li>
-            <li>
-              <a href="#" class="black-text" @click.prevent="logout">
-                <i class="material-icons">assignment_return</i>Выйти
-              </a>
-            </li>
-          </ul>
-        </li>
-      </ul>
+        <ul id='dropdown' class='dropdown-content'>
+          <li>
+            <router-link to="/profile" class="black-text">
+              <i class="material-icons">account_circle</i>Профиль
+            </router-link>
+          </li>
+          <li class="divider" tabindex="-1"></li>
+          <li>
+            <a href="#" class="black-text" @click.prevent="logout">
+              <i class="material-icons">assignment_return</i>Выйти
+            </a>
+          </li>
+        </ul>
+      </div>
     </div>
   </nav>
 </template>
@@ -52,13 +52,20 @@ export default {
   methods: {
     async logout() {
       await this.$store.dispatch('logout')
-      await this.$router.push('/login?message=logout')
+      this.$router.push('/login?message=logout')
+    }
+  },
+  computed: {
+    name() {
+      return this.$store.getters.info.name
     }
   },
   mounted() {
-
+    console.log(this.$route.meta)
     this.dropdown = M.Dropdown.init(this.$refs.dropdownProfile, {
-      constrainWidth: true
+      constrainWidth: false,
+      alignment: 'right',
+      container: this.$refs.dropDownContainer
     })
   },
   beforeDestroy() {

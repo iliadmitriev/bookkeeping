@@ -5,14 +5,16 @@ export default {
   actions: {
     async login({dispatch, commit}, {email, password}) {
       try {
-        await fbAuth.signInWithEmailAndPassword(email, password)
+        const { user } = await fbAuth.signInWithEmailAndPassword(email, password)
+        dispatch('fetchInfo')
       } catch (err) {
         commit('setError', err)
         throw err
       }
     },
-    async logout() {
+    async logout({commit}) {
       await fbAuth.signOut()
+      commit('clearInfo')
     },
     async register({dispatch, commit}, {email, password, name, accepted}) {
       try {
