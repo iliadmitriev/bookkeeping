@@ -6,6 +6,7 @@
       </div>
 
       <form @submit.prevent="submitCreateCategory">
+
         <div class="input-field">
           <input
             id="name"
@@ -91,5 +92,7 @@ export default {
 </script>
 
 <style scoped>
-
+form {
+  margin-bottom: 20px;
+}
 </style>
