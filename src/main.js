@@ -6,8 +6,9 @@ import router from './router'
 import store from './store'
 import 'materialize-css/dist/js/materialize.min'
 
-import dateFilter from "@/filters/date.filter";
-import currencyFilter from "@/filters/currency.filter";
+import dateFilter from "@/filters/date.filter"
+import currencyFilter from "@/filters/currency.filter"
+import numberFilter from "@/filters/number.filter"
 
 import messagePlugin from "@/utils/message.plugin"
 
@@ -17,6 +18,7 @@ import {fbAuth} from "@/utils/firebase"
 Vue.use(messagePlugin)
 Vue.filter('date', dateFilter)
 Vue.filter('currency', currencyFilter)
+Vue.filter('number', numberFilter)
 Vue.use(Vuelidate)
 
 Vue.config.productionTip = false

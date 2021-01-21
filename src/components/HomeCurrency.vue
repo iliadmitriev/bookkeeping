@@ -17,7 +17,7 @@
           <tbody>
           <tr v-for="cur in currencies">
             <td>{{ cur }}</td>
-            <td>{{ getCurrency(cur) }}</td>
+            <td>{{ getCurrency(cur) | number }}</td>
             <td>{{ getDate() }}</td>
           </tr>
           </tbody>
