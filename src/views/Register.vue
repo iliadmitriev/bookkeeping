@@ -1,7 +1,7 @@
 <template>
   <form class="card" @submit.prevent="submitRegister">
     <div class="card-content">
-      <span class="card-title">Домашняя бухгалтерия</span>
+      <span class="card-title">Финансы</span>
       <div class="input-field">
         <input
           id="email"
