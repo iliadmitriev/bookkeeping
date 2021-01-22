@@ -23,17 +23,20 @@
   </ul>
 </template>
 
+
 <script>
+import localize from '@/filters/localize.filter'
+
 export default {
   name: "Sidebar",
   props: ['value'],
   data: () => ({
     links: [
-      {title: 'Счет', url: '/', exact: true},
-      {title: 'История', url: '/history', exact: false},
-      {title: 'Планирование', url: '/planning', exact: false},
-      {title: 'Новая запись', url: '/record', exact: false},
-      {title: 'Категория', url: '/categories', exact: false}
+      {title: localize('Sidebar_Account'), url: '/', exact: true},
+      {title: localize('Sidebar_History'), url: '/history', exact: false},
+      {title: localize('Sidebar_Planning'), url: '/planning', exact: false},
+      {title: localize('Sidebar_NewRecord'), url: '/record', exact: false},
+      {title: localize('Sidebar_Categories'), url: '/categories', exact: false}
     ]
   })
 }

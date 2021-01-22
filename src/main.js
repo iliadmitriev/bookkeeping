@@ -10,6 +10,7 @@ import 'materialize-css/dist/js/materialize.min'
 import dateFilter from "@/filters/date.filter"
 import currencyFilter from "@/filters/currency.filter"
 import numberFilter from "@/filters/number.filter"
+import localizeFilter from "@/filters/localize.filter"
 import messagePlugin from "@/utils/message.plugin"
 import tooltipDirective from "@/directives/tooltip.directive"
 import {fbAuth} from "@/utils/firebase"
@@ -21,6 +22,7 @@ Vue.directive('tooltip', tooltipDirective)
 Vue.filter('date', dateFilter)
 Vue.filter('currency', currencyFilter)
 Vue.filter('number', numberFilter)
+Vue.filter('localize', localizeFilter)
 Vue.component('Paginate', Paginate)
 
 Vue.config.productionTip = false

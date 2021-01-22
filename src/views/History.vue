@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="page-title">
-      <h3>История записей</h3>
+      <h3>{{ 'HistoryTitle' | localize }}</h3>
     </div>
     <div class="history-chart">
       <canvas
@@ -16,11 +16,13 @@
       <div
         v-else-if="!records.length"
       >
-        <p class="center">Еще нет записей в базе данных. Возможно вы еще их не добавли</p>
+        <p class="center">
+          {{ 'HistoryNoData' | localize }}
+        </p>
         <p class="center">
           <router-link tag="button" class="btn" to="/record">
             <i class="material-icons right">open_in_new</i>
-            Добавить
+            {{ 'Add' | localize }}
           </router-link>
         </p>
       </div>
@@ -45,6 +47,7 @@
 </template>
 
 <script>
+import localize from '@/filters/localize.filter'
 import paginationMixin from '@/mixins/pagination.mixin'
 import HistoryTable from "@/components/HistoryTable"
 import Loader from "@/components/app/Loader"
@@ -78,7 +81,7 @@ export default {
             .find(c => c.id === rec.categoryId)
             .title,
           typeClass: rec.type === 'income' ? 'green' : 'red',
-          typeText: rec.type === 'income' ? 'Доход' : 'Расход'
+          typeText: rec.type === 'income' ? localize('Income')  : localize('Expenses')
         }
       }))
 
@@ -87,7 +90,7 @@ export default {
       this.renderChart({
           labels: categories.map(c => c.title),
           datasets: [{
-            label: 'Расходы по категориям',
+            label: localize('HistoryExpenses'),
             data: categories.map(c => {
               return this.records
                 .filter(r => r.type === 'outcome')

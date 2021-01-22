@@ -5,7 +5,7 @@
         <a href="#" @click.prevent="$emit('click')">
           <i class="material-icons">menu</i>
         </a>
-        <div class="navbar-header" @click.prevent="$emit('click')">Финансы</div>
+        <div class="navbar-header" @click.prevent="$emit('click')">{{ 'AppName' | localize }}</div>
 
       </div>
 
@@ -26,13 +26,15 @@
         <ul id='dropdown' class='dropdown-content'>
           <li>
             <router-link to="/profile" class="black-text">
-              <i class="material-icons">account_circle</i>Профиль
+              <i class="material-icons">account_circle</i>
+              {{ 'Profile' | localize }}
             </router-link>
           </li>
           <li class="divider" tabindex="-1"></li>
           <li>
             <a href="#" class="black-text" @click.prevent="logout">
-              <i class="material-icons">assignment_return</i>Выйти
+              <i class="material-icons">assignment_return</i>
+              {{ 'Logout' | localize }}
             </a>
           </li>
         </ul>

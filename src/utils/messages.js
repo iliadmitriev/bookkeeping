@@ -1,9 +1,11 @@
+import localize from '@/filters/localize.filter'
+
 export default {
-  'logout': 'Вы вышли из системы',
-  'login': 'Вам необходимо выполнить вход в систему',
-  'auth/user-not-found': 'Пользователь не найден',
-  'auth/wrong-password': 'Указан не верный пароль',
-  'auth/user-disabled': 'Пользователю запрещен доступ в систему',
-  'auth/email-already-in-use': 'Пользователь с таким email уже есть в системе',
-  'auth/too-many-requests': 'Слишком много попыток, подождите немного'
+  'logout': localize('logout'),
+  'login': localize('login'),
+  'auth/user-not-found': localize('auth/user-not-found'),
+  'auth/wrong-password': localize('auth/wrong-password'),
+  'auth/user-disabled': localize('auth/user-disabled'),
+  'auth/email-already-in-use': localize('auth/email-already-in-use'),
+  'auth/too-many-requests': localize('auth/too-many-requests')
 }

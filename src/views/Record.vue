@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="page-title">
-      <h3>Новая запись</h3>
+      <h3>{{ 'RecordAdd' | localize }}</h3>
     </div>
 
     <Loader
@@ -10,9 +10,9 @@
     <div
       v-else-if="!categories.length"
       class="center">
-      <p>Категорий пока нет, возможно вы еще их не добавили</p>
+      <p>{{ 'RecordNoCategories' | localize }}</p>
       <router-link tag="a" class="btn" to="/categories">
-        Добавить новую категорию
+        {{ 'Add' | localize }}
       </router-link>
     </div>
     <form
@@ -30,7 +30,7 @@
           >{{ cat.title }}
           </option>
         </select>
-        <label>Выберите категорию</label>
+        <label>{{ 'SelectCategory' | localize }}</label>
       </div>
 
       <p>
@@ -42,7 +42,7 @@
             value="income"
             v-model="type"
           />
-          <span>Доход</span>
+          <span>{{ 'Income' | localize }}</span>
         </label>
       </p>
 
@@ -55,14 +55,14 @@
             value="outcome"
             v-model="type"
           />
-          <span>Расход</span>
+          <span>{{ 'Expenses' | localize }}</span>
         </label>
       </p>
       <span
         class="helper-text invalid"
         v-if="$v.type.$dirty && !$v.type.required"
       >
-        Выберите тип
+        {{ 'ChoseType' | localize }}
       </span>
 
       <div class="input-field">
@@ -72,17 +72,17 @@
           v-model.number="amount"
           :class="{'invalid': ($v.amount.$dirty && !$v.amount.minValue) || ($v.amount.$dirty && !$v.amount.required)}"
         >
-        <label for="amount">Сумма</label>
+        <label for="amount">{{ 'Amount' | localize }}</label>
         <span
           class="helper-text invalid"
           v-if="$v.amount.$dirty && !$v.amount.minValue"
         >
-            Минимальное значение суммы {{ $v.amount.$params.minValue.min }}</span>
+            {{ 'MinValue' | localize }} {{ $v.amount.$params.minValue.min }}</span>
         <span
           class="helper-text invalid"
           v-else-if="$v.amount.$dirty && !$v.amount.required"
         >
-            Укажите сумму
+            {{ 'Required' | localize }}
           </span>
       </div>
 
@@ -93,17 +93,19 @@
           v-model="description"
           :class="{'invalid': $v.description.$dirty && !$v.description.required}"
         >
-        <label for="description">Описание</label>
+        <label for="description">
+          {{ 'Description' | localize }}
+        </label>
         <span
           class="helper-text invalid"
           v-if="$v.description.$dirty && !$v.description.required"
         >
-          Введите описание
+          {{ 'Required' | localize }}
         </span>
       </div>
 
       <button class="btn waves-effect waves-light" type="submit">
-        Создать
+        {{ 'Add' | localize }}
         <i class="material-icons right">send</i>
       </button>
     </form>
@@ -112,6 +114,8 @@
 </template>
 
 <script>
+import localize from '@/filters/localize.filter'
+import number from "@/filters/number.filter";
 import Loader from "@/components/app/Loader";
 import {minValue, required} from "vuelidate/lib/validators";
 import {mapGetters} from 'vuex'
@@ -184,7 +188,7 @@ export default {
 
           await this.$store.dispatch('updateInfo', {bill})
 
-          this.$message('Запись успешно добавлена')
+          this.$message(localize('RecordAdded'))
           this.type = ''
           this.amount = 100
           this.description = ''
@@ -194,7 +198,7 @@ export default {
           this.$error(e)
         }
       } else {
-        this.$message(`Недостаточно средст на счете, не хватает ${this.amount - this.info.bill}`)
+        this.$message(`${localize('InsufficientFunds')} ${number(this.amount - this.info.bill)}`)
       }
 
     }
