@@ -14,7 +14,7 @@
     <tr
       v-for="(rec, i) in records"
     >
-      <td>{{ i }}</td>
+      <td>{{ i + 1 }}</td>
       <td class="left-align">{{ rec.amount | number }}</td>
       <td class="center-align">{{ rec.datetime | date }}</td>
       <td>{{ rec.categoryName }}</td>
