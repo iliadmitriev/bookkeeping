@@ -8,7 +8,7 @@
       >
       </Navbar>
 
-      <Sidebar v-model="isOpen"></Sidebar>
+      <Sidebar v-model="isOpen" :key="info.locale"></Sidebar>
 
       <main class="app-content" :class="{'full': !isOpen}">
         <div class="app-page">
@@ -16,7 +16,7 @@
         </div>
       </main>
 
-      <FloatButton></FloatButton>
+      <FloatButton :key="info.locale + 1"></FloatButton>
     </div>
   </div>
 </template>
@@ -26,6 +26,7 @@ import Navbar from "@/components/app/Navbar";
 import Sidebar from "@/components/app/Sidebar";
 import FloatButton from "@/components/app/FloatButton";
 import Loader from "@/components/app/Loader";
+import {mapGetters} from 'vuex'
 import messages from "@/utils/messages";
 
 export default {
@@ -41,6 +42,7 @@ export default {
     this.loading = false
   },
   computed: {
+    ...mapGetters(['info']),
     error() {
       return this.$store.getters.error
     }

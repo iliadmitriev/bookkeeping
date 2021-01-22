@@ -2,7 +2,7 @@
   <div class="col s12 m6">
     <div>
       <div class="page-subtitle">
-        <h4>Редактировать</h4>
+        <h4>{{ 'Edit' | localize }}</h4>
       </div>
 
       <form @submit.prevent="submitCategoryEdit">
@@ -19,7 +19,7 @@
               {{ cat.title }}
             </option>
           </select>
-          <label>Выберите категорию</label>
+          <label>{{ 'SelectCategory' | localize }}</label>
         </div>
 
         <div class="input-field">
@@ -29,12 +29,12 @@
             v-model.trim="title"
             :class="{'invalid': $v.title.$dirty && !$v.title.required}"
           >
-          <label for="name">Название</label>
+          <label for="name">{{ 'Title' | localize }}</label>
           <span
             class="helper-text invalid"
             v-if="$v.title.$dirty && !$v.title.required"
           >
-            Введите название категории</span>
+            {{ 'EnterTitle' | localize }}</span>
         </div>
 
         <div class="input-field">
@@ -44,22 +44,22 @@
             v-model.number="limit"
             :class="{'invalid': ($v.limit.$dirty && !$v.limit.minValue) || ($v.limit.$dirty && !$v.limit.required)}"
           >
-          <label for="limit">Лимит</label>
+          <label for="limit">{{ 'Limit' | localize}}</label>
           <span
             class="helper-text invalid"
             v-if="$v.limit.$dirty && !$v.limit.minValue"
           >
-            Минимальное значение {{ $v.limit.$params.minValue.min }}</span>
+            {{ 'MinValue' | localize }} {{ $v.limit.$params.minValue.min }}</span>
           <span
             class="helper-text invalid"
             v-else-if="$v.limit.$dirty && !$v.limit.required"
           >
-            Укажите лимит
+            {{ 'Required' | localize }}
           </span>
         </div>
 
         <button class="btn waves-effect waves-light" type="submit">
-          Обновить
+          {{ 'Update' | localize }}
           <i class="material-icons right">send</i>
         </button>
       </form>
@@ -69,6 +69,7 @@
 </template>
 
 <script>
+import localize from "@/filters/localize.filter";
 import {minValue, required} from "vuelidate/lib/validators";
 
 export default {
@@ -126,7 +127,7 @@ export default {
         }
         await this.$store.dispatch('updateCategory', categoryData)
         this.$emit('updated', categoryData)
-        this.$message('Категория успешно обновлена')
+        this.$message(localize('CategoryUpdated'))
       } catch (e) {
 
       }

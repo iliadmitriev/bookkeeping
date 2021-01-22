@@ -7,13 +7,13 @@
       class="row"
       v-else-if="!record"
     >
-      <p class="center">Не найдено</p>
+      <p class="center">{{ 'NotFound' | localize }}</p>
     </div>
     <div
       v-else
     >
       <div class="breadcrumb-wrap">
-        <router-link to="/history" class="breadcrumb">История</router-link>
+        <router-link to="/history" class="breadcrumb">{{ 'History' | localize }}</router-link>
         <a @click.prevent class="breadcrumb">
           {{ record.typeName }}
         </a>
@@ -24,9 +24,9 @@
                :class="record.typeClass"
           >
             <div class="card-content white-text">
-              <p>Описание: {{ record.description }}</p>
-              <p>Сумма: {{ record.amount | number }}</p>
-              <p>Категория: {{ record.categoryName }}</p>
+              <p>{{ 'Description' | localize }}: {{ record.description }}</p>
+              <p>{{ 'Amount' | localize }}: {{ record.amount | number }}</p>
+              <p>{{ 'Category' | localize }}: {{ record.categoryName }}</p>
 
               <small>{{ record.datetime | date }}</small>
             </div>
@@ -38,6 +38,7 @@
 </template>
 
 <script>
+import localize from "@/filters/localize.filter";
 import Loader from "@/components/app/Loader";
 export default {
   name: "DetailRecord",
@@ -57,7 +58,9 @@ export default {
       categoryName: category.title,
       datetime: new Date(record.datetime),
       typeClass: record.type === 'income' ? 'green' : 'red',
-      typeName: record.type === 'income' ? 'Приход' : 'Расход'
+      typeName: record.type === 'income'
+        ? localize('Income')
+        : localize('Expenses')
     }
     } catch (e) {
 
