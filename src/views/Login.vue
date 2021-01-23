@@ -1,7 +1,7 @@
 <template>
   <form class="card" @submit.prevent="submitLogin">
     <div class="card-content">
-      <span class="card-title">Финансы</span>
+      <span class="card-title">{{ 'AppName' | localize }}</span>
       <div class="input-field">
         <input
           id="email"
@@ -14,10 +14,10 @@
         <small
           class="helper-text invalid"
           v-if="($v.email.$dirty && !$v.email.required)"
-        >Поле email обязательно</small>
+        >{{ 'EnterEmail' | localize }}</small>
         <small class="helper-text invalid"
                v-else-if="($v.email.$dirty && !$v.email.email)"
-        >Введите корректный email</small>
+        >{{ 'EnterEmail' | localize }}</small>
       </div>
       <div class="input-field">
         <input
@@ -27,14 +27,14 @@
           v-model="password"
           :class="{'invalid': ($v.password.$dirty && !$v.password.required) || ($v.password.$dirty && !$v.password.minLength)}"
         >
-        <label for="password">Пароль</label>
+        <label for="password">{{ 'Password' | localize }}</label>
         <small
           class="helper-text invalid"
           v-if="($v.password.$dirty && !$v.password.required)"
-        >Пароль не может быть пустым</small>
+        >{{ 'PasswordRequired' | localize }}</small>
         <small class="helper-text invalid"
                v-else-if="($v.password.$dirty && !$v.password.minLength)"
-        >Минимальная длина пароля {{ $v.password.$params.minLength.min }} символов</small>
+        >{{ 'PasswordMinLen' | localize }} {{ $v.password.$params.minLength.min }}</small>
       </div>
     </div>
     <div class="card-action">
@@ -43,14 +43,19 @@
           class="btn waves-effect waves-light auth-submit"
           type="submit"
         >
-          Войти
+          {{ 'SignIn' | localize }}
           <i class="material-icons right">send</i>
         </button>
       </div>
 
       <p class="center">
-        Нет аккаунта?
-        <router-link to="/register">Зарегистрироваться</router-link>
+        {{ 'NotRegistered' | localize }}
+        <router-link to="/register">{{ 'SignIn' | localize }}</router-link>
+      </p>
+      <p class="center">
+        <a href="#" @click="changeLocale">
+          {{ locale==='ru-RU' ? 'English' : 'Russian' | localize }}
+        </a>
       </p>
     </div>
   </form>
@@ -64,7 +69,8 @@ export default {
   name: "Login",
   data: () => ({
     email: '',
-    password: ''
+    password: '',
+    locale: 'ru-RU'
   }),
   validations: {
     email: {email, required},
@@ -74,6 +80,7 @@ export default {
     if (messages[this.$route.query.message]) {
       this.$message(messages[this.$route.query.message])
     }
+    this.locale = localStorage.getItem('locale')
   },
   methods: {
     async submitLogin() {
@@ -88,7 +95,12 @@ export default {
       try {
         await this.$store.dispatch('login', loginFormData)
         this.$router.push('/')
-      } catch (err) {}
+      } catch (err) {
+      }
+    },
+    changeLocale() {
+      this.locale = this.locale === 'ru-RU' ? 'en-US' : 'ru-RU'
+      localStorage.setItem('locale', this.locale)
     }
   }
 }

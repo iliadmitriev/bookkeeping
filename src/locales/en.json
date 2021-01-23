@@ -61,6 +61,18 @@
   "Categories": "Categories",
   "NoCategories": "No categories yet",
   "History": "History",
-  "NotFound": "Not Found"
-
+  "NotFound": "Not Found",
+  "EmailRequired": "Email is required",
+  "EnterEmail": "Enter correct email",
+  "Password": "Password",
+  "PasswordRequired": "Password is required",
+  "PasswordMinLen": "Password minimum length is",
+  "Name": "Name",
+  "NameRequired": "Name is required",
+  "Agreement": "I agree to rules of service",
+  "AgreementRequired": "Need to agree to rules of service",
+  "Register": "Sign Up",
+  "AlreadyRegistered": "Already have an account?",
+  "NotRegistered": "Do not have an account?",
+  "SignIn": "Sign In!"
 }

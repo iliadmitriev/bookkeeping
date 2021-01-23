@@ -1,7 +1,7 @@
 <template>
   <form class="card" @submit.prevent="submitRegister">
     <div class="card-content">
-      <span class="card-title">Финансы</span>
+      <span class="card-title">{{ 'AppName' | localize }}</span>
       <div class="input-field">
         <input
           id="email"
@@ -14,10 +14,10 @@
         <small
           class="helper-text invalid"
           v-if="($v.email.$dirty && !$v.email.required)"
-        >Поле email обязательно</small>
+        >{{ 'EmailRequired' | localize }}</small>
         <small class="helper-text invalid"
                v-else-if="($v.email.$dirty && !$v.email.email)"
-        >Введите корректный email</small>
+        >{{ 'EnterEmail' | localize }}</small>
       </div>
       <div class="input-field">
         <input
@@ -27,14 +27,14 @@
           v-model="password"
           :class="{'invalid': ($v.password.$dirty && !$v.password.required) || ($v.password.$dirty && !$v.password.minLength)}"
         >
-        <label for="password">Пароль</label>
+        <label for="password">{{ 'Password' | localize }}</label>
         <small
           class="helper-text invalid"
           v-if="($v.password.$dirty && !$v.password.required)"
-        >Пароль не может быть пустым</small>
+        >{{ 'PasswordRequired' | localize }}</small>
         <small class="helper-text invalid"
                v-else-if="($v.password.$dirty && !$v.password.minLength)"
-        >Минимальная длина пароля {{ $v.password.$params.minLength.min }} символов</small>
+        >{{ 'PasswordMinLen' | localize }} {{ $v.password.$params.minLength.min }}</small>
       </div>
       <div class="input-field">
         <input
@@ -44,22 +44,22 @@
           v-model.trim="name"
           :class="{'invalid': ($v.name.$dirty && !$v.name.required)}"
         >
-        <label for="name" v-model="name">Имя</label>
+        <label for="name" v-model="name">{{ 'Name' | localize }}</label>
         <small
           class="helper-text invalid"
           v-if="($v.name.$dirty && !$v.name.required)"
-        >Имя не может быть пустым</small>
+        >{{ 'NameRequired' | localize }}</small>
       </div>
       <p>
         <label>
           <input type="checkbox" v-model="accepted"/>
-          <span>С правилами согласен</span>
+          <span>{{ 'Agreement' | localize }}</span>
         </label>
       </p>
       <small
         class="helper-text invalid"
         v-if="($v.accepted.$dirty && !$v.accepted.checked)"
-      >Необходимо принять правила сервиса</small>
+      >{{ 'AgreementRequired' | localize }}</small>
     </div>
     <div class="card-action">
       <div>
@@ -67,14 +67,19 @@
           class="btn waves-effect waves-light auth-submit"
           type="submit"
         >
-          Зарегистрироваться
+          {{ 'Register' | localize }}
           <i class="material-icons right">send</i>
         </button>
       </div>
 
       <p class="center">
-        Уже есть аккаунт?
-        <router-link to="/login">Войти!</router-link>
+        {{ 'AlreadyRegistered' | localize }}
+        <router-link to="/login">{{ 'SignIn' | localize }}</router-link>
+      </p>
+      <p class="center">
+        <a href="#" @click="changeLocale">
+          {{ locale==='ru-RU' ? 'English' : 'Russian' | localize }}
+        </a>
       </p>
     </div>
   </form>
@@ -89,13 +94,17 @@ export default {
     email: '',
     password: '',
     name: '',
-    accepted: false
+    accepted: false,
+    locale: 'ru-RU'
   }),
   validations: {
     email: {email, required},
     password: {required, minLength: minLength(6)},
     name: {required},
     accepted: {checked: v => v}
+  },
+  mounted() {
+    this.locale = localStorage.getItem('locale')
   },
   methods: {
     async submitRegister() {
@@ -114,8 +123,10 @@ export default {
         await this.$store.dispatch('register', registerFormData)
         this.$router.push('/')
       } catch (e) {}
-
-
+    },
+    changeLocale() {
+      this.locale = this.locale === 'ru-RU' ? 'en-US' : 'ru-RU'
+      localStorage.setItem('locale', this.locale)
     }
   }
 
