@@ -61,6 +61,18 @@
   "Categories": "Категории",
   "NoCategories": "Категорий пока нет",
   "History": "История",
-  "NotFound": "Не найдено"
-
+  "NotFound": "Не найдено",
+  "EmailRequired": "Поле email обязательно",
+  "EnterEmail": "Введите корректный email",
+  "Password": "Пароль",
+  "PasswordRequired": "Пароль не может быть пустым",
+  "PasswordMinLen": "Минимальная длина пароля",
+  "Name": "Имя",
+  "NameRequired": "Имя не может быть пустым",
+  "Agreement": "С правилами согласен",
+  "AgreementRequired": "Необходимо принять правила сервиса",
+  "Register": "Зарегистрироваться",
+  "AlreadyRegistered": "Уже есть аккаунт?",
+  "NotRegistered": "Нет аккаунта?",
+  "SignIn": "Войти!"
 }

@@ -11,7 +11,7 @@
           v-model.trim="name"
           :class="{'invalid': $v.name.$dirty && !$v.name.required}"
         >
-        <label for="name">{{ 'ProfileName' | localize}}</label>
+        <label for="name">{{ 'ProfileName' | localize }}</label>
         <small
           class="helper-text invalid"
           v-if="$v.name.$dirty && !$v.name.required"
@@ -50,7 +50,7 @@ export default {
     isRuLocale: true
   }),
   validations: {
-    name: { required }
+    name: {required}
   },
   computed: {
     ...mapGetters(['info'])
@@ -75,7 +75,9 @@ export default {
           name: this.name,
           locale: this.isRuLocale ? 'ru-RU' : 'en-US'
         })
-      } catch (e) {}
+        localStorage.setItem('locale', this.isRuLocale ? 'ru-RU' : 'en-US')
+      } catch (e) {
+      }
     }
   },
 }
