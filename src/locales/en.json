@@ -4,7 +4,7 @@
   "logout": "You've successfully logged out",
   "login": "You've successfully logged in",
   "auth/user-not-found": "User not found",
-  "auth/wrong-password'": "Wrong password",
+  "auth/wrong-password": "Wrong password",
   "auth/user-disabled": "Used is disabled",
   "auth/email-already-in-use": "Email is already in use",
   "auth/too-many-requests": "Too many request attempts",

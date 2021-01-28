@@ -5,7 +5,7 @@ export default {
     }
 
     Vue.prototype.$error = function (text) {
-      M.toast({html: `<div class="red lighten-4 text-darken-4"> ${text}`})
+      M.toast({html: `<div class="red darken-4"> ${text}`})
     }
 
   }
