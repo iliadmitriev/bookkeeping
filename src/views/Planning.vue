@@ -49,6 +49,10 @@ import numberFilter from "@/filters/number.filter";
 
 export default {
   name: "Planning",
+  metaInfo() {
+    return {
+      title: this.$title('Planning')
+    }},
   components: {Loader},
   data: () => ({
     loading: true,

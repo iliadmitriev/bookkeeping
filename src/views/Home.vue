@@ -33,6 +33,10 @@ import Loader from "@/components/app/Loader";
 
 export default {
   name: 'Home',
+  metaInfo() {
+    return {
+      title: this.$title('Account')
+    }},
   data: () => ({
     loading: true,
     currency: null
