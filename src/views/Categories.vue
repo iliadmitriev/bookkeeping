@@ -33,9 +33,14 @@
 import CategoryCreate from "@/components/CategoryCreate";
 import CategoryEdit from "@/components/CategoryEdit";
 import Loader from "@/components/app/Loader";
+import localizeFilter from "@/filters/localize.filter";
 
 export default {
   name: "Categories",
+  metaInfo() {
+    return {
+      title: this.$title('Categories')
+    }},
   data: () => ({
     categories: [],
     loading: true,

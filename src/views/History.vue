@@ -56,6 +56,10 @@ import { random_rgba } from "@/utils/helpers"
 
 export default {
   name: "History",
+  metaInfo() {
+    return {
+      title: this.$title('History')
+    }},
   mixins: [paginationMixin, Pie],
   data: () => ({
     loading: true,

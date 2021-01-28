@@ -74,5 +74,6 @@
   "Register": "Sign Up",
   "AlreadyRegistered": "Already have an account?",
   "NotRegistered": "Do not have an account?",
-  "SignIn": "Sign In!"
+  "SignIn": "Sign In!",
+  "DetailRecord": "Record Detail"
 }

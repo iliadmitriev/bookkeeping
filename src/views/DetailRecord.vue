@@ -42,6 +42,10 @@ import localize from "@/filters/localize.filter";
 import Loader from "@/components/app/Loader";
 export default {
   name: "DetailRecord",
+  metaInfo() {
+    return {
+      title: this.$title('DetailRecord')
+    }},
   components: {Loader},
   data: ()=>({
     record: null,

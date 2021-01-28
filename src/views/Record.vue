@@ -122,6 +122,10 @@ import {mapGetters} from 'vuex'
 
 export default {
   name: "Record",
+  metaInfo() {
+    return {
+      title: this.$title('RecordAdd')
+    }},
   components: {Loader},
   data: () => ({
     categories: [],

@@ -50,7 +50,7 @@
 
       <p class="center">
         {{ 'NotRegistered' | localize }}
-        <router-link to="/register">{{ 'SignIn' | localize }}</router-link>
+        <router-link to="/register">{{ 'Register' | localize }}</router-link>
       </p>
       <p class="center">
         <a href="#" @click="changeLocale">
@@ -67,6 +67,10 @@ import messages from '@/utils/messages'
 
 export default {
   name: "Login",
+  metaInfo() {
+    return {
+      title: this.$title('SignIn')
+    }},
   data: () => ({
     email: '',
     password: '',

@@ -42,9 +42,15 @@
 <script>
 import {mapGetters, mapActions} from 'vuex'
 import {required} from 'vuelidate/lib/validators'
+import localizeFilter from "@/filters/localize.filter";
 
 export default {
   name: "Profile",
+  // made it function to update without restart
+  metaInfo() {
+    return {
+    title: this.$title('Profile')
+  }},
   data: () => ({
     name: '',
     isRuLocale: true
