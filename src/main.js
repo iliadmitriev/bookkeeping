@@ -34,7 +34,7 @@ let app
 
 fbAuth.onAuthStateChanged(() => {
   if (!app) {
-    let app = new Vue({
+    app = new Vue({
       router,
       store,
       render: h => h(App)

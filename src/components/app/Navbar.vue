@@ -54,7 +54,7 @@ export default {
   methods: {
     async logout() {
       await this.$store.dispatch('logout')
-      this.$router.push('/login?message=logout')
+      await this.$router.push('/login?message=logout')
     }
   },
   computed: {
@@ -63,16 +63,18 @@ export default {
     }
   },
   mounted() {
-    console.log(this.$route.meta)
-    this.dropdown = M.Dropdown.init(this.$refs.dropdownProfile, {
-      constrainWidth: false,
-      alignment: 'right',
-      container: this.$refs.dropDownContainer
-    })
+    if (this.dropdown === null && this.$refs.dropdownProfile) {
+      this.dropdown = M.Dropdown.init(this.$refs.dropdownProfile, {
+        constrainWidth: false,
+        alignment: 'right',
+        container: this.$refs.dropDownContainer
+      })
+    }
   },
   beforeDestroy() {
     if (this.dropdown && this.dropdown.destroy) {
       this.dropdown.destroy()
+      this.dropdown = null
     }
   }
 }
