@@ -74,6 +74,14 @@
         {{ 'Facebook' | localize }}
         <i class="material-icons right">lock</i>
       </button>
+      <br>
+      <button
+        class="btn waves-effect waves-light black darken-4 auth-submit auth-provider"
+        @click.prevent="btnGithubSingIn"
+      >
+        {{ 'Github' | localize }}
+        <i class="material-icons right">lock</i>
+      </button>
 
     </div>
   </form>
@@ -135,6 +143,13 @@ export default {
     async btnFacebookSingIn() {
       try {
         await this.$store.dispatch('loginWithFacebook')
+        await this.$router.push(this.$route.query.path ? this.$route.query.path : '/')
+      } catch (e) {
+      }
+    },
+    async btnGithubSingIn() {
+      try {
+        await this.$store.dispatch('loginWithGithub')
         await this.$router.push(this.$route.query.path ? this.$route.query.path : '/')
       } catch (e) {
       }

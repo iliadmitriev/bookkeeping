@@ -82,5 +82,6 @@
   "SignIn": "Войти!",
   "DetailRecord": "Описание записи",
   "Google": "Войти через Google",
-  "Facebook": "Войти через Facebook"
+  "Facebook": "Войти через Facebook",
+  "Github": "Войти через Github"
 }

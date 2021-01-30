@@ -1,4 +1,4 @@
-import {fbAuth, providerAuth, getProviderForProviderId} from '@/utils/firebase'
+import {fbAuth, getProviderForProviderId} from '@/utils/firebase'
 
 export default {
 
@@ -19,6 +19,9 @@ export default {
     },
     async loginWithFacebook({dispatch, commit}) {
       return await dispatch('loginWithPopUpProvider', 'facebook.com')
+    },
+    async loginWithGithub({dispatch, commit}) {
+      return await dispatch('loginWithPopUpProvider', 'github.com')
     },
     async loginWithPopUpProvider({dispatch, commit}, providerId) {
 
