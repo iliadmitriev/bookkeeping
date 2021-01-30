@@ -18,12 +18,39 @@ export default {
 
       const provider = new providerAuth.GoogleAuthProvider()
 
-      provider.addScope('openid');
-      provider.addScope('profile');
-      provider.addScope('email');
+      provider.addScope('openid')
+      provider.addScope('profile')
+      provider.addScope('email')
 
       // To apply the default browser preference instead of explicitly setting it.
-      fbAuth.useDeviceLanguage();
+      fbAuth.useDeviceLanguage()
+
+      try {
+        const result = await fbAuth.signInWithPopup(provider)
+        const user = result.user
+        const uid = user.uid
+
+        await dispatch('fetchOrCreateInfo', {
+          uid,
+          name: user.displayName,
+          bill: 10000,
+          accepted: true
+        })
+
+      } catch (e) {
+        console.log(e)
+        commit('setError', e)
+      }
+    },
+    async loginWithFacebook({dispatch, commit}) {
+      const provider = new providerAuth.FacebookAuthProvider()
+
+      provider.addScope('email')
+      provider.setCustomParameters({
+        'display': 'popup'
+      })
+
+      fbAuth.useDeviceLanguage()
 
       try {
         const result = await fbAuth.signInWithPopup(provider)

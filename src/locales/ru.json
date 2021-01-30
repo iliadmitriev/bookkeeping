@@ -12,6 +12,7 @@
   "auth/unauthorized-domain": "Домен не авторизован",
   "auth/cancelled-popup-request": "Запрос авторизации отменен",
   "auth/popup-closed-by-user": "Всплывающее окно закрыто пользователем",
+  "auth/account-exists-with-different-credential": "Пользователь с таким email уже существует с другим провайдером",
   "AppName": "Финансы",
   "Profile": "Профиль",
   "Logout": "Выйти",
@@ -80,5 +81,6 @@
   "NotRegistered": "Нет аккаунта?",
   "SignIn": "Войти!",
   "DetailRecord": "Описание записи",
-  "Google": "Войти через Google"
+  "Google": "Войти через Google",
+  "Facebook": "Войти через Facebook"
 }

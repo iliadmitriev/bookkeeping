@@ -11,5 +11,6 @@ export default {
   "auth/popup-blocked": localize('auth/popup-blocked'),
   "auth/unauthorized-domain": localize('auth/unauthorized-domain'),
   "auth/cancelled-popup-request": localize('auth/cancelled-popup-request'),
-  "auth/popup-closed-by-user": localize('auth/popup-closed-by-user')
+  "auth/popup-closed-by-user": localize('auth/popup-closed-by-user'),
+  "auth/account-exists-with-different-credential": localize('auth/account-exists-with-different-credential')
 }

@@ -12,6 +12,7 @@
   "auth/unauthorized-domain": "Unauthorized domain",
   "auth/cancelled-popup-request": "Cancelled pop-up request",
   "auth/popup-closed-by-user": "Pop-up window closed by user",
+  "auth/account-exists-with-different-credential": "Account with this email address already exists with different credentials",
   "AppName": "Finances",
   "Profile": "Profile",
   "Logout": "Logout",
@@ -80,5 +81,6 @@
   "NotRegistered": "Do not have an account?",
   "SignIn": "Sign In!",
   "DetailRecord": "Record Detail",
-  "Google": "Sign In With Google"
+  "Google": "Sign In With Google",
+  "Facebook": "Sing In with Facebook"
 }
