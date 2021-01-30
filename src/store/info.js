@@ -18,6 +18,7 @@ export default {
         const uid = await dispatch('getUid')
         const info = (await db.ref(`/users/${uid}/info`).once('value')).val()
         commit('setInfo', info)
+        return info
       } catch (e) {
         commit('setError', e)
         throw e
@@ -34,6 +35,23 @@ export default {
         throw e
       }
 
+    },
+    async fetchOrCreateInfo({dispatch, commit}, fallbackUser) {
+      try {
+        const uid = await dispatch('getUid')
+        const prevInfo = (await db.ref(`/users/${uid}/info`).once('value')).val()
+        const info = {
+          bill: prevInfo && prevInfo.bill ? prevInfo.bill : fallbackUser.bill,
+          name: prevInfo && prevInfo.name ? prevInfo.name : fallbackUser.name,
+          accepted: prevInfo && prevInfo.accepted ? prevInfo.accepted : fallbackUser.accepted || 'true',
+          locale: prevInfo && prevInfo.locale ? prevInfo.locale : fallbackUser.locale || 'ru-RU'
+        }
+        await db.ref(`/users/${uid}/info`).set(info)
+        commit('setInfo', info)
+      } catch (e) {
+        commit('setError', e)
+        throw e
+      }
     }
   },
   getters: {

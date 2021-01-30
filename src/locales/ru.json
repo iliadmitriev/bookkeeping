@@ -8,6 +8,10 @@
   "auth/user-disabled": "Пользователю запрещен доступ в систему",
   "auth/email-already-in-use": "Пользователь с таким email уже есть в системе",
   "auth/too-many-requests": "Слишком много попыток, подождите немного",
+  "auth/popup-blocked": "Всплывающее окно заблокировано",
+  "auth/unauthorized-domain": "Домен не авторизован",
+  "auth/cancelled-popup-request": "Запрос авторизации отменен",
+  "auth/popup-closed-by-user": "Всплывающее окно закрыто пользователем",
   "AppName": "Финансы",
   "Profile": "Профиль",
   "Logout": "Выйти",
@@ -75,5 +79,6 @@
   "AlreadyRegistered": "Уже есть аккаунт?",
   "NotRegistered": "Нет аккаунта?",
   "SignIn": "Войти!",
-  "DetailRecord": "Описание записи"
+  "DetailRecord": "Описание записи",
+  "Google": "Войти через Google"
 }

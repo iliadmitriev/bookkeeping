@@ -8,6 +8,10 @@
   "auth/user-disabled": "Used is disabled",
   "auth/email-already-in-use": "Email is already in use",
   "auth/too-many-requests": "Too many request attempts",
+  "auth/popup-blocked": "Pop-up window blocked by browser",
+  "auth/unauthorized-domain": "Unauthorized domain",
+  "auth/cancelled-popup-request": "Cancelled pop-up request",
+  "auth/popup-closed-by-user": "Pop-up window closed by user",
   "AppName": "Finances",
   "Profile": "Profile",
   "Logout": "Logout",
@@ -75,5 +79,6 @@
   "AlreadyRegistered": "Already have an account?",
   "NotRegistered": "Do not have an account?",
   "SignIn": "Sign In!",
-  "DetailRecord": "Record Detail"
+  "DetailRecord": "Record Detail",
+  "Google": "Sign In With Google"
 }
