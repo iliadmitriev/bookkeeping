@@ -2,7 +2,7 @@
   "Russian": "Русский",
   "English": "English",
   "logout": "You've successfully logged out",
-  "login": "You've successfully logged in",
+  "login": "You need to log in",
   "recover-message": "We've sent you an e-mail message with recovery link",
   "auth/user-not-found": "User not found",
   "auth/wrong-password": "Wrong password",
