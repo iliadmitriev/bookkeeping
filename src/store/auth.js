@@ -79,6 +79,14 @@ export default {
         throw err
       }
     },
+    async forgot({dispatch, commit}, email) {
+      try {
+        await fbAuth.sendPasswordResetEmail(email)
+      } catch (e) {
+        commit('setError', e)
+        throw e
+      }
+    },
     getUid() {
       const user = fbAuth.currentUser
       return user ? user.uid : null

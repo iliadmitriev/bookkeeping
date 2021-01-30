@@ -3,6 +3,7 @@ import localize from '@/filters/localize.filter'
 export default {
   'logout': localize('logout'),
   'login': localize('login'),
+  'recover': localize('recover-message'),
   'auth/user-not-found': localize('auth/user-not-found'),
   'auth/wrong-password': localize('auth/wrong-password'),
   'auth/user-disabled': localize('auth/user-disabled'),

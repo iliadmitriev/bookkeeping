@@ -99,7 +99,7 @@ export default {
     password: '',
     name: '',
     accepted: false,
-    locale: 'ru-RU'
+    locale: localStorage.getItem('locale') || 'ru-RU'
   }),
   validations: {
     email: {email, required},

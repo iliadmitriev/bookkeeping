@@ -53,6 +53,10 @@
         <router-link to="/register">{{ 'Register' | localize }}</router-link>
       </p>
       <p class="center">
+        {{ 'ForgotPassword' | localize }}
+        <router-link to="/forgot">{{ 'Recover' | localize }}</router-link>
+      </p>
+      <p class="center">
         <a href="#" @click="changeLocale">
           {{ locale === 'ru-RU' ? 'English' : 'Russian' | localize }}
         </a>
@@ -101,7 +105,7 @@ export default {
   data: () => ({
     email: '',
     password: '',
-    locale: 'ru-RU'
+    locale: localStorage.getItem('locale') || 'ru-RU'
   }),
   validations: {
     email: {email, required},
