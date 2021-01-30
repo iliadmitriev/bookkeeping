@@ -3,6 +3,7 @@
   "English": "English",
   "logout": "Вы вышли из системы",
   "login": "Вам необходимо выполнить вход в систему",
+  "recover-message": "Вам отправлено письмо с ссылкой для восстановления пароля",
   "auth/user-not-found": "Пользователь не найден",
   "auth/wrong-password": "Указан не верный пароль",
   "auth/user-disabled": "Пользователю запрещен доступ в систему",
@@ -83,5 +84,8 @@
   "DetailRecord": "Описание записи",
   "Google": "Войти через Google",
   "Facebook": "Войти через Facebook",
-  "Github": "Войти через Github"
+  "Github": "Войти через Github",
+  "RecoverPassword": "Восстановить пароль",
+  "Recover": "Восстановить",
+  "ForgotPassword": "Забыл пароль?"
 }

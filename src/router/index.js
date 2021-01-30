@@ -18,6 +18,12 @@ const routes = [
     component: () => import('@/views/Register')
   },
   {
+    path: '/forgot',
+    name: 'forgot',
+    meta: {layout: 'empty'},
+    component: () => import('@/views/ForgotPassword')
+  },
+  {
     path: '/',
     name: 'home',
     meta: {layout: 'main', auth: true},
