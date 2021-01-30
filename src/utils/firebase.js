@@ -34,6 +34,11 @@ const getProviderForProviderId = (method) => {
         'display': 'popup'
       })
       break;
+    case 'github.com':
+      provider = new firebase.auth.GithubAuthProvider()
+      provider.addScope('user:email')
+      provider.addScope('read:user')
+      break;
   }
   return provider
 }

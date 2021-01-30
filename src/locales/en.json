@@ -82,5 +82,6 @@
   "SignIn": "Sign In!",
   "DetailRecord": "Record Detail",
   "Google": "Sign In With Google",
-  "Facebook": "Sing In with Facebook"
+  "Facebook": "Sing In With Facebook",
+  "Github": "Sign In With Github"
 }
