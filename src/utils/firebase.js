@@ -18,8 +18,29 @@ const fbAuth = firebase.auth()
 const providerAuth = firebase.auth
 const db = firebase.database()
 
+const getProviderForProviderId = (method) => {
+  let provider = null
+  switch (method) {
+    case 'google.com':
+      provider = new providerAuth.GoogleAuthProvider()
+      provider.addScope('openid')
+      provider.addScope('profile')
+      provider.addScope('email')
+      break;
+    case 'facebook.com':
+      provider = new providerAuth.FacebookAuthProvider()
+      provider.addScope('email')
+      provider.setCustomParameters({
+        'display': 'popup'
+      })
+      break;
+  }
+  return provider
+}
+
 export {
   fbAuth,
   providerAuth,
+  getProviderForProviderId,
   db
 }
