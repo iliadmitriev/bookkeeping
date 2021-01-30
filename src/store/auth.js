@@ -1,4 +1,4 @@
-import {fbAuth, providerAuth, db} from '@/utils/firebase'
+import {fbAuth, providerAuth, getProviderForProviderId} from '@/utils/firebase'
 
 export default {
 
@@ -15,40 +15,14 @@ export default {
       }
     },
     async loginWithGoogle({dispatch, commit}) {
-
-      const provider = new providerAuth.GoogleAuthProvider()
-
-      provider.addScope('openid')
-      provider.addScope('profile')
-      provider.addScope('email')
-
-      // To apply the default browser preference instead of explicitly setting it.
-      fbAuth.useDeviceLanguage()
-
-      try {
-        const result = await fbAuth.signInWithPopup(provider)
-        const user = result.user
-        const uid = user.uid
-
-        await dispatch('fetchOrCreateInfo', {
-          uid,
-          name: user.displayName,
-          bill: 10000,
-          accepted: true
-        })
-
-      } catch (e) {
-        console.log(e)
-        commit('setError', e)
-      }
+      return await dispatch('loginWithPopUpProvider', 'google.com')
     },
     async loginWithFacebook({dispatch, commit}) {
-      const provider = new providerAuth.FacebookAuthProvider()
+      return await dispatch('loginWithPopUpProvider', 'facebook.com')
+    },
+    async loginWithPopUpProvider({dispatch, commit}, providerId) {
 
-      provider.addScope('email')
-      provider.setCustomParameters({
-        'display': 'popup'
-      })
+      const provider = getProviderForProviderId(providerId)
 
       fbAuth.useDeviceLanguage()
 
@@ -65,8 +39,22 @@ export default {
         })
 
       } catch (e) {
-        console.log(e)
-        commit('setError', e)
+        const pendingCred = e.credential
+        const email = e.email
+        if (e.code === 'auth/account-exists-with-different-credential') {
+          const methods = await fbAuth.fetchSignInMethodsForEmail(email)
+          const popUpMethods = methods.filter( m => (m !== 'password' && m!== providerId ) )
+          if (popUpMethods.length) {
+            const fallbackProvider = getProviderForProviderId(methods[0])
+            const fallbackResult = await fbAuth.signInWithPopup(fallbackProvider)
+            await fallbackResult.user.linkAndRetrieveDataWithCredential(pendingCred)
+
+          } else {
+            commit('setError', e)
+          }
+        } else {
+          commit('setError', e)
+        }
       }
     },
     async logout({commit}) {
