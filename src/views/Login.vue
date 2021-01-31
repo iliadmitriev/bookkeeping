@@ -1,94 +1,100 @@
 <template>
-  <form class="card" @submit.prevent="submitLogin">
-    <div class="card-content">
-      <span class="card-title">{{ 'AppName' | localize }}</span>
-      <div class="input-field">
-        <input
-          id="email"
-          type="text"
-          class="validate"
-          v-model.trim="email"
-          :class="{'invalid': ($v.email.$dirty && !$v.email.required) || ($v.email.$dirty && !$v.email.email)}"
-        >
-        <label for="email">Email</label>
-        <small
-          class="helper-text invalid"
-          v-if="($v.email.$dirty && !$v.email.required)"
-        >{{ 'EnterEmail' | localize }}</small>
-        <small class="helper-text invalid"
-               v-else-if="($v.email.$dirty && !$v.email.email)"
-        >{{ 'EnterEmail' | localize }}</small>
-      </div>
-      <div class="input-field">
-        <input
-          id="password"
-          type="password"
-          class="validate"
-          v-model="password"
-          :class="{'invalid': ($v.password.$dirty && !$v.password.required) || ($v.password.$dirty && !$v.password.minLength)}"
-        >
-        <label for="password">{{ 'Password' | localize }}</label>
-        <small
-          class="helper-text invalid"
-          v-if="($v.password.$dirty && !$v.password.required)"
-        >{{ 'PasswordRequired' | localize }}</small>
-        <small class="helper-text invalid"
-               v-else-if="($v.password.$dirty && !$v.password.minLength)"
-        >{{ 'PasswordMinLen' | localize }} {{ $v.password.$params.minLength.min }}</small>
-      </div>
-    </div>
-    <div class="card-action">
-      <div>
-        <button
-          class="btn waves-effect waves-light auth-submit"
-          type="submit"
-        >
-          {{ 'SignIn' | localize }}
-          <i class="material-icons right">send</i>
-        </button>
-      </div>
+  <v-container>
+    <v-row>
+      <v-col>
+        <v-form @submit.prevent="submitLogin">
+          <div class="card-content">
+            <span class="card-title">{{ 'AppName' | localize }}</span>
+            <div class="input-field">
+              <input
+                id="email"
+                type="text"
+                class="validate"
+                v-model.trim="email"
+                :class="{'invalid': ($v.email.$dirty && !$v.email.required) || ($v.email.$dirty && !$v.email.email)}"
+              >
+              <label for="email">Email</label>
+              <small
+                class="helper-text invalid"
+                v-if="($v.email.$dirty && !$v.email.required)"
+              >{{ 'EnterEmail' | localize }}</small>
+              <small class="helper-text invalid"
+                     v-else-if="($v.email.$dirty && !$v.email.email)"
+              >{{ 'EnterEmail' | localize }}</small>
+            </div>
+            <div class="input-field">
+              <input
+                id="password"
+                type="password"
+                class="validate"
+                v-model="password"
+                :class="{'invalid': ($v.password.$dirty && !$v.password.required) || ($v.password.$dirty && !$v.password.minLength)}"
+              >
+              <label for="password">{{ 'Password' | localize }}</label>
+              <small
+                class="helper-text invalid"
+                v-if="($v.password.$dirty && !$v.password.required)"
+              >{{ 'PasswordRequired' | localize }}</small>
+              <small class="helper-text invalid"
+                     v-else-if="($v.password.$dirty && !$v.password.minLength)"
+              >{{ 'PasswordMinLen' | localize }} {{ $v.password.$params.minLength.min }}</small>
+            </div>
+          </div>
+          <div class="card-action">
+            <div>
+              <button
+                class="btn waves-effect waves-light auth-submit"
+                type="submit"
+              >
+                {{ 'SignIn' | localize }}
+                <i class="material-icons right">send</i>
+              </button>
+            </div>
 
-      <p class="center">
-        {{ 'NotRegistered' | localize }}
-        <router-link to="/register">{{ 'Register' | localize }}</router-link>
-      </p>
-      <p class="center">
-        {{ 'ForgotPassword' | localize }}
-        <router-link to="/forgot">{{ 'Recover' | localize }}</router-link>
-      </p>
-      <p class="center">
-        <a href="#" @click="changeLocale">
-          {{ locale === 'ru-RU' ? 'English' : 'Russian' | localize }}
-        </a>
-      </p>
+            <p class="center">
+              {{ 'NotRegistered' | localize }}
+              <router-link to="/register">{{ 'Register' | localize }}</router-link>
+            </p>
+            <p class="center">
+              {{ 'ForgotPassword' | localize }}
+              <router-link to="/forgot">{{ 'Recover' | localize }}</router-link>
+            </p>
+            <p class="center">
+              <a href="#" @click="changeLocale">
+                {{ locale === 'ru-RU' ? 'English' : 'Russian' | localize }}
+              </a>
+            </p>
 
-      <hr>
-      <button
-        class="btn waves-effect waves-light auth-submit auth-provider"
-        @click.prevent="btnGoogleSingIn"
-      >
-        {{ 'Google' | localize }}
-        <i class="material-icons right">lock</i>
-      </button>
-      <br>
-      <button
-        class="btn waves-effect waves-light indigo darken-4 auth-submit auth-provider"
-        @click.prevent="btnFacebookSingIn"
-      >
-        {{ 'Facebook' | localize }}
-        <i class="material-icons right">lock</i>
-      </button>
-      <br>
-      <button
-        class="btn waves-effect waves-light black darken-4 auth-submit auth-provider"
-        @click.prevent="btnGithubSingIn"
-      >
-        {{ 'Github' | localize }}
-        <i class="material-icons right">lock</i>
-      </button>
+            <hr>
+            <button
+              class="btn waves-effect waves-light auth-submit auth-provider"
+              @click.prevent="btnGoogleSingIn"
+            >
+              {{ 'Google' | localize }}
+              <i class="material-icons right">lock</i>
+            </button>
+            <br>
+            <button
+              class="btn waves-effect waves-light indigo darken-4 auth-submit auth-provider"
+              @click.prevent="btnFacebookSingIn"
+            >
+              {{ 'Facebook' | localize }}
+              <i class="material-icons right">lock</i>
+            </button>
+            <br>
+            <button
+              class="btn waves-effect waves-light black darken-4 auth-submit auth-provider"
+              @click.prevent="btnGithubSingIn"
+            >
+              {{ 'Github' | localize }}
+              <i class="material-icons right">lock</i>
+            </button>
 
-    </div>
-  </form>
+          </div>
+        </v-form>
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
 
 <script>

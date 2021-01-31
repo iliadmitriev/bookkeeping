@@ -1,7 +1,7 @@
 <template>
-  <div class="grey darken-2 empty-layout">
+  <v-main class="grey darken-2">
     <router-view />
-  </div>
+  </v-main>
 </template>
 
 
