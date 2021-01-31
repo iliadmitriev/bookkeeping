@@ -33,6 +33,8 @@
 
           <v-btn
             type="submit"
+            :loading="loading"
+            :disabled="loading"
             block
           >
             {{ 'SignIn' | localize }}
@@ -104,6 +106,7 @@ export default {
   },
   data: () => ({
     valid: false,
+    loading: false,
     email: '',
     emailRules: [
       v => !!v || localize('EmailRequired'),
@@ -132,6 +135,7 @@ export default {
         this.$refs.form.validate()
         return
       }
+      this.loading = true
       const loginFormData = {
         email: this.email,
         password: this.password
@@ -141,6 +145,7 @@ export default {
         await this.$router.push(this.$route.query.path ? this.$route.query.path : '/')
       } catch (err) {
       }
+      this.loading = true
     },
     changeLocale() {
       this.locale = this.locale === 'ru-RU' ? 'en-US' : 'ru-RU'
