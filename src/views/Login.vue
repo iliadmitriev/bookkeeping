@@ -1,56 +1,46 @@
 <template>
-  <v-container>
-    <v-row>
-      <v-col>
-        <v-form @submit.prevent="submitLogin">
-          <div class="card-content">
-            <span class="card-title">{{ 'AppName' | localize }}</span>
-            <div class="input-field">
-              <input
-                id="email"
-                type="text"
-                class="validate"
-                v-model.trim="email"
-                :class="{'invalid': ($v.email.$dirty && !$v.email.required) || ($v.email.$dirty && !$v.email.email)}"
-              >
-              <label for="email">Email</label>
-              <small
-                class="helper-text invalid"
-                v-if="($v.email.$dirty && !$v.email.required)"
-              >{{ 'EnterEmail' | localize }}</small>
-              <small class="helper-text invalid"
-                     v-else-if="($v.email.$dirty && !$v.email.email)"
-              >{{ 'EnterEmail' | localize }}</small>
-            </div>
-            <div class="input-field">
-              <input
-                id="password"
-                type="password"
-                class="validate"
-                v-model="password"
-                :class="{'invalid': ($v.password.$dirty && !$v.password.required) || ($v.password.$dirty && !$v.password.minLength)}"
-              >
-              <label for="password">{{ 'Password' | localize }}</label>
-              <small
-                class="helper-text invalid"
-                v-if="($v.password.$dirty && !$v.password.required)"
-              >{{ 'PasswordRequired' | localize }}</small>
-              <small class="helper-text invalid"
-                     v-else-if="($v.password.$dirty && !$v.password.minLength)"
-              >{{ 'PasswordMinLen' | localize }} {{ $v.password.$params.minLength.min }}</small>
-            </div>
-          </div>
-          <div class="card-action">
-            <div>
-              <button
-                class="btn waves-effect waves-light auth-submit"
-                type="submit"
-              >
-                {{ 'SignIn' | localize }}
-                <i class="material-icons right">send</i>
-              </button>
-            </div>
+  <v-form
+    @submit.prevent="submitLogin"
+    v-model="valid"
+    ref="form"
+  >
+    <v-container>
+      <v-card
+        class="mx-auto"
+        max-width="450"
+      >
+        <v-card-title>{{ 'AppName' | localize }}</v-card-title>
+        <v-card-text>
+          <v-text-field
+            id="email"
+            v-model.trim="email"
+            :label="'Email'"
+            :rules="emailRules"
+            :key="locale"
+            required
+          ></v-text-field>
 
+
+          <v-text-field
+            id="password"
+            type="password"
+            v-model="password"
+            :key="locale + 'password'"
+            :rules="passwordRules"
+            :label="'Password' | localize"
+          >
+          </v-text-field>
+
+          <v-btn
+            type="submit"
+            block
+          >
+            {{ 'SignIn' | localize }}
+            <i class="material-icons right">send</i>
+          </v-btn>
+          <br>
+
+          <div align="center">
             <p class="center">
               {{ 'NotRegistered' | localize }}
               <router-link to="/register">{{ 'Register' | localize }}</router-link>
@@ -64,42 +54,46 @@
                 {{ locale === 'ru-RU' ? 'English' : 'Russian' | localize }}
               </a>
             </p>
-
-            <hr>
-            <button
-              class="btn waves-effect waves-light auth-submit auth-provider"
-              @click.prevent="btnGoogleSingIn"
-            >
-              {{ 'Google' | localize }}
-              <i class="material-icons right">lock</i>
-            </button>
-            <br>
-            <button
-              class="btn waves-effect waves-light indigo darken-4 auth-submit auth-provider"
-              @click.prevent="btnFacebookSingIn"
-            >
-              {{ 'Facebook' | localize }}
-              <i class="material-icons right">lock</i>
-            </button>
-            <br>
-            <button
-              class="btn waves-effect waves-light black darken-4 auth-submit auth-provider"
-              @click.prevent="btnGithubSingIn"
-            >
-              {{ 'Github' | localize }}
-              <i class="material-icons right">lock</i>
-            </button>
-
+            <p><a href="#" @click="switchDarkMode">Dark Mode</a></p>
           </div>
-        </v-form>
-      </v-col>
-    </v-row>
-  </v-container>
+          <v-divider></v-divider>
+
+          <v-btn
+            block
+            @click.prevent="btnGoogleSingIn"
+          >
+            {{ 'Google' | localize }}
+            <i class="material-icons right">lock</i>
+          </v-btn>
+          <v-btn
+            block
+            color="indigo accent-2"
+            @click.prevent="btnFacebookSingIn"
+          >
+            {{ 'Facebook' | localize }}
+            <i class="material-icons right">lock</i>
+          </v-btn>
+          <v-btn
+            color="grey accent-2"
+            block
+            @click.prevent="btnGithubSingIn"
+          >
+            {{ 'Github' | localize }}
+            <i class="material-icons right">lock</i>
+          </v-btn>
+        </v-card-text>
+      </v-card>
+
+    </v-container>
+  </v-form>
 </template>
 
 <script>
-import {email, required, minLength} from 'vuelidate/lib/validators'
 import messages from '@/utils/messages'
+import localize from "@/filters/localize.filter"
+import {validateEmail} from '@/utils/helpers'
+
+const minPassLen = 6
 
 export default {
   name: "Login",
@@ -109,24 +103,33 @@ export default {
     }
   },
   data: () => ({
+    valid: false,
     email: '',
+    emailRules: [
+      v => !!v || localize('EmailRequired'),
+      v => validateEmail(v) || localize('EnterEmail')
+    ],
     password: '',
-    locale: localStorage.getItem('locale') || 'ru-RU'
+    passwordRules: [
+      v => !!v || localize('PasswordRequired'),
+      v => v.length >= minPassLen
+        || localize('PasswordMinLen') + ' ' + minPassLen
+    ],
+    locale: localStorage.getItem('locale') || 'ru-RU',
+    darkMode: false
   }),
-  validations: {
-    email: {email, required},
-    password: {required, minLength: minLength(6)}
-  },
   mounted() {
+    this.locale = localStorage.getItem('locale')
+    this.darkMode = localStorage.getItem('darkMode') === 'true' || false
+    this.$vuetify.theme.dark = this.darkMode
     if (messages[this.$route.query.message]) {
       this.$message(messages[this.$route.query.message])
     }
-    this.locale = localStorage.getItem('locale')
   },
   methods: {
     async submitLogin() {
-      if (this.$v.$invalid) {
-        this.$v.$touch()
+      if (!this.valid) {
+        this.$refs.form.validate()
         return
       }
       const loginFormData = {
@@ -142,6 +145,11 @@ export default {
     changeLocale() {
       this.locale = this.locale === 'ru-RU' ? 'en-US' : 'ru-RU'
       localStorage.setItem('locale', this.locale)
+    },
+    switchDarkMode() {
+      this.darkMode = !this.darkMode
+      this.$vuetify.theme.dark = this.darkMode
+      localStorage.setItem('darkMode', this.darkMode.toString())
     },
     async btnGoogleSingIn() {
       try {
@@ -169,7 +177,8 @@ export default {
 </script>
 
 <style scoped>
-.auth-provider {
-  margin: 5px;
+button {
+  margin: 5px 5px 5px 5px;
 }
+
 </style>
