@@ -13,12 +13,10 @@ export default {
       })
       instance.$mount()
 
+      const el = document.querySelector('#v-app')
 
+      el.appendChild(instance.$el)
 
-      document.body.appendChild(instance.$el)
-      //options.$el.appendChild(instance.$el)
-
-      //this.$refs.test.appendChild(instance.$el)
     }
 
   }

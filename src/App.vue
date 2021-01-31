@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <v-app>
+    <v-app id="v-app">
       <component :is="layout">
         <router-view/>
       </component>

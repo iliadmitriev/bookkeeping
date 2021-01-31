@@ -1,6 +1,7 @@
 {
-  "Russian": "Русский",
-  "English": "English",
+  "Language": "Language",
+  "Russian": "Русский \uD83C\uDDF7\uD83C\uDDFA",
+  "English": "English \uD83C\uDDEC\uD83C\uDDE7",
   "logout": "You've successfully logged out",
   "login": "You need to log in",
   "recover-message": "We've sent you an e-mail message with recovery link",
@@ -87,5 +88,6 @@
   "Github": "Sign In With Github",
   "RecoverPassword": "Recover password",
   "Recover": "Recover",
-  "ForgotPassword": "Forgot password?"
+  "ForgotPassword": "Forgot password?",
+  "DarkMode": "Dark Mode"
 }

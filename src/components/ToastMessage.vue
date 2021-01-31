@@ -42,9 +42,11 @@ export default {
   methods: {
     dismiss() {
       this.show = false
+      this.$destroy();
+      this.$el.parentNode.removeChild(this.$el);
     },
     close() {
-      this.show = false
+      this.dismiss()
     }
   }
 }
