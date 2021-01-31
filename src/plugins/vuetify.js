@@ -1,10 +1,9 @@
 import Vue from 'vue';
 import Vuetify from 'vuetify/lib/framework';
 import ru from 'vuetify/lib/locale/ru';
-
-Vue.use(Vuetify);
-
 import en from "vuetify/es5/locale/en";
+
+Vue.use(Vuetify)
 
 export default new Vuetify({
   lang: {
@@ -13,12 +12,9 @@ export default new Vuetify({
   },
   theme: {
     themes: {
-      light: {
-
-      },
-      dark: {
-
-      }
+      light: {},
+      dark: {}
     }
   }
 });
+

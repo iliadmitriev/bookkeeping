@@ -16,7 +16,7 @@ export default {
   },
   watch: {
     error(fbError) {
-      this.$error(messages[fbError.code] || fbError.code)
+      this.$message(messages[fbError.code] || fbError.code)
     }
   }
 }

@@ -144,8 +144,9 @@ export default {
         await this.$store.dispatch('login', loginFormData)
         await this.$router.push(this.$route.query.path ? this.$route.query.path : '/')
       } catch (err) {
+      } finally {
+        this.loading = false
       }
-      this.loading = true
     },
     changeLocale() {
       this.locale = this.locale === 'ru-RU' ? 'en-US' : 'ru-RU'
@@ -155,6 +156,7 @@ export default {
       this.darkMode = !this.darkMode
       this.$vuetify.theme.dark = this.darkMode
       localStorage.setItem('darkMode', this.darkMode.toString())
+      this.$message('Кто светом балуется?')
     },
     async btnGoogleSingIn() {
       try {

@@ -12,7 +12,7 @@ import currencyFilter from "@/filters/currency.filter"
 import numberFilter from "@/filters/number.filter"
 import localizeFilter from "@/filters/localize.filter"
 import titlePlugin from "@/utils/title.plugin"
-import messagePlugin from "@/utils/message.plugin"
+import messagePlugin from "@/plugins/message.plugin"
 import tooltipDirective from "@/directives/tooltip.directive"
 import {fbAuth} from "@/utils/firebase"
 import vuetify from './plugins/vuetify';
