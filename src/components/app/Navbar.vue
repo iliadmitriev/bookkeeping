@@ -1,46 +1,70 @@
 <template>
-  <nav class="navbar blue darken-4">
-    <div class="nav-wrapper">
-      <div class="navbar-left">
-        <a href="#" @click.prevent="$emit('click')">
-          <i class="material-icons">menu</i>
-        </a>
-        <div class="navbar-header" @click.prevent="$emit('click')">{{ 'AppName' | localize }}</div>
+  <v-app-bar
+      absolute
+  >
+    <v-app-bar-nav-icon></v-app-bar-nav-icon>
+    <v-toolbar-title
+        @click="$router.push('/')"
+    >
+      {{ 'AppName' | localize }}
+    </v-toolbar-title>
 
-      </div>
+    <v-spacer></v-spacer>
 
-      <div
-        class="right"
-        ref="dropDownContainer"
-      >
-        <a
-          ref="dropdownProfile"
-          class="dropdown-trigger"
-          href="#"
-          data-target="dropdown"
+    <v-menu
+        left
+        bottom
+    >
+      <template v-slot:activator="{ on, attrs }">
+        <v-btn
+            icon
+            v-bind="attrs"
+            v-on="on"
         >
-          {{ name }}
-          <i class="material-icons right">arrow_drop_down</i>
-        </a>
+          <v-icon>mdi-dots-vertical</v-icon>
+        </v-btn>
+      </template>
 
-        <ul id='dropdown' class='dropdown-content'>
-          <li>
-            <router-link to="/profile" class="black-text">
-              <i class="material-icons">account_circle</i>
-              {{ 'Profile' | localize }}
-            </router-link>
-          </li>
-          <li class="divider" tabindex="-1"></li>
-          <li>
-            <a href="#" class="black-text" @click.prevent="logout">
-              <i class="material-icons">assignment_return</i>
-              {{ 'Logout' | localize }}
-            </a>
-          </li>
-        </ul>
-      </div>
-    </div>
-  </nav>
+      <v-list
+          v-model="selectedItem"
+      >
+        <v-list-item
+            @click="$router.push(`/profile`)"
+        >
+          <v-list-item-icon>
+            <v-icon>mdi-cog</v-icon>
+          </v-list-item-icon>
+          <v-list-item-content>
+            {{ 'Profile' | localize }}
+          </v-list-item-content>
+        </v-list-item>
+
+        <v-list-item
+            @click="switchDarkMode"
+        >
+          <v-list-item-icon>
+            <v-icon>mdi-theme-light-dark</v-icon>
+          </v-list-item-icon>
+          <v-list-item-content>
+            {{ 'DarkMode' | localize }}
+          </v-list-item-content>
+        </v-list-item>
+
+        <v-list-item
+            @click="logout"
+        >
+          <v-list-item-icon>
+            <v-icon>mdi-exit-to-app</v-icon>
+          </v-list-item-icon>
+          <v-list-item-content>
+            {{ 'Logout' | localize }}
+          </v-list-item-content>
+        </v-list-item>
+
+      </v-list>
+    </v-menu>
+
+  </v-app-bar>
 </template>
 
 <script>
@@ -49,13 +73,20 @@ export default {
   data: () => ({
     datetime: new Date(),
     interval: null,
-    dropdown: null
+    dropdown: null,
+    selectedItem: 0,
+    darkMode: false
   }),
   methods: {
     async logout() {
       await this.$store.dispatch('logout')
       await this.$router.push(`/login?message=logout&path=${this.$route.path}`)
-    }
+    },
+    switchDarkMode() {
+      this.darkMode = !this.darkMode
+      this.$vuetify.theme.dark = this.darkMode
+      localStorage.setItem('darkMode', this.darkMode.toString())
+    },
   },
   computed: {
     name() {
@@ -63,19 +94,11 @@ export default {
     }
   },
   mounted() {
-    if (this.dropdown === null && this.$refs.dropdownProfile) {
-      this.dropdown = M.Dropdown.init(this.$refs.dropdownProfile, {
-        constrainWidth: false,
-        alignment: 'right',
-        container: this.$refs.dropDownContainer
-      })
-    }
+    this.darkMode = localStorage.getItem('darkMode') === 'true' || false
+    this.$vuetify.theme.dark = this.darkMode
   },
   beforeDestroy() {
-    if (this.dropdown && this.dropdown.destroy) {
-      this.dropdown.destroy()
-      this.dropdown = null
-    }
+
   }
 }
 </script>

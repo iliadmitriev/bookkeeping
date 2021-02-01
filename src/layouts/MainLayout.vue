@@ -1,20 +1,16 @@
 <template>
   <div>
-    <loader v-if="loading" />
+    <loader v-if="loading"/>
     <div v-else class="app-main-layout">
 
-      <Navbar
-        @click="isOpen = !isOpen"
-      >
+      <Navbar>
       </Navbar>
 
-      <Sidebar v-model="isOpen" :key="info.locale"></Sidebar>
+      <Sidebar :key="info.locale"></Sidebar>
 
-      <main class="app-content" :class="{'full': !isOpen}">
-        <div class="app-page">
-          <router-view/>
-        </div>
-      </main>
+      <v-main>
+        <router-view/>
+      </v-main>
 
       <FloatButton :key="info.locale + 1"></FloatButton>
     </div>
@@ -32,7 +28,6 @@ import messages from "@/utils/messages";
 export default {
   name: 'MainLayout',
   data: () => ({
-    isOpen: false,
     loading: true
   }),
   async mounted() {
