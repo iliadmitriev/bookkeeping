@@ -12,6 +12,7 @@
         :value="triggerDrawer"
       ></Sidebar>
 
+
       <v-main>
         <v-container fluid>
           <router-view/>
@@ -19,6 +20,7 @@
       </v-main>
 
       <FloatButton :key="info.locale + 1"></FloatButton>
+
     </div>
   </div>
 </template>
