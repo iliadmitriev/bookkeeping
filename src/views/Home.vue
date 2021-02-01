@@ -8,14 +8,13 @@
         <h3>{{ 'Account' | localize }}</h3>
       </v-col>
       <v-col
+        class="text-right"
       >
         <v-tooltip
           bottom
         >
           <template v-slot:activator="{ on, attrs }">
             <v-btn
-              top
-              absolute
               right
               dark
               color="cyan"
