@@ -1,19 +1,25 @@
 <template>
-  <div class="col s12 m6 l4">
-    <div class="card light-blue bill-card">
-      <div class="card-content white-text">
+  <v-col
+    cols="12"
+    sm="6"
+  >
+    <v-card
+      :color="$vuetify.theme.dark ? 'light-blue darken-3' :'light-blue accent-1'"
+    >
+      <v-card-title>
         <span class="card-title">{{ 'HomeAccount' | localize }}</span>
-
+      </v-card-title>
+      <v-card-text>
         <p
-          class="currency-line"
           v-for="cur in currencies"
           :key="cur"
         >
           <span>{{ getCurrency(cur) | currency(cur) }}</span>
+          <v-divider />
         </p>
-      </div>
-    </div>
-  </div>
+      </v-card-text>
+    </v-card>
+  </v-col>
 </template>
 
 <script>

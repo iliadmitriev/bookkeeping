@@ -1,16 +1,40 @@
 <template>
   <div>
-    <div class="page-title">
-      <h3>{{ 'Account' | localize}}</h3>
-
-      <button class="btn waves-effect waves-light btn-small">
-        <i class="material-icons" @click="refresh">refresh</i>
-      </button>
-    </div>
+    <v-row
+      justify="space-between"
+    >
+      <v-col
+      >
+        <h3>{{ 'Account' | localize }}</h3>
+      </v-col>
+      <v-col
+      >
+        <v-tooltip
+          bottom
+        >
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn
+              top
+              absolute
+              right
+              dark
+              color="cyan"
+              v-bind="attrs"
+              v-on="on"
+            >
+              <v-icon @click="refresh">mdi-refresh</v-icon>
+            </v-btn>
+          </template>
+          <span>
+        {{ 'Update' | localize }}
+      </span>
+        </v-tooltip>
+      </v-col>
+    </v-row>
 
     <Loader v-if="loading"></Loader>
 
-    <div v-else class="row">
+    <v-row v-else>
 
       <HomeAccount
         :rates="currency.Valute"
@@ -21,7 +45,7 @@
         :date="currency.Timestamp"
       />
 
-    </div>
+    </v-row>
 
   </div>
 </template>
@@ -36,7 +60,8 @@ export default {
   metaInfo() {
     return {
       title: this.$title('Account')
-    }},
+    }
+  },
   data: () => ({
     loading: true,
     currency: null
