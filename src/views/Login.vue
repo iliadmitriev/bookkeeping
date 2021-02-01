@@ -24,7 +24,7 @@
                   @click="switchDarkMode"
                 >
                   <v-icon dark>
-                    dark_mode
+                    mdi-theme-light-dark
                   </v-icon>
                 </v-btn>
               </template>
@@ -37,7 +37,7 @@
         <v-card-text>
           <v-text-field
             id="email"
-            prepend-inner-icon="email"
+            prepend-inner-icon="mdi-email"
             v-model.trim="email"
             :label="'Email'"
             :rules="emailRules"
@@ -51,7 +51,7 @@
             :type="showPassword ? 'text' : 'password'"
             :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
             @click:append="showPassword = !showPassword"
-            prepend-inner-icon="lock"
+            prepend-inner-icon="mdi-lock"
             v-model="password"
             :key="locale + 'password'"
             :rules="passwordRules"
@@ -66,7 +66,7 @@
             block
           >
             {{ 'SignIn' | localize }}
-            <i class="material-icons right">send</i>
+            <v-icon>mdi-send</v-icon>
           </v-btn>
           <br>
 
@@ -145,7 +145,7 @@ import messages from '@/utils/messages'
 import localize from "@/filters/localize.filter"
 import {validateEmail} from '@/utils/helpers'
 
-const minPassLen = 6
+import {minPassLen} from '@/utils/constants'
 
 export default {
   name: "Login",
