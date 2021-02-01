@@ -1,8 +1,7 @@
 <template>
   <div>
     <loader v-if="loading"/>
-    <div v-else class="app-main-layout">
-
+    <div v-else>
       <Navbar
         @drawer="openDrawer"
       >
@@ -14,7 +13,9 @@
       ></Sidebar>
 
       <v-main>
-        <router-view/>
+        <v-container fluid>
+          <router-view/>
+        </v-container>
       </v-main>
 
       <FloatButton :key="info.locale + 1"></FloatButton>

@@ -1,14 +1,11 @@
 <template>
   <v-app-bar
-      absolute
   >
     <v-app-bar-nav-icon
         @click="$emit('drawer')"
     >
     </v-app-bar-nav-icon>
-    <v-toolbar-title
-        @click="$router.push('/')"
-    >
+    <v-toolbar-title>
       {{ 'AppName' | localize }}
     </v-toolbar-title>
 
@@ -32,7 +29,10 @@
           v-model="selectedItem"
       >
         <v-list-item
-            @click="$router.push(`/profile`)"
+            link
+            :to="'/profile'"
+            :exact="true"
+            nav
         >
           <v-list-item-icon>
             <v-icon>mdi-cog</v-icon>
