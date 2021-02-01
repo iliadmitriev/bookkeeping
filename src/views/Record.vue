@@ -153,10 +153,6 @@ export default {
       this.category = this.categories[0].id
     }
 
-    setTimeout(() => {
-      this.select = M.FormSelect.init(this.$refs.selectCategory, {})
-      M.updateTextFields()
-    }, 0)
   },
   computed: {
     ...mapGetters(['info']),

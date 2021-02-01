@@ -2,7 +2,10 @@
   <v-app-bar
       absolute
   >
-    <v-app-bar-nav-icon></v-app-bar-nav-icon>
+    <v-app-bar-nav-icon
+        @click="$emit('drawer')"
+    >
+    </v-app-bar-nav-icon>
     <v-toolbar-title
         @click="$router.push('/')"
     >
@@ -96,9 +99,6 @@ export default {
   mounted() {
     this.darkMode = localStorage.getItem('darkMode') === 'true' || false
     this.$vuetify.theme.dark = this.darkMode
-  },
-  beforeDestroy() {
-
   }
 }
 </script>

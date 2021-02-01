@@ -95,7 +95,6 @@ export default {
       const {title, limit} = this.categories.find(c => c.id === categoryId)
       this.title = title
       this.limit = limit
-      setTimeout(() => M.updateTextFields(), 0)
     }
   },
   created() {
@@ -105,13 +104,10 @@ export default {
     this.limit = limit
   },
   mounted() {
-    M.updateTextFields();
-    this.select = M.FormSelect.init(this.$refs.selectCategory, {});
+
   },
   beforeDestroy() {
-    if (this.select && this.select.destroy) {
-      this.select.destroy()
-    }
+
   },
   methods: {
     async submitCategoryEdit() {

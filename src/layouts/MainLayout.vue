@@ -3,10 +3,15 @@
     <loader v-if="loading"/>
     <div v-else class="app-main-layout">
 
-      <Navbar>
+      <Navbar
+        @drawer="openDrawer"
+      >
       </Navbar>
 
-      <Sidebar :key="info.locale"></Sidebar>
+      <Sidebar
+        :key="info.locale"
+        :value="triggerDrawer"
+      ></Sidebar>
 
       <v-main>
         <router-view/>
@@ -28,13 +33,19 @@ import messages from "@/utils/messages";
 export default {
   name: 'MainLayout',
   data: () => ({
-    loading: true
+    loading: true,
+    triggerDrawer: 0
   }),
   async mounted() {
     if (!Object.keys(this.$store.getters.info).length) {
       await this.$store.dispatch('fetchInfo')
     }
     this.loading = false
+  },
+  methods: {
+    openDrawer() {
+      this.triggerDrawer++
+    }
   },
   computed: {
     ...mapGetters(['info']),

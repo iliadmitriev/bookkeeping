@@ -68,7 +68,7 @@ export default {
     limit: {required, minValue: minValue(100)}
   },
   mounted() {
-    M.updateTextFields();
+
   },
   methods: {
     async submitCreateCategory() {

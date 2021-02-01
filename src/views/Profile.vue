@@ -64,9 +64,6 @@ export default {
   mounted() {
     this.name = this.info.name
     this.isRuLocale = this.info.locale === 'ru-RU'
-    setTimeout(() => {
-      M.updateTextFields()
-    })
   },
   methods: {
     ...mapActions(['updateInfo']),
