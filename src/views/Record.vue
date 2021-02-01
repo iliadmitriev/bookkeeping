@@ -1,8 +1,6 @@
 <template>
   <div>
-    <div class="page-title">
-      <h3>{{ 'RecordAdd' | localize }}</h3>
-    </div>
+    <h3>{{ 'RecordAdd' | localize }}</h3>
 
     <Loader
       v-if="loading"
@@ -15,100 +13,66 @@
         {{ 'Add' | localize }}
       </router-link>
     </div>
-    <form
+
+    <v-form
+      v-model="valid"
+      ref="form"
       v-else
-      class="form" @submit.prevent="submitRecord">
-      <div class="input-field">
-        <select
-          ref="selectCategory"
-          v-model="category"
-        >
-          <option
-            v-for="cat in categories"
-            :key="cat.id"
-            :value="cat.id"
-          >{{ cat.title }}
-          </option>
-        </select>
-        <label>{{ 'SelectCategory' | localize }}</label>
-      </div>
-
-      <p>
-        <label>
-          <input
-            class="with-gap"
-            name="type"
-            type="radio"
-            value="income"
-            v-model="type"
-          />
-          <span>{{ 'Income' | localize }}</span>
-        </label>
-      </p>
-
-      <p>
-        <label>
-          <input
-            class="with-gap"
-            name="type"
-            type="radio"
-            value="outcome"
-            v-model="type"
-          />
-          <span>{{ 'Expenses' | localize }}</span>
-        </label>
-      </p>
-      <span
-        class="helper-text invalid"
-        v-if="$v.type.$dirty && !$v.type.required"
+      @submit.prevent="submitRecord"
+    >
+      <v-select
+        :items="categories"
+        item-text="title"
+        item-value="id"
+        v-model="category"
+        :rules="categoryRules"
+        :label="'Category' | localize"
+        :placeholder="'SelectCategory' | localize"
       >
-        {{ 'ChoseType' | localize }}
-      </span>
+      </v-select>
 
-      <div class="input-field">
-        <input
-          id="amount"
-          type="number"
-          v-model.number="amount"
-          :class="{'invalid': ($v.amount.$dirty && !$v.amount.minValue) || ($v.amount.$dirty && !$v.amount.required)}"
-        >
-        <label for="amount">{{ 'Amount' | localize }}</label>
-        <span
-          class="helper-text invalid"
-          v-if="$v.amount.$dirty && !$v.amount.minValue"
-        >
-            {{ 'MinValue' | localize }} {{ $v.amount.$params.minValue.min }}</span>
-        <span
-          class="helper-text invalid"
-          v-else-if="$v.amount.$dirty && !$v.amount.required"
-        >
-            {{ 'Required' | localize }}
-          </span>
-      </div>
+      <v-radio-group
+        v-model="type"
+        :rules="typeRules"
+        :label="'ChoseType' | localize"
+      >
+        <v-radio
+          :value="'income'"
+          :key="'income'"
+          :label="'Income' | localize"
+        ></v-radio>
+        <v-radio
+          :value="'outcome'"
+          :key="'outcome'"
+          :label="'Expenses' | localize"
+        ></v-radio>
+      </v-radio-group>
 
-      <div class="input-field">
-        <input
-          id="description"
-          type="text"
-          v-model="description"
-          :class="{'invalid': $v.description.$dirty && !$v.description.required}"
-        >
-        <label for="description">
-          {{ 'Description' | localize }}
-        </label>
-        <span
-          class="helper-text invalid"
-          v-if="$v.description.$dirty && !$v.description.required"
-        >
-          {{ 'Required' | localize }}
-        </span>
-      </div>
 
-      <button class="btn waves-effect waves-light" type="submit">
+      <v-text-field
+        id="amount"
+        type="number"
+        v-model.number="amount"
+        :label="'Amount' | localize"
+        :rules="rulesAmount"
+      ></v-text-field>
+
+      <v-text-field
+        id="description"
+        type="text"
+        v-model="description"
+        :label="'Description' | localize"
+        :rules="rulesDescription"
+      ></v-text-field>
+
+      <v-btn type="submit"
+             :loading="loading"
+             :disabled="loading"
+      >
         {{ 'Add' | localize }}
-        <i class="material-icons right">send</i>
-      </button>
-    </form>
+        <v-icon>mdi-send</v-icon>
+      </v-btn>
+    </v-form>
 
   </div>
 </template>
@@ -117,7 +81,6 @@
 import localize from '@/filters/localize.filter'
 import number from "@/filters/number.filter";
 import Loader from "@/components/app/Loader";
-import {minValue, required} from "vuelidate/lib/validators";
 import {mapGetters} from 'vuex'
 
 export default {
@@ -125,22 +88,33 @@ export default {
   metaInfo() {
     return {
       title: this.$title('RecordAdd')
-    }},
+    }
+  },
   components: {Loader},
   data: () => ({
-    categories: [],
     loading: true,
+    valid: false,
+    categories: [],
+    submitting: true,
     select: null,
     category: null,
+    categoryRules: [
+      v => !!v || localize('SelectCategory')
+    ],
     type: '',
+    typeRules: [
+      v => !!v || localize('ChoseType')
+    ],
     amount: 100,
-    description: ''
+    rulesAmount: [
+      v => !!v || localize('Required'),
+      v => v >= 100 || `${localize('MinValue')} 100`
+    ],
+    description: '',
+    rulesDescription: [
+      v => !!v || localize('Required')
+    ]
   }),
-  validations: {
-    type: {required},
-    amount: {required, minValue: minValue(100)},
-    description: {required}
-  },
   async mounted() {
     try {
       this.categories = await this.$store.dispatch('fetchCategories')
@@ -148,11 +122,6 @@ export default {
     } finally {
       this.loading = false
     }
-
-    if (this.categories.length) {
-      this.category = this.categories[0].id
-    }
-
   },
   computed: {
     ...mapGetters(['info']),
@@ -167,12 +136,13 @@ export default {
   },
   methods: {
     async submitRecord() {
-      if (this.$v.$invalid) {
-        this.$v.$touch()
+      if (!this.valid) {
+        this.$refs.form.validate()
         return
       }
 
       if (this.canCreateRecord) {
+        this.submitting = true
         try {
           const record = {
             amount: this.amount,
@@ -189,16 +159,19 @@ export default {
           await this.$store.dispatch('updateInfo', {bill})
 
           this.$message(localize('RecordAdded'))
+
           this.type = ''
           this.amount = 100
           this.description = ''
-          this.$v.$reset()
 
         } catch (e) {
           this.$error(e)
+        } finally {
+          this.submitting = false
         }
       } else {
         this.$message(`${localize('InsufficientFunds')} ${number(this.amount - this.info.bill)}`)
+
       }
 
     }

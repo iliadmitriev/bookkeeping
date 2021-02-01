@@ -6,6 +6,7 @@
       :headers="categoryHeaders"
       :items="categories"
       :mobile-breakpoint="520"
+      :no-data-text="'NoCategories' | localize"
       class="elevation-1"
     >
 
