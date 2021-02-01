@@ -5,9 +5,9 @@
     <v-data-table
       :headers="categoryHeaders"
       :items="categories"
+      :mobile-breakpoint="520"
       class="elevation-1"
     >
-
 
       <template v-slot:top>
         <v-toolbar
@@ -99,7 +99,6 @@
         </v-toolbar>
       </template>
 
-
       <template v-slot:item.limit="{ item }">
         {{ item.limit | number }}
       </template>
@@ -120,9 +119,6 @@
 </template>
 
 <script>
-import CategoryCreate from "@/components/CategoryCreate";
-import CategoryEdit from "@/components/CategoryEdit";
-import Loader from "@/components/app/Loader";
 import localize from "@/filters/localize.filter";
 
 export default {
@@ -138,7 +134,7 @@ export default {
     categories: [],
     categoryHeaders: [
       {text: localize('Title'), value: 'title'},
-      {text: localize('Limit'), value: 'limit'},
+      {text: localize('Limit'), value: 'limit', align: 'right'},
       {text: localize('Actions'), value: 'actions', sortable: false}
     ],
     titleRules: [
@@ -202,6 +198,7 @@ export default {
     close() {
       this.dialog = false
       this.$nextTick(() => {
+        this.$refs.editForm.reset()
         this.editedItem = Object.assign({}, this.defaultItem)
       })
     },
@@ -211,8 +208,6 @@ export default {
         this.$refs.editForm.validate()
         return
       }
-
-      debugger
 
       if (!!this.editedItem.id) {
         await this.updateCategory(this.editedItem)
@@ -224,7 +219,6 @@ export default {
       this.close()
     },
   },
-  components: {Loader, CategoryEdit, CategoryCreate}
 }
 </script>
 
