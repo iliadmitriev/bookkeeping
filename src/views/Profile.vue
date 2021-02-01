@@ -93,7 +93,5 @@ export default {
 </script>
 
 <style scoped>
-.switch {
-  margin-bottom: 2rem;
-}
+
 </style>
