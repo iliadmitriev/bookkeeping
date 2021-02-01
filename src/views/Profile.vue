@@ -38,7 +38,6 @@
 
 <script>
 import {mapGetters, mapActions} from 'vuex'
-import {required} from 'vuelidate/lib/validators'
 import localize from "@/filters/localize.filter";
 
 export default {
@@ -61,9 +60,6 @@ export default {
       {code: 'en-US', name: localize('English')}
     ]
   }),
-  validations: {
-    name: {required}
-  },
   computed: {
     ...mapGetters(['info'])
   },
