@@ -90,5 +90,8 @@
   "RecoverPassword": "Восстановить пароль",
   "Recover": "Восстановить",
   "ForgotPassword": "Забыл пароль?",
-  "DarkMode": "Ночной режим"
+  "DarkMode": "Ночной режим",
+  "Actions": "Действия",
+  "Cancel": "Отмена",
+  "Save": "Сохранить"
 }

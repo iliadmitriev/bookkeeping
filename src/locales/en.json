@@ -90,5 +90,8 @@
   "RecoverPassword": "Recover password",
   "Recover": "Recover",
   "ForgotPassword": "Forgot password?",
-  "DarkMode": "Dark Mode"
+  "DarkMode": "Dark Mode",
+  "Actions": "Actions",
+  "Cancel": "Отмена",
+  "Save": "Сохранить"
 }
