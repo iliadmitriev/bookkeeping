@@ -135,12 +135,6 @@ export default {
     ],
     locale: localStorage.getItem('locale') || 'ru-RU'
   }),
-  validations: {
-    email: {email, required},
-    password: {required, minLength: minLength(6)},
-    name: {required},
-    accepted: {checked: v => v}
-  },
   mounted() {
     this.locale = localStorage.getItem('locale')
   },

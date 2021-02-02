@@ -72,9 +72,6 @@ export default {
     ],
     locale: localStorage.getItem('locale') || 'ru-RU'
   }),
-  validations: {
-    email: {email, required}
-  },
   methods: {
     changeLocale() {
       this.locale = this.locale === 'ru-RU' ? 'en-US' : 'ru-RU'

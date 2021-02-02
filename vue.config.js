@@ -13,7 +13,8 @@ module.exports = {
 
   pluginOptions: {
     webpackBundleAnalyzer: {
-      openAnalyzer: false
+      openAnalyzer: false,
+      reportFilename: '../bundle.report.html'
     }
   },
 

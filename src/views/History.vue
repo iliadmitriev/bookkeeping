@@ -75,7 +75,7 @@
 import localize from '@/filters/localize.filter'
 import date from "@/filters/date.filter";
 import Loader from "@/components/app/Loader"
-import {Pie} from 'vue-chartjs'
+import {Pie} from 'vue-chartjs/src/BaseCharts'
 import {random_rgba} from "@/utils/helpers"
 
 export default {
