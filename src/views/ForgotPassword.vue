@@ -52,7 +52,6 @@
 </template>
 
 <script>
-import {email, required, minLength} from 'vuelidate/lib/validators'
 import {validateEmail} from '@/utils/helpers'
 import localize from "@/filters/localize.filter";
 
