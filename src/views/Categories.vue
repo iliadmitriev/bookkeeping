@@ -18,6 +18,7 @@
           <v-dialog
             v-model="dialog"
             max-width="500px"
+            @click:outside="close"
           >
             <template v-slot:activator="{ on, attrs }">
               <v-btn
@@ -160,7 +161,7 @@ export default {
   }),
   computed: {
     formTitle() {
-      return this.editedIndex === -1 ? localize('Create') : localize('Edit')
+      return !this.editedItem.id ? localize('Create') : localize('Edit')
     }
   },
   async mounted() {
