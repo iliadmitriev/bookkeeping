@@ -31,5 +31,7 @@ export default {
 </script>
 
 <style scoped>
-
+.float-right {
+  margin-bottom: 40px;
+}
 </style>

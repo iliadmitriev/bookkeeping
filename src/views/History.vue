@@ -25,15 +25,21 @@
           </v-btn>
         </p>
       </div>
+      <br>
 
       <v-text-field
         v-model="search"
+        :label="'Search' | localize"
+        prepend-icon="mdi-magnify"
       ></v-text-field>
+
       <v-data-table
         :items="recordsItems"
         :headers="recordsHeadings"
-        :items-per-page="5"
+        :search="search"
         :no-data-text="'HistoryNoData' | localize"
+        :options.sync="options"
+        @pagination="paginate"
       >
 
         <template v-slot:item.amount="{ item }">
@@ -41,7 +47,12 @@
         </template>
 
         <template v-slot:item.typeText="{ item }">
-          <span :class="typeColor(item.type)">{{ item.typeText }}</span>
+          <span
+            class="badge"
+            :class="typeColor(item.type)"
+          >
+            {{ item.typeText }}
+          </span>
         </template>
 
         <template v-slot:item.actions="{ item }">
@@ -76,20 +87,32 @@ export default {
     }
   },
   mixins: [Pie],
-  data: () => ({
-    loading: true,
-    records: [],
-    categories: [],
-    search: '',
-    recordsItems: [],
-    recordsHeadings: [
-      {value: 'amount', text: localize('Amount'), align: 'right'},
-      {value: 'datetime', text: localize('Date'), align: 'center'},
-      {value: 'categoryName', text: localize('Category'), align: 'center'},
-      {value: 'typeText', text: localize('Type'), align: 'center'},
-      {value: 'actions', text: localize('Open'), sortable: false, align: 'right'}
-    ]
-  }),
+  data() {
+    return {
+      loading: true,
+      records: [],
+      categories: [],
+      search: '',
+      recordsItems: [],
+      recordsHeadings: [
+        {value: 'amount', text: localize('Amount'), align: 'right'},
+        {value: 'datetime', text: localize('Date'), align: 'center'},
+        {value: 'categoryName', text: localize('Category'), align: 'center'},
+        {value: 'typeText', text: localize('Type'), align: 'center'},
+        {value: 'actions', text: localize('Open'), sortable: false, align: 'right'}
+      ],
+      options: {
+        descending: [],
+        sortBy: [],
+        itemsPerPage: 5,
+        page: 1,
+        mustSort: false,
+        multiSort: false,
+        groupBy: [],
+        groupDesc: []
+      }
+    }
+  },
   async mounted() {
 
     this.records = await this.$store.dispatch('fetchRecords')
@@ -113,13 +136,16 @@ export default {
 
     this.setup(this.categories)
 
+    this.options.page = +this.$route.query.page || 1
+    this.options.itemsPerPage = +this.$route.query.itemsPerPage || 5
+
     this.loading = false
 
   },
   methods: {
     typeColor(type) {
       return this.$vuetify.theme.dark
-        ? type === 'income' ? 'green darken-2' : 'red darken-2'
+        ? type === 'income' ? 'green darken-3' : 'red darken-4'
         : type === 'income' ? 'green lighten-3' : 'red lighten-3'
     },
 
@@ -143,6 +169,21 @@ export default {
         }]
       })
 
+    },
+    paginate(pagination) {
+      if (
+        pagination.pageCount // if data loaded and rendered
+        && (
+          pagination.page !== +this.$route.query.page
+          || pagination.itemsPerPage !== +this.$route.query.itemsPerPage
+        )
+      )
+        this.$router.push({
+          query: {
+            page: pagination.page,
+            itemsPerPage: pagination.itemsPerPage
+          }
+        })
     }
   },
   components: {Loader},
@@ -150,5 +191,8 @@ export default {
 </script>
 
 <style scoped>
+.badge {
+  padding: 4px;
+}
 
 </style>
