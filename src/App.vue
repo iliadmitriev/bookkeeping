@@ -1,14 +1,17 @@
 <template>
   <div id="app">
-    <component :is="layout">
-      <router-view/>
-    </component>
+    <v-app id="v-app">
+      <component :is="layout">
+        <router-view/>
+      </component>
+    </v-app>
   </div>
 </template>
 
 <script>
 import EmptyLayout from '@/layouts/EmptyLayout'
 import MainLayout from '@/layouts/MainLayout'
+
 export default {
   computed: {
     // this.$route.meta - configured in
@@ -24,7 +27,5 @@ export default {
 </script>
 
 <style lang="scss">
-@import "~materialize-css/dist/css/materialize.min.css";
-@import "assets/index.css";
 
 </style>

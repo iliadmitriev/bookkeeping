@@ -1,22 +1,26 @@
 <template>
   <div>
-    <loader v-if="loading" />
-    <div v-else class="app-main-layout">
-
+    <loader v-if="loading"/>
+    <div v-else>
       <Navbar
-        @click="isOpen = !isOpen"
+        @drawer="openDrawer"
       >
       </Navbar>
 
-      <Sidebar v-model="isOpen" :key="info.locale"></Sidebar>
+      <Sidebar
+        :key="info.locale"
+        :value="triggerDrawer"
+      ></Sidebar>
 
-      <main class="app-content" :class="{'full': !isOpen}">
-        <div class="app-page">
+
+      <v-main>
+        <v-container>
           <router-view/>
-        </div>
-      </main>
+        </v-container>
+      </v-main>
 
       <FloatButton :key="info.locale + 1"></FloatButton>
+
     </div>
   </div>
 </template>
@@ -32,14 +36,19 @@ import messages from "@/utils/messages";
 export default {
   name: 'MainLayout',
   data: () => ({
-    isOpen: false,
-    loading: true
+    loading: true,
+    triggerDrawer: 0
   }),
   async mounted() {
     if (!Object.keys(this.$store.getters.info).length) {
       await this.$store.dispatch('fetchInfo')
     }
     this.loading = false
+  },
+  methods: {
+    openDrawer() {
+      this.triggerDrawer++
+    }
   },
   computed: {
     ...mapGetters(['info']),
@@ -49,7 +58,7 @@ export default {
   },
   watch: {
     error(fbError) {
-      this.$error(messages[fbError.code] || fbError.code)
+      this.$message(messages[fbError.code] || fbError.code)
     }
   },
   components: {

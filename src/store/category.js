@@ -18,6 +18,7 @@ export default {
         const category = await db.ref(`/users/${uid}/categories`)
           .child(id)
           .update({title, limit})
+        return category
       } catch (e) {
         commit('setError', e)
         throw e

@@ -5,7 +5,6 @@ import './registerServiceWorker'
 import router from './router'
 import store from './store'
 import Paginate from 'vuejs-paginate'
-import 'materialize-css/dist/js/materialize.min'
 import VueMeta from 'vue-meta'
 
 import dateFilter from "@/filters/date.filter"
@@ -13,15 +12,14 @@ import currencyFilter from "@/filters/currency.filter"
 import numberFilter from "@/filters/number.filter"
 import localizeFilter from "@/filters/localize.filter"
 import titlePlugin from "@/utils/title.plugin"
-import messagePlugin from "@/utils/message.plugin"
-import tooltipDirective from "@/directives/tooltip.directive"
+import messagePlugin from "@/plugins/message.plugin"
 import {fbAuth} from "@/utils/firebase"
+import vuetify from './plugins/vuetify';
 
 Vue.use(titlePlugin)
 Vue.use(messagePlugin)
 Vue.use(Vuelidate)
 Vue.use(VueMeta)
-Vue.directive('tooltip', tooltipDirective)
 Vue.filter('date', dateFilter)
 Vue.filter('currency', currencyFilter)
 Vue.filter('number', numberFilter)
@@ -37,6 +35,7 @@ fbAuth.onAuthStateChanged(() => {
     app = new Vue({
       router,
       store,
+      vuetify,
       render: h => h(App)
     }).$mount('#app')
   }

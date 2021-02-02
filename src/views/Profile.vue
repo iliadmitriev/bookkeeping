@@ -1,87 +1,86 @@
 <template>
   <div>
-    <div class="page-title">
-      <h3>{{ 'Profile' | localize }}</h3>
-    </div>
-    <form class="form" @submit.prevent="submitProfile">
-      <div class="input-field">
-        <input
-          id="name"
-          type="text"
-          v-model.trim="name"
-          :class="{'invalid': $v.name.$dirty && !$v.name.required}"
-        >
-        <label for="name">{{ 'ProfileName' | localize }}</label>
-        <small
-          class="helper-text invalid"
-          v-if="$v.name.$dirty && !$v.name.required"
-        >
-          {{ 'ProfileEnterName' | localize }}
-        </small>
-      </div>
+    <h3>{{ 'Profile' | localize }}</h3>
+    <v-form
+      @submit.prevent="submitProfile"
+      v-model="valid"
+      ref="form"
+    >
+      <v-text-field
+        id="name"
+        type="text"
+        prepend-inner-icon="mdi-account"
+        v-model.trim="name"
+        :key="info.locale + 'name'"
+        :rules="nameRules"
+        :label="'Name' | localize"
+      >
+      </v-text-field>
 
-      <div class="switch">
-        <label>
-          {{ 'English' | localize }}
-          <input type="checkbox"
-                 v-model="isRuLocale"
-          >
-          <span class="lever"></span>
-          {{ 'Russian' | localize }}
-        </label>
-      </div>
+      <v-select
+        v-model="currentLocale"
+        :items="locales"
+        prepend-icon="mdi-translate"
+        item-text="name"
+        item-value="code"
+        label="Select"
+        single-line
+      ></v-select>
 
-      <button class="btn waves-effect waves-light" type="submit">
+      <v-btn
+        type="submit">
         {{ 'Update' | localize }}
-        <i class="material-icons right">send</i>
-      </button>
-    </form>
+        <v-icon>mdi-send</v-icon>
+      </v-btn>
+    </v-form>
   </div>
 </template>
 
 <script>
 import {mapGetters, mapActions} from 'vuex'
-import {required} from 'vuelidate/lib/validators'
-import localizeFilter from "@/filters/localize.filter";
+import localize from "@/filters/localize.filter";
 
 export default {
   name: "Profile",
   // made it function to update without restart
   metaInfo() {
     return {
-    title: this.$title('Profile')
-  }},
+      title: this.$title('Profile')
+    }
+  },
   data: () => ({
     name: '',
-    isRuLocale: true
+    nameRules: [
+      v => !!v || localize('NameRequired')
+    ],
+    valid: false,
+    currentLocale: 'ru-RU',
+    locales: [
+      {code: 'ru-RU', name: localize('Russian')},
+      {code: 'en-US', name: localize('English')}
+    ]
   }),
-  validations: {
-    name: {required}
-  },
   computed: {
     ...mapGetters(['info'])
   },
   mounted() {
     this.name = this.info.name
-    this.isRuLocale = this.info.locale === 'ru-RU'
-    setTimeout(() => {
-      M.updateTextFields()
-    })
+    this.currentLocale = this.info.locale || 'ru-RU'
   },
   methods: {
     ...mapActions(['updateInfo']),
     async submitProfile() {
-      if (this.$v.$invalid) {
-        this.$v.$touch()
+      if (!this.valid) {
+        this.$refs.form.validate()
         return
       }
 
       try {
         await this.updateInfo({
           name: this.name,
-          locale: this.isRuLocale ? 'ru-RU' : 'en-US'
+          locale: this.currentLocale
         })
-        localStorage.setItem('locale', this.isRuLocale ? 'ru-RU' : 'en-US')
+        localStorage.setItem('locale', this.currentLocale)
       } catch (e) {
       }
     }
@@ -90,7 +89,5 @@ export default {
 </script>
 
 <style scoped>
-.switch {
-  margin-bottom: 2rem;
-}
+
 </style>

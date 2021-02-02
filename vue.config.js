@@ -10,9 +10,14 @@ module.exports = {
       )
     ]
   },
+
   pluginOptions: {
     webpackBundleAnalyzer: {
       openAnalyzer: false
     }
-  }
+  },
+
+  transpileDependencies: [
+    'vuetify'
+  ]
 }

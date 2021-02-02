@@ -1,6 +1,7 @@
 {
-  "Russian": "Русский",
-  "English": "English",
+  "Language": "Язык",
+  "Russian": "Русский \uD83C\uDDF7\uD83C\uDDFA",
+  "English": "English \uD83C\uDDEC\uD83C\uDDE7",
   "logout": "Вы вышли из системы",
   "login": "Вам необходимо выполнить вход в систему",
   "recover-message": "Вам отправлено письмо с ссылкой для восстановления пароля",
@@ -75,7 +76,8 @@
   "PasswordMinLen": "Минимальная длина пароля",
   "Name": "Имя",
   "NameRequired": "Имя не может быть пустым",
-  "Agreement": "С правилами согласен",
+  "IAgree": "Я согласен с",
+  "Terms": "правилами использования сервисом",
   "AgreementRequired": "Необходимо принять правила сервиса",
   "Register": "Зарегистрироваться",
   "AlreadyRegistered": "Уже есть аккаунт?",
@@ -87,5 +89,10 @@
   "Github": "Войти через Github",
   "RecoverPassword": "Восстановить пароль",
   "Recover": "Восстановить",
-  "ForgotPassword": "Забыл пароль?"
+  "ForgotPassword": "Забыл пароль?",
+  "DarkMode": "Ночной режим",
+  "Actions": "Действия",
+  "Cancel": "Отмена",
+  "Save": "Сохранить",
+  "Search": "Поиск"
 }

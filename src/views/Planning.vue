@@ -1,9 +1,17 @@
 <template>
   <div>
-    <div class="page-title">
-      <h3>{{ 'Planning' | localize }}</h3>
-      <h4>{{ info.bill | number }}</h4>
-    </div>
+    <v-row>
+      <v-col>
+        <h3>{{ 'Planning' | localize }}</h3>
+      </v-col>
+      <v-spacer></v-spacer>
+      <v-col class="text-right">
+        <h4>{{ info.bill | number }}</h4>
+      </v-col>
+    </v-row>
+
+    <v-divider></v-divider>
+    <br>
 
     <Loader v-if="loading"/>
 
@@ -11,9 +19,9 @@
       v-else-if="!categories.length"
       class="center">
       <p>{{ 'PlanningNoCategories' | localize }}</p>
-      <router-link tag="a" class="btn" to="/categories">
+      <v-btn link to="/categories">
         {{ 'Add' | localize }}
-      </router-link>
+      </v-btn>
     </div>
 
 
@@ -23,18 +31,24 @@
       <div v-for="cat of categories" :key="cat.id">
         <p>
           <strong>{{ cat.title }}:</strong>
-          {{ cat.totalSpend | number }} {{'of' | localize}} {{ cat.limit | number }}
+          {{ cat.totalSpend | number }} {{ 'of' | localize }} {{ cat.limit | number }}
         </p>
-        <div
-          class="progress"
-          v-tooltip="cat.tooltip"
-        >
-          <div
-            class="determinate"
-            :class="cat.progressColor"
-            :style="{width: cat.progressPercent + '%' }"
-          ></div>
-        </div>
+
+        <v-tooltip bottom>
+          <template v-slot:activator="{ on, attrs }">
+            <v-progress-linear
+              v-bind="attrs"
+              v-on="on"
+              :value="cat.progressPercent"
+              :color="cat.progressColor"
+              height="15"
+            ></v-progress-linear>
+          </template>
+          <span>{{ cat.tooltip }}</span>
+        </v-tooltip>
+        <br>
+
+
       </div>
     </section>
 
@@ -52,7 +66,8 @@ export default {
   metaInfo() {
     return {
       title: this.$title('Planning')
-    }},
+    }
+  },
   components: {Loader},
   data: () => ({
     loading: true,
@@ -78,7 +93,7 @@ export default {
       // > 100% - red
 
       const progressColor = percent < 60
-      ? 'green'
+        ? 'green'
         : percent < 100
           ? 'yellow'
           : 'red'
@@ -87,7 +102,7 @@ export default {
       const tooltipValue = cat.limit - totalSpend
       const tooltip = `${tooltipValue < 0
         ? localize('Exceeding')
-        : localize('Remaining')} ${numberFilter(Math.abs(tooltipValue)) }`
+        : localize('Remaining')} ${numberFilter(Math.abs(tooltipValue))}`
 
       return {
         ...cat,

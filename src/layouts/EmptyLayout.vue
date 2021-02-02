@@ -1,7 +1,7 @@
 <template>
-  <div class="grey darken-2 empty-layout">
+  <v-main>
     <router-view />
-  </div>
+  </v-main>
 </template>
 
 
@@ -16,7 +16,7 @@ export default {
   },
   watch: {
     error(fbError) {
-      this.$error(messages[fbError.code] || fbError.code)
+      this.$message(messages[fbError.code] || fbError.code)
     }
   }
 }
