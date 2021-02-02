@@ -9,9 +9,9 @@
       v-else-if="!categories.length"
       class="center">
       <p>{{ 'RecordNoCategories' | localize }}</p>
-      <router-link tag="a" class="btn" to="/categories">
+      <v-btn link to="/categories">
         {{ 'Add' | localize }}
-      </router-link>
+      </v-btn>
     </div>
 
     <v-form

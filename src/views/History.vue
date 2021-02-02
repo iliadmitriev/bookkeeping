@@ -1,9 +1,9 @@
 <template>
   <div>
-    <div class="page-title">
-      <h3>{{ 'HistoryTitle' | localize }}</h3>
-    </div>
-    <div class="history-chart">
+    <h3>{{ 'HistoryTitle' | localize }}</h3>
+    <div
+      v-show="categories.length"
+    >
       <canvas
         ref="canvas"
       ></canvas>
@@ -20,27 +20,42 @@
           {{ 'HistoryNoData' | localize }}
         </p>
         <p class="center">
-          <router-link tag="button" class="btn" to="/record">
-            <i class="material-icons right">open_in_new</i>
+          <v-btn link to="/record">
             {{ 'Add' | localize }}
-          </router-link>
+          </v-btn>
         </p>
       </div>
-      <HistoryTable
-        v-else
-        :records="items"
-      />
 
-      <Paginate
-        v-model="page"
-        :page-count="pageCount"
-        :click-handler="pageChangeHandler"
-        :prev-text="'<i class=material-icons>chevron_left</i>'"
-        :next-text="'<i class=material-icons>chevron_right</i>'"
-        :container-class="'pagination'"
-        :page-class="'waves-effect'"
+      <v-text-field
+        v-model="search"
+      ></v-text-field>
+      <v-data-table
+        :items="recordsItems"
+        :headers="recordsHeadings"
+        :items-per-page="5"
+        :no-data-text="'HistoryNoData' | localize"
       >
-      </Paginate>
+
+        <template v-slot:item.amount="{ item }">
+          {{ item.amount | number }}
+        </template>
+
+        <template v-slot:item.typeText="{ item }">
+          <span :class="typeColor(item.type)">{{ item.typeText }}</span>
+        </template>
+
+        <template v-slot:item.actions="{ item }">
+          <v-icon
+            small
+            class="mr-2"
+            @click="$router.push('/detail/' + item.id)"
+          >
+            mdi-open-in-new
+          </v-icon>
+        </template>
+
+      </v-data-table>
+
 
     </section>
   </div>
@@ -48,68 +63,89 @@
 
 <script>
 import localize from '@/filters/localize.filter'
-import paginationMixin from '@/mixins/pagination.mixin'
-import HistoryTable from "@/components/HistoryTable"
+import date from "@/filters/date.filter";
 import Loader from "@/components/app/Loader"
 import {Pie} from 'vue-chartjs'
-import { random_rgba } from "@/utils/helpers"
+import {random_rgba} from "@/utils/helpers"
 
 export default {
   name: "History",
   metaInfo() {
     return {
       title: this.$title('History')
-    }},
-  mixins: [paginationMixin, Pie],
+    }
+  },
+  mixins: [Pie],
   data: () => ({
     loading: true,
     records: [],
+    categories: [],
+    search: '',
+    recordsItems: [],
+    recordsHeadings: [
+      {value: 'amount', text: localize('Amount'), align: 'right'},
+      {value: 'datetime', text: localize('Date'), align: 'center'},
+      {value: 'categoryName', text: localize('Category'), align: 'center'},
+      {value: 'typeText', text: localize('Type'), align: 'center'},
+      {value: 'actions', text: localize('Open'), sortable: false, align: 'right'}
+    ]
   }),
   async mounted() {
-    this.records = await this.$store.dispatch('fetchRecords')
-    const categories = await this.$store.dispatch('fetchCategories')
 
-    this.setup(categories)
+    this.records = await this.$store.dispatch('fetchRecords')
+    this.categories = await this.$store.dispatch('fetchCategories')
+
+    this.recordsItems = this.records.map(
+      r => {
+        const category = this.categories.find(c => c.id === r.categoryId)
+        return {
+          ...r,
+          datetime: date(r.datetime),
+          categoryName: category
+            ? category.title
+            : '',
+          typeText: r.type === 'income'
+            ? localize('Income')
+            : localize('Expenses')
+        }
+      }
+    )
+
+    this.setup(this.categories)
 
     this.loading = false
 
   },
   methods: {
-    setup(categories) {
+    typeColor(type) {
+      return this.$vuetify.theme.dark
+        ? type === 'income' ? 'green darken-2' : 'red darken-2'
+        : type === 'income' ? 'green lighten-3' : 'red lighten-3'
+    },
 
-      this.setupPagination(this.records.map(rec => {
-        return {
-          ...rec,
-          datetime: new Date(rec.datetime),
-          categoryName: categories
-            .find(c => c.id === rec.categoryId)
-            .title,
-          typeClass: rec.type === 'income' ? 'green' : 'red',
-          typeText: rec.type === 'income' ? localize('Income')  : localize('Expenses')
-        }
-      }))
+    setup(categories) {
 
       const {backgroundColors, borderColors} = random_rgba(categories.length, 0.2)
 
       this.renderChart({
-          labels: categories.map(c => c.title),
-          datasets: [{
-            label: localize('HistoryExpenses'),
-            data: categories.map(c => {
-              return this.records
-                .filter(r => r.type === 'outcome')
-                .filter(r => r.categoryId === c.id)
-                .reduce((total, r) => total += +r.amount, 0)
-            }),
-            backgroundColor: backgroundColors,
-            borderColor: borderColors,
-            borderWidth: 1
-          }]
-        })
+        labels: categories.map(c => c.title),
+        datasets: [{
+          label: localize('HistoryExpenses'),
+          data: categories.map(c => {
+            return this.records
+              .filter(r => r.type === 'outcome')
+              .filter(r => r.categoryId === c.id)
+              .reduce((total, r) => total += +r.amount, 0)
+          }),
+          backgroundColor: backgroundColors,
+          borderColor: borderColors,
+          borderWidth: 1
+        }]
+      })
 
     }
   },
-  components: {Loader, HistoryTable},
+  components: {Loader},
 }
 </script>
 
