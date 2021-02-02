@@ -4,13 +4,13 @@
 
       <v-btn
         color="primary"
-        class="btn-add"
+        class="float-right"
         v-bind="attrs"
         v-on="on"
         elevation="2"
-        absolute
         fab
         bottom
+        fixed
         right
         link
         :to="'/record'"
@@ -31,9 +31,5 @@ export default {
 </script>
 
 <style scoped>
-.btn-add {
-  bottom: 0;
-  position: absolute;
-  margin: 0 0 50px 0;
-}
+
 </style>
