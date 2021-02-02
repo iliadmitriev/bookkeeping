@@ -3,6 +3,7 @@
     v-model="show"
     :timeout="timeout"
     @click="close"
+    elevation="2"
   >
     {{ message }}
     <template v-slot:action="{ attrs }">
@@ -34,10 +35,12 @@ export default {
     },
   },
   data: () => ({
-    show: false
+    show: true
   }),
-  mounted() {
-    this.show = true
+  watch: {
+    show(value) {
+      this.dismiss()
+    }
   },
   methods: {
     dismiss() {
