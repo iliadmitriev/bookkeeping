@@ -96,7 +96,7 @@ export default {
       return currency === 'RUB' ? 1 : this.rates[currency].Value
     },
     getDate() {
-      return new Date(this.date).toLocaleDateString()
+      return new Date(this.date)
     }
   }
 

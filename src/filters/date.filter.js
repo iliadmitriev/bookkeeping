@@ -18,5 +18,9 @@ export default function dateFilter(value, datetime = true) {
 
   return new Intl
     .DateTimeFormat(locale, options)
-    .format(new Date())
+    .format(
+      typeof value === 'object' && value instanceof Date
+        ? value
+        : new Date(value)
+    )
 }
