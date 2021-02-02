@@ -137,7 +137,7 @@ export default {
     categoryHeaders: [
       {text: localize('Title'), value: 'title'},
       {text: localize('Limit'), value: 'limit', align: 'right'},
-      {text: localize('Actions'), value: 'actions', sortable: false}
+      {text: localize('Actions'), value: 'actions', sortable: false, align: 'right'}
     ],
     titleRules: [
       v => !!v || localize('EnterTitle')
