@@ -92,7 +92,7 @@
   "ForgotPassword": "Forgot password?",
   "DarkMode": "Dark Mode",
   "Actions": "Actions",
-  "Cancel": "Отмена",
-  "Save": "Сохранить",
+  "Cancel": "Cancel",
+  "Save": "Save",
   "Search": "Search"
 }

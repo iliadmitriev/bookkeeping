@@ -67,7 +67,6 @@
 
       </v-data-table>
 
-
     </section>
   </div>
 </template>
@@ -99,7 +98,7 @@ export default {
         {value: 'datetime', text: localize('Date'), align: 'center'},
         {value: 'categoryName', text: localize('Category'), align: 'center'},
         {value: 'typeText', text: localize('Type'), align: 'center'},
-        {value: 'actions', text: localize('Open'), sortable: false, align: 'right'}
+        {value: 'actions', text: localize('Actions'), sortable: false, align: 'right'}
       ],
       options: {
         descending: [],
@@ -170,6 +169,7 @@ export default {
       })
 
     },
+
     paginate(pagination) {
       if (
         pagination.pageCount // if data loaded and rendered
