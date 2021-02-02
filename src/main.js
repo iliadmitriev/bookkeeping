@@ -1,10 +1,8 @@
 import Vue from 'vue'
-import Vuelidate from 'vuelidate'
 import App from './App.vue'
 import './registerServiceWorker'
 import router from './router'
 import store from './store'
-import Paginate from 'vuejs-paginate'
 import VueMeta from 'vue-meta'
 
 import dateFilter from "@/filters/date.filter"
@@ -18,13 +16,11 @@ import vuetify from './plugins/vuetify';
 
 Vue.use(titlePlugin)
 Vue.use(messagePlugin)
-Vue.use(Vuelidate)
 Vue.use(VueMeta)
 Vue.filter('date', dateFilter)
 Vue.filter('currency', currencyFilter)
 Vue.filter('number', numberFilter)
 Vue.filter('localize', localizeFilter)
-Vue.component('Paginate', Paginate)
 
 Vue.config.productionTip = false
 

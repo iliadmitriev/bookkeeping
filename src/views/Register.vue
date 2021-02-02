@@ -99,7 +99,6 @@
 </template>
 
 <script>
-import {email, required, minLength} from 'vuelidate/lib/validators'
 import localize from "@/filters/localize.filter";
 import {validateEmail} from "@/utils/helpers";
 import {minPassLen} from '@/utils/constants'
