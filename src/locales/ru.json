@@ -9,6 +9,7 @@
   "auth/wrong-password": "Указан не верный пароль",
   "auth/user-disabled": "Пользователю запрещен доступ в систему",
   "auth/email-already-in-use": "Пользователь с таким email уже есть в системе",
+  "auth/network-request-failed": "Нет соединения с интернетом, проверьте подключение",
   "auth/too-many-requests": "Слишком много попыток, подождите немного",
   "auth/popup-blocked": "Всплывающее окно заблокировано",
   "auth/unauthorized-domain": "Домен не авторизован",
