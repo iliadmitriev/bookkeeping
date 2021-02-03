@@ -2,6 +2,9 @@ const webpack = require('webpack');
 const VuetifyLoaderPlugin = require('vuetify-loader/lib/plugin')
 
 module.exports = {
+
+  productionSourceMap: false,
+
   configureWebpack: {
     plugins: [
       new webpack.ContextReplacementPlugin(
