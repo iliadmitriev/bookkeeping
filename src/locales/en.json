@@ -8,6 +8,7 @@
   "auth/user-not-found": "User not found",
   "auth/wrong-password": "Wrong password",
   "auth/user-disabled": "Used is disabled",
+  "auth/network-request-failed": "Network Connection Error",
   "auth/email-already-in-use": "Email is already in use",
   "auth/too-many-requests": "Too many request attempts",
   "auth/popup-blocked": "Pop-up window blocked by browser",
