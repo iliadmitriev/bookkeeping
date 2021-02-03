@@ -67,7 +67,8 @@ module.exports = {
       navigationPreload: true,
       runtimeCaching: [
         {
-          urlPattern: /\.(css|ico|png|xml|svg|webmanifest|html|js|json|txt|jpg|woff2)/,
+          urlPattern: ({url}) => url.origin === self.location.origin &&
+            url.pathname.match(/\.(css|ico|png|xml|svg|webmanifest|html|js|json|txt|jpe?g|woff2?)$/),
           handler: 'CacheFirst',
           options: {
             cacheName: 'finance-bookkeeper-cache'
@@ -75,14 +76,24 @@ module.exports = {
         },
 
         {
-          urlPattern: /^https:\/\/fonts\.gstatic\.com/,
+          urlPattern: ({url}) => url.origin === 'https://fonts.googleapis.com',
+          handler: 'StaleWhileRevalidate',
+          options: {
+            cacheName: 'google-fonts-stylesheets'
+          }
+        },
+
+        {
+          urlPattern: ({url}) => url.origin === 'https://fonts.gstatic.com',
           handler: 'CacheFirst',
           options: {
             cacheName: 'google-fonts-webfonts'
           }
         },
+
         {
-          urlPattern: /^https:\/\/cdn\.jsdelivr\.net\/npm\/@mdi\/font@latest/,
+          urlPattern: ({url}) => url.origin === 'https://cdn.jsdelivr.net'
+            && url.pathname.match(/\.(css|woff2?)$/),
           handler: 'CacheFirst',
           options: {
             cacheName: 'material-design-icons-cache'
@@ -92,7 +103,7 @@ module.exports = {
 
       ] //runtimeCaching
 
-    } // workboxOptions*/
+    } // workboxOptions
 
   } //pwa
 
