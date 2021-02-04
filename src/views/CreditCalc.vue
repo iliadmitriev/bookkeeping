@@ -113,10 +113,13 @@
 
           </v-card-text>
 
-          <v-card-text>Платеж в мес {{ calculateLoanAnnuity.payment }}</v-card-text>
-          <v-card-text>Сумма выплат {{ calculateLoanAnnuity.totalPayment }}</v-card-text>
-          <v-card-text>Переплата по кредиту {{ calculateLoanAnnuity.totalInterest }}</v-card-text>
+          <v-card-text>Платеж в мес {{ calculateLoanAnnuity.payment | number }}</v-card-text>
+          <v-card-text>Сумма выплат {{ calculateLoanAnnuity.totalPayment | number }}</v-card-text>
+          <v-card-text>Переплата по кредиту {{ calculateLoanAnnuity.totalInterest | number }}</v-card-text>
 
+          <div ref="reff"></div>
+          <canvas ref="canvas">
+          </canvas>
 
         </v-card>
       </v-col>
@@ -154,6 +157,10 @@
 <script>
 import localizeFilter from "@/filters/localize.filter";
 import numberFilter from "@/filters/number.filter";
+import localize from "@/filters/localize.filter";
+import {random_rgba} from "@/utils/helpers";
+import Chart from 'chart.js';
+
 
 export default {
   name: "CreditCalc",
@@ -187,6 +194,7 @@ export default {
       {text: 'мес', value: 'm'},
       {text: 'лет', value: 'y'},
     ],
+    interestChart: null,
     historyHeaders: [
       {value: 'num', text: '#', align: 'right'},
       {value: 'payment', text: 'Платеж', align: 'right', filter: numberFilter},
@@ -209,6 +217,18 @@ export default {
       const StrVal = (new Intl.NumberFormat('ru-RU')
         .format(this.creditAmount))
       this.creditAmountText = StrVal
+    }
+  },
+  methods: {
+    renderChart($el, {type, data, options}) {
+      if (this.interestChart) {
+        this.interestChart.destroy()
+      }
+      this.interestChart = new Chart($el, {
+        type: type,
+        data: data,
+        options: options
+      });
     }
   },
   computed: {
@@ -252,10 +272,41 @@ export default {
         })
       }
 
+      const {backgroundColors, borderColors} = random_rgba(2, 0.2)
+
+
+      if (this.$refs.canvas) {
+        this.renderChart(this.$refs.canvas.getContext('2d'),
+          {
+            type: 'pie',
+            data: {
+              labels: ['Основной долг', 'Переплата'],
+              legend: {
+                hidden: true
+              },
+              datasets: [{
+                label: '',
+                data: [this.creditAmount, Math.round(totalInterest)],
+                backgroundColor: backgroundColors,
+                borderColor: borderColors,
+                borderWidth: 1
+              }]
+            },
+            options: {
+              legend: {
+                display: false
+              }
+            }
+          }
+        )
+
+      }
+
+
       return {
-        payment: numberFilter(payment),
-        totalPayment: numberFilter(totalPayment),
-        totalInterest: numberFilter(totalInterest),
+        payment,
+        totalPayment,
+        totalInterest,
         history
       }
     }
