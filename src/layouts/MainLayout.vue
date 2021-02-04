@@ -19,7 +19,10 @@
         </v-container>
       </v-main>
 
-      <FloatButton :key="info.locale + 1"></FloatButton>
+      <FloatButton
+        :key="info.locale + 1"
+        v-if="$route.name != 'credit-calc'"
+      ></FloatButton>
 
     </div>
   </div>

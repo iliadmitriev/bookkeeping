@@ -30,6 +30,12 @@ const routes = [
     component: () => import('@/views/Home')
   },
   {
+    path: '/credit-calc',
+    name: 'credit-calc',
+    meta: {layout: 'main', auth: true},
+    component: () => import('@/views/CreditCalc')
+  },
+  {
     path: '/categories',
     name: 'categories',
     meta: {layout: 'main', auth: true},

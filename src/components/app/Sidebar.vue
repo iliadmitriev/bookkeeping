@@ -33,6 +33,7 @@ export default {
     drawer: false,
     links: [
       {title: localize('Sidebar_Account'), url: '/', exact: true},
+      {title: localize('Sidebar_CreditCalc'), url: '/credit-calc', exact: false},
       {title: localize('Sidebar_History'), url: '/history', exact: false},
       {title: localize('Sidebar_Planning'), url: '/planning', exact: false},
       {title: localize('Sidebar_NewRecord'), url: '/record', exact: false},

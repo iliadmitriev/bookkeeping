@@ -36,7 +36,6 @@ module.exports = {
   ],
 
 
-
   pwa: {
     // this generates manifest json
     name: 'Finance Bookkeeper',
@@ -54,7 +53,6 @@ module.exports = {
     },
 
     // configure the workbox plugin
-
 
     workboxPluginMode: 'GenerateSW',
 
