@@ -99,10 +99,11 @@
                 {{ annuity ? 'Аннуитетный' : 'Дифференцированный' }}
                 <v-tooltip bottom>
                   <template v-slot:activator="{ on, attrs }">
-                  <v-icon
-                    v-bind="attrs"
-                    v-on="on"
-                  >mdi-help-circle</v-icon>
+                    <v-icon
+                      v-bind="attrs"
+                      v-on="on"
+                    >mdi-help-circle
+                    </v-icon>
                   </template>
                   <span v-if="annuity">Выплаты по аннуитету осуществляются равными суммами через равные промежутки времени. Сумма аннуитетного платежа включает в себя и основной долг, и вознаграждение.</span>
                   <span v-else>Сумма в погашение тела кредита в дифференцированном платеже всегда постоянна. Процентная часть в сумме дифференцированного платежа сначала большая, а потом снижается, так как зависит от основного долга по кредиту</span>
@@ -112,9 +113,9 @@
 
           </v-card-text>
 
-          <v-card-text>
-            Платеж в мес {{ calculateLoanAnnuity.payment | number }}
-          </v-card-text>
+          <v-card-text>Платеж в мес {{ calculateLoanAnnuity.payment }}</v-card-text>
+          <v-card-text>Сумма выплат {{ calculateLoanAnnuity.totalPayment }}</v-card-text>
+          <v-card-text>Переплата по кредиту {{ calculateLoanAnnuity.totalInterest }}</v-card-text>
 
 
         </v-card>
@@ -124,10 +125,16 @@
         md="8"
         class="d-none d-md-block"
       >
-        <v-card>
+        <v-card elevation="0">
           <v-card-title>График платежей</v-card-title>
           <v-card-text>
-
+            <v-data-table
+              :items="calculateLoanAnnuity.history"
+              :item-key="calculateLoanAnnuity.history.num"
+              :headers="historyHeaders"
+              :items-per-page="12"
+            >
+            </v-data-table>
           </v-card-text>
         </v-card>
       </v-col>
@@ -136,7 +143,7 @@
         md="12"
         class="d-none d-md-block"
       >
-        <v-card>
+        <v-card elevation="0">
           График
         </v-card>
       </v-col>
@@ -146,6 +153,7 @@
 
 <script>
 import localizeFilter from "@/filters/localize.filter";
+import numberFilter from "@/filters/number.filter";
 
 export default {
   name: "CreditCalc",
@@ -159,12 +167,12 @@ export default {
     objectCost: 5000000,
     objectCostText: '5 000 000',
     objectCostRules: [
-      v =>!!v || localizeFilter('Required')
+      v => !!v || localizeFilter('Required')
     ],
-    creditAmount: 400000,
-    creditAmountText: '400 000',
+    creditAmount: 4000000,
+    creditAmountText: '4 000 000',
     creditAmountRules: [
-      v =>!!v || localizeFilter('Required')
+      v => !!v || localizeFilter('Required')
     ],
     interestRate: 10,
     interestRateUnit: 'y',
@@ -173,11 +181,18 @@ export default {
       {text: 'в год', value: 'y'},
     ],
     annuity: true,
-    loanTerm: 1,
+    loanTerm: 10,
     creditTermUnit: 'y',
     creditTermUnits: [
       {text: 'мес', value: 'm'},
       {text: 'лет', value: 'y'},
+    ],
+    historyHeaders: [
+      {value: 'num', text: '#', align: 'right'},
+      {value: 'payment', text: 'Платеж', align: 'right', filter: numberFilter},
+      {value: 'interest', text: 'Процеты', align: 'right'},
+      {value: 'body', text: 'Основной долг', align: 'right'},
+      {value: 'amountLeft', text: 'Остаток долга', align: 'right'}
     ]
   }),
   watch: {
@@ -209,8 +224,8 @@ export default {
     calculateLoanAnnuity() {
       const S = this.creditAmount
       const r = this.interestRateUnit === 'y'
-//        ? ((100 + this.interestRate) / 100 ) ** (1/12) - 1
-        ? this.interestRate / 100 /12
+        //        ? ((100 + this.interestRate) / 100 ) ** (1/12) - 1
+        ? this.interestRate / 100 / 12
         : this.interestRate / 100
       const n = this.creditTermUnit === 'y'
         ? this.loanTerm * 12
@@ -219,20 +234,30 @@ export default {
       let amountLeft = S
       const payment = S * (r * (1 + r) ** n) / ((1 + r) ** n - 1)
       const totalPayment = payment * n
-      const interest = totalPayment - S
+      const totalInterest = totalPayment - S
 
       const history = []
       for (let i = 0; i < n; i++) {
         const interest = amountLeft * r
         const body = payment - interest
+        const num = i + 1
         amountLeft += interest
-        amountLeft -=  payment
-        history.push({ amountLeft, payment, interest, body })
+        amountLeft -= payment
+        history.push({
+          num,
+          amountLeft: numberFilter(amountLeft),
+          payment: numberFilter(payment),
+          interest: numberFilter(interest),
+          body: numberFilter(body)
+        })
       }
 
-      console.log(history, totalPayment, interest)
-
-      return { payment, totalPayment, interest, history }
+      return {
+        payment: numberFilter(payment),
+        totalPayment: numberFilter(totalPayment),
+        totalInterest: numberFilter(totalInterest),
+        history
+      }
     }
   }
 }
