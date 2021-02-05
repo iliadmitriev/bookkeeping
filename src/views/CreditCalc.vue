@@ -231,7 +231,7 @@ export default {
       const r = this.periodRate
       const n = this.numberOfPayments
 
-      return  S * (r * (1 + r) ** n) / ((1 + r) ** n - 1)
+      return S * (r * (1 + r) ** n) / ((1 + r) ** n - 1) || S / n
     },
     periodRate() {
       return this.interestRateUnit === 'y'
