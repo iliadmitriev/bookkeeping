@@ -113,13 +113,15 @@
 
           </v-card-text>
 
-          <v-card-text>Платеж в мес {{ calculateLoanAnnuity.payment | number }}</v-card-text>
-          <v-card-text>Сумма выплат {{ calculateLoanAnnuity.totalPayment | number }}</v-card-text>
-          <v-card-text>Переплата по кредиту {{ calculateLoanAnnuity.totalInterest | number }}</v-card-text>
+          <v-card-text>Платеж в мес {{ paymentAnnuity | number }}</v-card-text>
+          <v-card-text>Сумма выплат {{ totalPaymentAnnuity | number }}</v-card-text>
+          <v-card-text>Переплата по кредиту {{ totalInterestAnnuity | number }}</v-card-text>
 
-          <div ref="reff"></div>
-          <canvas ref="canvas">
-          </canvas>
+          <CreditCalcChart
+            :creditAmount="creditAmount"
+            :totalInterest="totalInterestAnnuity"
+            :key="creditAmount + totalInterestAnnuity"
+          ></CreditCalcChart>
 
         </v-card>
       </v-col>
@@ -128,18 +130,14 @@
         md="8"
         class="d-none d-md-block"
       >
-        <v-card elevation="0">
-          <v-card-title>График платежей</v-card-title>
-          <v-card-text>
-            <v-data-table
-              :items="calculateLoanAnnuity.history"
-              :item-key="calculateLoanAnnuity.history.num"
-              :headers="historyHeaders"
-              :items-per-page="12"
-            >
-            </v-data-table>
-          </v-card-text>
-        </v-card>
+        <CreditCalcHistory
+          :annuity="annuity"
+          :credit-amount="creditAmount"
+          :total-interest-annuity="totalInterestAnnuity"
+          :payment-annuity="paymentAnnuity"
+          :number-of-payments="numberOfPayments"
+          :period-rate="periodRate"
+        ></CreditCalcHistory>
       </v-col>
       <v-col
         cols="12"
@@ -157,13 +155,12 @@
 <script>
 import localizeFilter from "@/filters/localize.filter";
 import numberFilter from "@/filters/number.filter";
-import localize from "@/filters/localize.filter";
-import {random_rgba} from "@/utils/helpers";
-import Chart from 'chart.js';
-
+import CreditCalcChart from '@/components/CreditCalcChart'
+import CreditCalcHistory from "@/components/CreditCalcHistory";
 
 export default {
   name: "CreditCalc",
+  components: {CreditCalcHistory, CreditCalcChart},
   data: () => ({
     creditTypes: [
       {text: 'Ипотека', value: 'mortgage', icon: 'mdi-home'},
@@ -194,42 +191,24 @@ export default {
       {text: 'мес', value: 'm'},
       {text: 'лет', value: 'y'},
     ],
-    interestChart: null,
-    historyHeaders: [
-      {value: 'num', text: '#', align: 'right'},
-      {value: 'payment', text: 'Платеж', align: 'right', filter: numberFilter},
-      {value: 'interest', text: 'Процеты', align: 'right'},
-      {value: 'body', text: 'Основной долг', align: 'right'},
-      {value: 'amountLeft', text: 'Остаток долга', align: 'right'}
-    ]
   }),
+  mounted() {
+
+  },
   watch: {
     objectCostText(value) {
-      const IntVal = Number.parseInt(value.replace(/\D/g, '')) || 0
-      this.objectCost = IntVal
-      const StrVal = (new Intl.NumberFormat('ru-RU')
+      this.objectCost = Number.parseInt(value.replace(/\D/g, '')) || 0
+      this.objectCostText = (new Intl.NumberFormat('ru-RU')
         .format(this.objectCost))
-      this.objectCostText = StrVal
     },
     creditAmountText(value) {
-      const IntVal = Number.parseInt(value.replace(/\D/g, '')) || 0
-      this.creditAmount = IntVal
-      const StrVal = (new Intl.NumberFormat('ru-RU')
+      this.creditAmount = Number.parseInt(value.replace(/\D/g, '')) || 0
+      this.creditAmountText = (new Intl.NumberFormat('ru-RU')
         .format(this.creditAmount))
-      this.creditAmountText = StrVal
     }
   },
   methods: {
-    renderChart($el, {type, data, options}) {
-      if (this.interestChart) {
-        this.interestChart.destroy()
-      }
-      this.interestChart = new Chart($el, {
-        type: type,
-        data: data,
-        options: options
-      });
-    }
+
   },
   computed: {
     creditTermUnitText() {
@@ -241,74 +220,29 @@ export default {
     creditTypeIcon() {
       return this.creditTypes.find(i => i.value === this.creditType).icon
     },
-    calculateLoanAnnuity() {
+    totalPaymentAnnuity() {
+      return this.paymentAnnuity * this.numberOfPayments
+    },
+    totalInterestAnnuity() {
+      return this.totalPaymentAnnuity - this.creditAmount
+    },
+    paymentAnnuity() {
       const S = this.creditAmount
-      const r = this.interestRateUnit === 'y'
-        //        ? ((100 + this.interestRate) / 100 ) ** (1/12) - 1
+      const r = this.periodRate
+      const n = this.numberOfPayments
+
+      return  S * (r * (1 + r) ** n) / ((1 + r) ** n - 1)
+    },
+    periodRate() {
+      return this.interestRateUnit === 'y'
+        //? ((100 + this.interestRate) / 100 ) ** (1/12) - 1
         ? this.interestRate / 100 / 12
         : this.interestRate / 100
-      const n = this.creditTermUnit === 'y'
+    },
+    numberOfPayments() {
+      return this.creditTermUnit === 'y'
         ? this.loanTerm * 12
         : this.loanTerm
-
-      let amountLeft = S
-      const payment = S * (r * (1 + r) ** n) / ((1 + r) ** n - 1)
-      const totalPayment = payment * n
-      const totalInterest = totalPayment - S
-
-      const history = []
-      for (let i = 0; i < n; i++) {
-        const interest = amountLeft * r
-        const body = payment - interest
-        const num = i + 1
-        amountLeft += interest
-        amountLeft -= payment
-        history.push({
-          num,
-          amountLeft: numberFilter(amountLeft),
-          payment: numberFilter(payment),
-          interest: numberFilter(interest),
-          body: numberFilter(body)
-        })
-      }
-
-      const {backgroundColors, borderColors} = random_rgba(2, 0.2)
-
-
-      if (this.$refs.canvas) {
-        this.renderChart(this.$refs.canvas.getContext('2d'),
-          {
-            type: 'pie',
-            data: {
-              labels: ['Основной долг', 'Переплата'],
-              legend: {
-                hidden: true
-              },
-              datasets: [{
-                label: '',
-                data: [this.creditAmount, Math.round(totalInterest)],
-                backgroundColor: backgroundColors,
-                borderColor: borderColors,
-                borderWidth: 1
-              }]
-            },
-            options: {
-              legend: {
-                display: false
-              }
-            }
-          }
-        )
-
-      }
-
-
-      return {
-        payment,
-        totalPayment,
-        totalInterest,
-        history
-      }
     }
   }
 }
