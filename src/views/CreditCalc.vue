@@ -178,14 +178,14 @@ export default {
     creditAmountRules: [
       v => !!v || localizeFilter('Required')
     ],
-    interestRate: 10,
+    interestRate: 8.5,
     interestRateUnit: 'y',
     interestRateUnits: [
       {text: 'в мес', value: 'm'},
       {text: 'в год', value: 'y'},
     ],
     annuity: true,
-    loanTerm: 10,
+    loanTerm: 20,
     creditTermUnit: 'y',
     creditTermUnits: [
       {text: 'мес', value: 'm'},
@@ -241,8 +241,8 @@ export default {
     },
     numberOfPayments() {
       return this.creditTermUnit === 'y'
-        ? this.loanTerm * 12
-        : this.loanTerm
+        ? +this.loanTerm * 12
+        : +this.loanTerm
     }
   }
 }

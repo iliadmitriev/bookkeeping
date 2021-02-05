@@ -43,6 +43,7 @@
         <template slot="body.prepend">
           <tr>
             <th></th>
+            <th></th>
             <th class="th-text-right">{{ creditAmount + totalInterestAnnuity | number }}</th>
             <th class="th-text-right">{{ totalInterestAnnuity | number }}</th>
             <th class="th-text-right">{{ creditAmount | number }}</th>
@@ -55,7 +56,8 @@
 </template>
 
 <script>
-import numberFilter from "@/filters/number.filter";
+import numberFilter from "@/filters/number.filter"
+import dateFilter from '@/filters/date.filter'
 
 export default {
 name: "CreditCalcHistory",
@@ -90,8 +92,9 @@ name: "CreditCalcHistory",
     dateStartMenu: false,
     historyHeaders: [
       {value: 'num', text: '#', align: 'right'},
-      {value: 'payment', text: 'Платеж', align: 'right', filter: numberFilter},
-      {value: 'interest', text: 'Процеты', align: 'right'},
+      {value: 'date', text: 'Дата платежа', align: 'center'},
+      {value: 'payment', text: 'Платежи', align: 'right'},
+      {value: 'interest', text: 'Проценты', align: 'right'},
       {value: 'body', text: 'Основной долг', align: 'right'},
       {value: 'amountLeft', text: 'Остаток долга', align: 'right'}
     ]
@@ -101,6 +104,7 @@ name: "CreditCalcHistory",
     calculateLoanAnnuity() {
 
       let amountLeft = this.creditAmount
+      let currMonth = new Date(this.dateStartPayment)
 
       const history = []
       for (let i = 0; i < this.numberOfPayments; i++) {
@@ -111,11 +115,14 @@ name: "CreditCalcHistory",
 
         history.push({
           num,
+          date: dateFilter(currMonth,false),
           amountLeft: numberFilter(amountLeft),
           payment: numberFilter(this.paymentAnnuity),
           interest: numberFilter(interest),
           body: numberFilter(body)
         })
+
+        currMonth = new Date(currMonth.setMonth(currMonth.getMonth() + 1))
       }
 
       return history
