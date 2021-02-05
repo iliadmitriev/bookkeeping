@@ -39,6 +39,14 @@
         :item-key="calculateLoanAnnuity.num"
         :headers="historyHeaders"
         :items-per-page="12"
+        :footer-props="{
+      showFirstLastPage: true,
+      firstIcon: 'mdi-arrow-collapse-left',
+      lastIcon: 'mdi-arrow-collapse-right',
+      prevIcon: 'mdi-chevron-left',
+      nextIcon: 'mdi-chevron-right'
+    }"
+        group-by="year"
       >
         <template slot="body.prepend">
           <tr>
@@ -50,6 +58,35 @@
             <th></th>
           </tr>
         </template>
+        <template v-slot:group.header="{items, isOpen, toggle}">
+          <th>
+            <v-icon @click="toggle"
+            >{{ isOpen ? 'mdi-minus' : 'mdi-plus' }}
+            </v-icon>
+          </th>
+          <th class="th-text-center">{{ items[0].year }}</th>
+          <th class="th-text-right">{{ sum(items, 'payment') | number }}</th>
+          <th class="th-text-right">{{ sum(items, 'interest') | number }}</th>
+          <th class="th-text-right">{{ sum(items, 'body') | number }}</th>
+          <th class="th-text-right">{{ items[items.length - 1].amountLeft | number }}</th>
+        </template>
+
+        <template v-slot:item.payment="{item}">
+          {{ item.payment | number }}
+        </template>
+
+        <template v-slot:item.interest="{item}">
+          {{ item.interest | number }}
+        </template>
+
+        <template v-slot:item.body="{item}">
+          {{ item.body | number }}
+        </template>
+
+        <template v-slot:item.amountLeft="{item}">
+          {{ item.amountLeft | number }}
+        </template>
+
       </v-data-table>
     </v-card-text>
   </v-card>
@@ -60,7 +97,7 @@ import numberFilter from "@/filters/number.filter"
 import dateFilter from '@/filters/date.filter'
 
 export default {
-name: "CreditCalcHistory",
+  name: "CreditCalcHistory",
   props: {
     annuity: {
       type: Boolean,
@@ -87,11 +124,12 @@ name: "CreditCalcHistory",
       required: true
     }
   },
-  data: ()=>({
+  data: () => ({
     dateStartPayment: new Date().toISOString().substr(0, 10),
     dateStartMenu: false,
     historyHeaders: [
       {value: 'num', text: '#', align: 'right'},
+      {value: 'year', text: 'Год', groupable: true},
       {value: 'date', text: 'Дата платежа', align: 'center'},
       {value: 'payment', text: 'Платежи', align: 'right'},
       {value: 'interest', text: 'Проценты', align: 'right'},
@@ -99,6 +137,11 @@ name: "CreditCalcHistory",
       {value: 'amountLeft', text: 'Остаток долга', align: 'right'}
     ]
   }),
+  methods: {
+    sum(arr, field) {
+      return arr.reduce((s, i) => s += i[field], 0)
+    }
+  },
   computed: {
 
     calculateLoanAnnuity() {
@@ -115,11 +158,12 @@ name: "CreditCalcHistory",
 
         history.push({
           num,
-          date: dateFilter(currMonth,false),
-          amountLeft: numberFilter(amountLeft),
-          payment: numberFilter(this.paymentAnnuity),
-          interest: numberFilter(interest),
-          body: numberFilter(body)
+          date: dateFilter(currMonth, false),
+          year: `${(currMonth).getFullYear()}`,
+          payment: this.paymentAnnuity,
+          interest: interest,
+          body: body,
+          amountLeft: amountLeft
         })
 
         currMonth = new Date(currMonth.setMonth(currMonth.getMonth() + 1))
@@ -137,6 +181,10 @@ name: "CreditCalcHistory",
 <style scoped>
 .th-text-right {
   text-align: right !important;
+}
+
+.th-text-center {
+  text-align: center !important;
 }
 
 </style>
