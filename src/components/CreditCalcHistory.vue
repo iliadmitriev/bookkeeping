@@ -182,6 +182,35 @@ export default {
 
     calculateLoanDifferential() {
       const history = []
+
+      const S = this.creditAmount
+      const r = this.periodRate
+      const n = this.numberOfPayments
+
+      let currMonth = new Date(this.dateStartPayment)
+      let amountLeft = S
+      let payment = 0
+      let paymentTotal = 0
+
+      for (let i = 0; i < n; i++) {
+        payment = S / n + amountLeft * r
+        paymentTotal += payment
+        amountLeft += amountLeft * r - payment
+
+        history.push({
+          num: i+1,
+          date: dateFilter(currMonth, false),
+          year: `${(currMonth).getFullYear()}`,
+          payment,
+          interest: payment - S / n,
+          body: S / n,
+          amountLeft: amountLeft
+        })
+
+        currMonth = new Date(currMonth.setMonth(currMonth.getMonth() + 1))
+
+      }
+
       return history
     }
 
