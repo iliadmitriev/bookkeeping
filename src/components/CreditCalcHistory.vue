@@ -39,14 +39,15 @@
         :item-key="calculateLoanAnnuity.num"
         :headers="historyHeaders"
         :items-per-page="12"
+        :group-by="'year'"
         :footer-props="{
-      showFirstLastPage: true,
-      firstIcon: 'mdi-arrow-collapse-left',
-      lastIcon: 'mdi-arrow-collapse-right',
-      prevIcon: 'mdi-chevron-left',
-      nextIcon: 'mdi-chevron-right'
-    }"
-        group-by="year"
+          showFirstLastPage: true,
+          itemsPerPageOptions: [12,24,36,-1],
+          firstIcon: 'mdi-arrow-collapse-left',
+          lastIcon: 'mdi-arrow-collapse-right',
+          prevIcon: 'mdi-chevron-left',
+          nextIcon: 'mdi-chevron-right'
+        }"
       >
         <template slot="body.prepend">
           <tr>
