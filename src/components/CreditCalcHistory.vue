@@ -51,7 +51,9 @@
       >
         <template slot="body.prepend">
           <tr>
-            <th></th>
+            <th><v-icon @click="toggleCollapse">
+              {{ collapseAll ? 'mdi-chevron-down' : 'mdi-chevron-up' }}
+            </v-icon></th>
             <th></th>
             <th class="th-text-right">{{ creditAmount + totalInterest | number }}</th>
             <th class="th-text-right">{{ totalInterest | number }}</th>
@@ -61,7 +63,10 @@
         </template>
         <template v-slot:group.header="{items, isOpen, toggle}">
           <th>
-            <v-icon @click="toggle"
+            <v-icon
+              @click="toggle"
+              :data-open="isOpen"
+              :ref="group + items[0].year"
             >{{ isOpen ? 'mdi-minus' : 'mdi-plus' }}
             </v-icon>
           </th>
@@ -127,6 +132,7 @@ export default {
   },
   data: () => ({
     dateStartPayment: new Date().toISOString().substr(0, 10),
+    collapseAll: false,
     dateStartMenu: false,
     historyHeaders: [
       {value: 'num', text: '#', align: 'right'},
@@ -141,6 +147,15 @@ export default {
   methods: {
     sum(arr, field) {
       return arr.reduce((s, i) => s += i[field], 0)
+    },
+    toggleCollapse() {
+      this.collapseAll = !this.collapseAll
+      Object.keys(this.$refs).forEach(k => {
+        console.log(this.$refs[k])
+        if (this.$refs[k]) {
+          this.$refs[k].$el.click()
+        }
+      })
     }
   },
   computed: {
