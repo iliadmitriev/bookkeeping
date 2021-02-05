@@ -113,14 +113,28 @@
 
           </v-card-text>
 
-          <v-card-text>Платеж в мес {{ paymentAnnuity | number }}</v-card-text>
-          <v-card-text>Сумма выплат {{ totalPaymentAnnuity | number }}</v-card-text>
-          <v-card-text>Переплата по кредиту {{ totalInterestAnnuity | number }}</v-card-text>
+          <v-card-text
+            v-if="annuity"
+          >
+            <p class="payments">Платеж в мес {{ paymentAnnuity | number }}</p>
+            <p class="payments">Сумма выплат {{ totalPaymentAnnuity | number }}</p>
+            <p class="payments">Переплата по кредиту {{ totalInterestAnnuity | number }}</p>
+          </v-card-text>
+          <v-card-text
+            v-else
+            >
+            <p class="payments">Первый платеж: {{ paymentDifferentiatedFirst | number}}</p>
+            <p class="payments">Последний платеж: {{ paymentDifferentiatedLast | number}}</p>
+            <p class="payments">Сумма выплат: {{ totalPaymentDifferentiated | number}}</p>
+            <p class="payments">Переплата по кредиту: {{ totalInterestDifferentiated | number}}</p>
+
+          </v-card-text>
+
 
           <CreditCalcChart
             :creditAmount="creditAmount"
-            :totalInterest="totalInterestAnnuity"
-            :key="creditAmount + totalInterestAnnuity"
+            :totalInterest="totalInterest"
+            :key="creditAmount + totalInterest"
           ></CreditCalcChart>
 
         </v-card>
@@ -208,7 +222,23 @@ export default {
     }
   },
   methods: {
+    paymentDifferentiated(num) {
+      const S = this.creditAmount
+      const r = this.periodRate
+      const n = this.numberOfPayments
 
+      let amountLeft = S
+      let payment = S / n
+      let paymentTotal = 0
+
+      for (let i = 0; i < num; i++) {
+        payment = S / n + amountLeft * r
+        paymentTotal += payment
+        amountLeft += amountLeft * r - payment
+      }
+
+      return payment
+    },
   },
   computed: {
     creditTermUnitText() {
@@ -233,6 +263,37 @@ export default {
 
       return S * (r * (1 + r) ** n) / ((1 + r) ** n - 1) || S / n
     },
+    paymentDifferentiatedFirst() {
+      return this.paymentDifferentiated(1)
+    },
+    paymentDifferentiatedLast() {
+      return this.paymentDifferentiated(this.numberOfPayments)
+    },
+    totalPaymentDifferentiated() {
+      const S = this.creditAmount
+      const r = this.periodRate
+      const n = this.numberOfPayments
+
+      let amountLeft = S
+      let payment = S / n
+      let paymentTotal = 0
+
+      for (let i = 0; i < n; i++) {
+        payment = S / n + amountLeft * r
+        paymentTotal += payment
+        amountLeft += amountLeft * r - payment
+      }
+
+      return paymentTotal
+    },
+    totalInterestDifferentiated() {
+      return this.totalPaymentDifferentiated - this.creditAmount
+    },
+    totalInterest() {
+      return this.annuity
+        ? this.totalInterestAnnuity
+        : this.totalInterestDifferentiated
+    },
     periodRate() {
       return this.interestRateUnit === 'y'
         //? ((100 + this.interestRate) / 100 ) ** (1/12) - 1
@@ -249,5 +310,7 @@ export default {
 </script>
 
 <style scoped>
-
+.payments {
+  font-size: 1rem;
+}
 </style>
