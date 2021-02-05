@@ -222,7 +222,7 @@ export default {
     }
   },
   methods: {
-    paymentDifferentiated(num) {
+    paymentDifferentiated(num, f) {
       const S = this.creditAmount
       const r = this.periodRate
       const n = this.numberOfPayments
@@ -237,6 +237,9 @@ export default {
         amountLeft += amountLeft * r - payment
       }
 
+      if (!!f && typeof f === 'function') {
+        return f({ payment, amountLeft, paymentTotal })
+      }
       return payment
     },
   },
@@ -270,21 +273,7 @@ export default {
       return this.paymentDifferentiated(this.numberOfPayments)
     },
     totalPaymentDifferentiated() {
-      const S = this.creditAmount
-      const r = this.periodRate
-      const n = this.numberOfPayments
-
-      let amountLeft = S
-      let payment = S / n
-      let paymentTotal = 0
-
-      for (let i = 0; i < n; i++) {
-        payment = S / n + amountLeft * r
-        paymentTotal += payment
-        amountLeft += amountLeft * r - payment
-      }
-
-      return paymentTotal
+      return this.paymentDifferentiated(this.numberOfPayments, ({paymentTotal}) => paymentTotal)
     },
     totalInterestDifferentiated() {
       return this.totalPaymentDifferentiated - this.creditAmount
