@@ -113,21 +113,42 @@
 
           </v-card-text>
 
+          <v-divider></v-divider>
           <v-card-text
             v-if="annuity"
           >
-            <p class="payments">Платеж в мес {{ paymentAnnuity | number }}</p>
-            <p class="payments">Сумма выплат {{ totalPaymentAnnuity | number }}</p>
-            <p class="payments">Переплата по кредиту {{ totalInterestAnnuity | number }}</p>
+            <v-row>
+              <v-col>Платеж в мес</v-col>
+              <v-col><span class="payments">{{ paymentAnnuity | number }}</span></v-col>
+            </v-row>
+            <v-row>
+              <v-col>Сумма выплат</v-col>
+              <v-col><span class="payments">{{ totalPaymentAnnuity | number }}</span></v-col>
+            </v-row>
+            <v-row>
+              <v-col>Переплата по кредиту</v-col>
+              <v-col><span class="payments">{{ totalInterestAnnuity | number }}</span></v-col>
+            </v-row>
           </v-card-text>
           <v-card-text
             v-else
             >
-            <p class="payments">Первый платеж: {{ paymentDifferentiatedFirst | number}}</p>
-            <p class="payments">Последний платеж: {{ paymentDifferentiatedLast | number}}</p>
-            <p class="payments">Сумма выплат: {{ totalPaymentDifferentiated | number}}</p>
-            <p class="payments">Переплата по кредиту: {{ totalInterestDifferentiated | number}}</p>
-
+            <v-row>
+              <v-col>Первый платеж</v-col>
+              <v-col><span class="payments">{{ paymentDifferentiatedFirst | number }}</span></v-col>
+            </v-row>
+            <v-row>
+              <v-col>Последний платеж</v-col>
+              <v-col><span class="payments">{{ paymentDifferentiatedLast | number }}</span></v-col>
+            </v-row>
+            <v-row>
+              <v-col>Сумма выплат</v-col>
+              <v-col><span class="payments">{{ totalPaymentDifferentiated | number }}</span></v-col>
+            </v-row>
+            <v-row>
+              <v-col>Переплата по кредиту</v-col>
+              <v-col><span class="payments">{{ totalInterestDifferentiated | number }}</span></v-col>
+            </v-row>
           </v-card-text>
 
 
@@ -301,5 +322,7 @@ export default {
 <style scoped>
 .payments {
   font-size: 1rem;
+  display: block;
+  text-align: right;
 }
 </style>
