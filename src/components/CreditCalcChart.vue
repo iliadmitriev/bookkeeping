@@ -27,7 +27,7 @@ export default {
 
     this.renderChart(this.$refs.canvas.getContext('2d'),
       {
-        type: 'pie',
+        type: 'doughnut',
         data: {
           labels: ['Основной долг', 'Переплата'],
           legend: {
@@ -44,6 +44,23 @@ export default {
         options: {
           legend: {
             display: false
+          },
+          responsive : true,
+          onClick: (ev, el) => {
+
+/*
+            const config = this.interestChart.config
+
+            const ang1 = el[0]._view.startAngle - config.options.rotation
+            const ang2 = el[0]._view.endAngle - config.options.rotation
+            console.log(ang1, ang2)
+
+            console.log(config.options.rotation)
+            config.options.rotation = ((ang2 - ang1) / 2) * (-1) + config.options.rotation
+            console.log(config.options.rotation)
+
+            this.interestChart.update(config)
+*/
           }
         }
       }
