@@ -51,9 +51,11 @@
       >
         <template slot="body.prepend">
           <tr>
-            <th><v-icon @click="toggleCollapse">
-              {{ collapseAll ? 'mdi-chevron-down' : 'mdi-chevron-up' }}
-            </v-icon></th>
+            <th>
+              <v-icon @click="toggleCollapse">
+                {{ collapseAll ? 'mdi-chevron-down' : 'mdi-chevron-up' }}
+              </v-icon>
+            </th>
             <th></th>
             <th class="th-text-right">{{ creditAmount + totalInterest | number }}</th>
             <th class="th-text-right">{{ totalInterest | number }}</th>
@@ -76,24 +78,21 @@
           <th class="th-text-right">{{ sum(items, 'body') | number }}</th>
           <th class="th-text-right">{{ items[items.length - 1].amountLeft | number }}</th>
         </template>
-
         <template v-slot:item.payment="{item}">
           {{ item.payment | number }}
         </template>
-
         <template v-slot:item.interest="{item}">
           {{ item.interest | number }}
         </template>
-
         <template v-slot:item.body="{item}">
           {{ item.body | number }}
         </template>
-
         <template v-slot:item.amountLeft="{item}">
           {{ item.amountLeft | number }}
         </template>
 
       </v-data-table>
+
     </v-card-text>
   </v-card>
 </template>
@@ -213,7 +212,7 @@ export default {
         amountLeft += amountLeft * r - payment
 
         history.push({
-          num: i+1,
+          num: i + 1,
           date: dateFilter(currMonth, false),
           year: `${(currMonth).getFullYear()}`,
           payment,
