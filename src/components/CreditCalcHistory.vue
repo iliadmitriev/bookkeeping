@@ -35,8 +35,8 @@
       </v-col>
 
       <v-data-table
-        :items="calculateLoanAnnuity"
-        :item-key="calculateLoanAnnuity.num"
+        :items="calculateLoanHistory"
+        :item-key="calculateLoanHistory.num"
         :headers="historyHeaders"
         :items-per-page="12"
         :group-by="'year'"
@@ -53,8 +53,8 @@
           <tr>
             <th></th>
             <th></th>
-            <th class="th-text-right">{{ creditAmount + totalInterestAnnuity | number }}</th>
-            <th class="th-text-right">{{ totalInterestAnnuity | number }}</th>
+            <th class="th-text-right">{{ creditAmount + totalInterest | number }}</th>
+            <th class="th-text-right">{{ totalInterest | number }}</th>
             <th class="th-text-right">{{ creditAmount | number }}</th>
             <th></th>
           </tr>
@@ -108,7 +108,7 @@ export default {
       type: Number,
       required: true
     },
-    totalInterestAnnuity: {
+    totalInterest: {
       type: Number,
       required: true
     },
@@ -145,6 +145,12 @@ export default {
   },
   computed: {
 
+    calculateLoanHistory() {
+      return this.annuity
+        ? this.calculateLoanAnnuity
+        : this.calculateLoanDifferential
+    },
+
     calculateLoanAnnuity() {
 
       let amountLeft = this.creditAmount
@@ -173,6 +179,11 @@ export default {
       return history
 
     },
+
+    calculateLoanDifferential() {
+      const history = []
+      return history
+    }
 
   },
 

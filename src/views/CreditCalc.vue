@@ -147,7 +147,7 @@
         <CreditCalcHistory
           :annuity="annuity"
           :credit-amount="creditAmount"
-          :total-interest-annuity="totalInterestAnnuity"
+          :total-interest="totalInterest"
           :payment-annuity="paymentAnnuity"
           :number-of-payments="numberOfPayments"
           :period-rate="periodRate"
@@ -228,7 +228,7 @@ export default {
       const n = this.numberOfPayments
 
       let amountLeft = S
-      let payment = S / n
+      let payment = 0
       let paymentTotal = 0
 
       for (let i = 0; i < num; i++) {
