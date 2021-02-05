@@ -180,7 +180,9 @@
         class="d-none d-md-block"
       >
         <v-card elevation="0">
-          График
+          <v-card-title>
+            График выплат и долга
+          </v-card-title>
         </v-card>
       </v-col>
     </v-row>

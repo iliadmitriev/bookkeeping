@@ -68,7 +68,7 @@
             <v-icon
               @click="toggle"
               :data-open="isOpen"
-              :ref="group + items[0].year"
+              :ref="'group' + items[0].year"
             >{{ isOpen ? 'mdi-minus' : 'mdi-plus' }}
             </v-icon>
           </th>
@@ -94,15 +94,22 @@
       </v-data-table>
 
     </v-card-text>
+
+    <CreditCalcHistoryChart
+      :data="calculateLoanHistory"
+      :key="creditAmount + totalInterest"
+    />
+
   </v-card>
 </template>
 
 <script>
-import numberFilter from "@/filters/number.filter"
 import dateFilter from '@/filters/date.filter'
+import CreditCalcHistoryChart from "@/components/CreditCalcHistoryChart";
 
 export default {
   name: "CreditCalcHistory",
+  components: {CreditCalcHistoryChart},
   props: {
     annuity: {
       type: Boolean,
@@ -169,6 +176,7 @@ export default {
 
       let amountLeft = this.creditAmount
       let currMonth = new Date(this.dateStartPayment)
+      let paymentTotal = 0
 
       const history = []
       for (let i = 0; i < this.numberOfPayments; i++) {
@@ -176,6 +184,7 @@ export default {
         const body = this.paymentAnnuity - interest
         const num = i + 1
         amountLeft += (interest - this.paymentAnnuity)
+        paymentTotal += this.paymentAnnuity
 
         history.push({
           num,
@@ -184,7 +193,8 @@ export default {
           payment: this.paymentAnnuity,
           interest: interest,
           body: body,
-          amountLeft: amountLeft
+          amountLeft: amountLeft,
+          amountPayed: paymentTotal
         })
 
         currMonth = new Date(currMonth.setMonth(currMonth.getMonth() + 1))
@@ -218,7 +228,8 @@ export default {
           payment,
           interest: payment - S / n,
           body: S / n,
-          amountLeft: amountLeft
+          amountLeft: amountLeft,
+          amountPayed: paymentTotal
         })
 
         currMonth = new Date(currMonth.setMonth(currMonth.getMonth() + 1))
