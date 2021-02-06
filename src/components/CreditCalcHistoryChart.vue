@@ -104,29 +104,29 @@ export default {
           position: top
         },
         datasets: [
-
           {
             label: 'Платеж',
             data: this.data.map(item => item.payment),
             backgroundColor: backgroundColors[0],
             borderColor: borderColors[0],
-            borderWidth: 1
+            borderWidth: 2,
+            pointRadius: 0,
           },
           {
             label: 'Проценты',
             data: this.data.map(item => item.interest),
             backgroundColor: backgroundColors[1],
             borderColor: borderColors[1],
-            borderWidth: 1,
-            pointHoverBorderWidth: 2
+            borderWidth: 2,
+            pointRadius: 0,
           },
           {
             label: 'Погашение',
             data: this.data.map(item => item.body),
             backgroundColor: backgroundColors[2],
             borderColor: borderColors[2],
-            borderWidth: 1,
-            pointHoverBorderWidth: 2
+            borderWidth: 2,
+            pointRadius: 0,
           }
         ]
       }
@@ -145,14 +145,16 @@ export default {
             data: this.data.map(item => item.amountLeft),
             backgroundColor: backgroundColors[0],
             borderColor: borderColors[0],
-            borderWidth: 1
+            borderWidth: 2,
+            pointRadius: 0,
           },
           {
             label: 'Выплачено',
             data: this.data.map(item => item.amountPayed),
             backgroundColor: backgroundColors[1],
             borderColor: borderColors[1],
-            borderWidth: 1
+            borderWidth: 2,
+            pointRadius: 0,
           }
         ]
       }

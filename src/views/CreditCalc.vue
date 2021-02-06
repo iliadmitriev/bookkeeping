@@ -176,10 +176,25 @@
           @dataset="dataset"
         ></CreditCalcHistory>
       </v-col>
+
+
       <v-col
         v-if="displayBlock"
         cols="12"
-        md="12"
+        md="4"
+        class="d-none d-md-block"
+      >
+        <v-card elevation="0">
+          <v-card-title>
+            Досрочное погашение
+          </v-card-title>
+
+        </v-card>
+      </v-col>
+      <v-col
+        v-if="displayBlock"
+        cols="12"
+        md="8"
         class="d-none d-md-block"
       >
         <v-card elevation="0">
