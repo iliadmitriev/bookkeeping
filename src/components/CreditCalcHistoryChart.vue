@@ -23,6 +23,7 @@ export default {
     paymentsTimeline: null,
     debtTimeline: null,
     options: {
+      defaultFontColor: '#fff',
       tooltips: {
         mode: 'index',
         intersect: false

@@ -172,6 +172,7 @@
           :payment-annuity="paymentAnnuity"
           :number-of-payments="numberOfPayments"
           :period-rate="periodRate"
+          @dataset="dataset"
         ></CreditCalcHistory>
       </v-col>
       <v-col
@@ -183,6 +184,14 @@
           <v-card-title>
             График выплат и долга
           </v-card-title>
+
+          <v-card-text/>
+          <CreditCalcHistoryChart
+            :data="calculateLoanHistory"
+            :key="calculateLoanHistory"
+          />
+          <v-card-text/>
+
         </v-card>
       </v-col>
     </v-row>
@@ -194,10 +203,12 @@ import localizeFilter from "@/filters/localize.filter";
 import numberFilter from "@/filters/number.filter";
 import CreditCalcChart from '@/components/CreditCalcChart'
 import CreditCalcHistory from "@/components/CreditCalcHistory";
+import CreditCalcHistoryChart from "@/components/CreditCalcHistoryChart";
+
 
 export default {
   name: "CreditCalc",
-  components: {CreditCalcHistory, CreditCalcChart},
+  components: {CreditCalcHistory, CreditCalcChart, CreditCalcHistoryChart},
   data: () => ({
     creditTypes: [
       {text: 'Ипотека', value: 'mortgage', icon: 'mdi-home'},
@@ -228,6 +239,7 @@ export default {
       {text: 'мес', value: 'm'},
       {text: 'лет', value: 'y'},
     ],
+    calculateLoanHistory: []
   }),
   mounted() {
 
@@ -245,6 +257,9 @@ export default {
     }
   },
   methods: {
+    dataset(value) {
+      this.calculateLoanHistory = value
+    },
     paymentDifferentiated(num, f) {
       const S = this.creditAmount
       const r = this.periodRate

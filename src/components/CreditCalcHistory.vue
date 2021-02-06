@@ -95,21 +95,15 @@
 
     </v-card-text>
 
-    <CreditCalcHistoryChart
-      :data="calculateLoanHistory"
-      :key="creditAmount + totalInterest"
-    />
 
   </v-card>
 </template>
 
 <script>
 import dateFilter from '@/filters/date.filter'
-import CreditCalcHistoryChart from "@/components/CreditCalcHistoryChart";
 
 export default {
   name: "CreditCalcHistory",
-  components: {CreditCalcHistoryChart},
   props: {
     annuity: {
       type: Boolean,
@@ -167,9 +161,11 @@ export default {
   computed: {
 
     calculateLoanHistory() {
-      return this.annuity
+      const dataset = this.annuity
         ? this.calculateLoanAnnuity
         : this.calculateLoanDifferential
+      this.$emit('dataset', dataset)
+      return dataset
     },
 
     calculateLoanAnnuity() {
