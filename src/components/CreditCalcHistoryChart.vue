@@ -159,6 +159,31 @@ export default {
     }
   },
   mounted() {
+
+    const originalLineDraw = Chart.controllers.line.prototype.draw;
+    Chart.helpers.extend(Chart.controllers.line.prototype, {
+      draw: function() {
+        originalLineDraw.apply(this, arguments);
+
+
+        if (this.chart.tooltip._active && this.chart.tooltip._active.length) {
+          const activePoint = this.chart.tooltip._active[0];
+          const ctx = this.chart.ctx;
+          const x = activePoint.tooltipPosition().x;
+          const topY = this.chart.scales['y-axis-0'].top;
+          const bottomY = this.chart.scales['y-axis-0'].bottom;
+
+          ctx.save();
+          ctx.beginPath();
+          ctx.moveTo(x, topY);
+          ctx.lineTo(x, bottomY);
+          ctx.lineWidth = 0.5;
+          ctx.strokeStyle = '#666';
+          ctx.stroke();
+          ctx.restore();
+        }
+      }})
+
     this.paymentsTimeline = new Chart(this.$refs.paymentsTimeline, {
       type: 'line',
       data: this.paymentsTimelineData,
