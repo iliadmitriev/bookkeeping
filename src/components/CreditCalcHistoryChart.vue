@@ -69,6 +69,11 @@ export default {
           xAxes: [{
             type: 'time',
             ticks: {},
+            time: {
+              displayFormats: {
+                quarter: 'MMM YYYY'
+              }
+            }
           }]
         },
         tooltips: {
