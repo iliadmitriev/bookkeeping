@@ -184,27 +184,7 @@
         md="4"
         class="d-none d-md-block"
       >
-        <v-card elevation="0">
-          <v-card-title>
-            Досрочное погашение
-          </v-card-title>
-
-          <v-card-text>
-            <v-checkbox
-              v-model="calcInflation"
-              :label="`Учитывать инфляцию`"
-            ></v-checkbox>
-            <v-text-field
-              v-if="calcInflation"
-              type="number"
-              prepend-inner-icon="mdi-percent"
-              label="Среднее значение инфляции в год"
-              v-model="inflationRate"
-            ></v-text-field>
-
-          </v-card-text>
-
-        </v-card>
+        <CreditCalcAdvancePayment />
       </v-col>
       <v-col
         v-if="displayBlock"
@@ -236,11 +216,12 @@ import numberFilter from "@/filters/number.filter";
 import CreditCalcChart from '@/components/CreditCalcChart'
 import CreditCalcHistory from "@/components/CreditCalcHistory";
 import CreditCalcHistoryChart from "@/components/CreditCalcHistoryChart";
+import CreditCalcAdvancePayment from "@/components/CreditCalcAdvancePayment";
 
 
 export default {
   name: "CreditCalc",
-  components: {CreditCalcHistory, CreditCalcChart, CreditCalcHistoryChart},
+  components: {CreditCalcAdvancePayment, CreditCalcHistory, CreditCalcChart, CreditCalcHistoryChart},
   data: () => ({
     creditTypes: [
       {text: 'Ипотека', value: 'mortgage', icon: 'mdi-home'},
@@ -272,9 +253,7 @@ export default {
       {text: 'лет', value: 'y'},
     ],
     calculateLoanHistory: [],
-    redrawChartsKey: 0,
-    calcInflation: false,
-    inflationRate: 4.5
+    redrawChartsKey: 0
   }),
   mounted() {
 
