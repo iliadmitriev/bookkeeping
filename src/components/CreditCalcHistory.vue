@@ -185,6 +185,7 @@ export default {
         history.push({
           num,
           date: dateFilter(currMonth, false),
+          datetime: currMonth,
           year: `${(currMonth).getFullYear()}`,
           payment: this.paymentAnnuity,
           interest: interest,
@@ -220,6 +221,7 @@ export default {
         history.push({
           num: i + 1,
           date: dateFilter(currMonth, false),
+          datetime: currMonth,
           year: `${(currMonth).getFullYear()}`,
           payment,
           interest: payment - S / n,
