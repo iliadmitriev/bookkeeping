@@ -32,11 +32,16 @@ export default {
         },
         scales: {
           yAxes: [{
-            ticks: {},
+            ticks: {
+              callback: v => numberFilter(v)
+            },
 //            stacked: true // combine data
           }],
           xAxes: [{
             type: 'time',
+            time: {
+              tooltipFormat: "MMM YYYY"
+            },
             ticks: {},
           }]
         },
@@ -63,16 +68,15 @@ export default {
         scales: {
           yAxes: [{
             ticks: {
+              min: 0,
               callback: v => numberFilter(v)
-            },
+            }
           }],
           xAxes: [{
             type: 'time',
             ticks: {},
             time: {
-              displayFormats: {
-                quarter: 'MMM YYYY'
-              }
+              tooltipFormat: "MMM YYYY"
             }
           }]
         },

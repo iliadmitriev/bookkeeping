@@ -101,6 +101,7 @@
 
 <script>
 import dateFilter from '@/filters/date.filter'
+import {addMonths} from '@/utils/helpers'
 
 export default {
   name: "CreditCalcHistory",
@@ -170,11 +171,11 @@ export default {
 
     calculateLoanAnnuity() {
 
+      const currMonth = new Date(this.dateStartPayment)
+      const history = []
       let amountLeft = this.creditAmount
-      let currMonth = new Date(this.dateStartPayment)
       let paymentTotal = 0
 
-      const history = []
       for (let i = 0; i < this.numberOfPayments; i++) {
         const interest = amountLeft * this.periodRate
         const body = this.paymentAnnuity - interest
@@ -182,11 +183,13 @@ export default {
         amountLeft += (interest - this.paymentAnnuity)
         paymentTotal += this.paymentAnnuity
 
+        const month = addMonths(currMonth, i)
+
         history.push({
           num,
-          date: dateFilter(currMonth, false),
-          datetime: currMonth,
-          year: `${(currMonth).getFullYear()}`,
+          date: dateFilter(month, false),
+          datetime: month,
+          year: `${(month).getFullYear()}`,
           payment: this.paymentAnnuity,
           interest: interest,
           body: body,
@@ -194,7 +197,6 @@ export default {
           amountPayed: paymentTotal
         })
 
-        currMonth = new Date(currMonth.setMonth(currMonth.getMonth() + 1))
       }
 
       return history
@@ -208,7 +210,7 @@ export default {
       const r = this.periodRate
       const n = this.numberOfPayments
 
-      let currMonth = new Date(this.dateStartPayment)
+      const currMonth = new Date(this.dateStartPayment)
       let amountLeft = S
       let payment = 0
       let paymentTotal = 0
@@ -217,20 +219,19 @@ export default {
         payment = S / n + amountLeft * r
         paymentTotal += payment
         amountLeft += amountLeft * r - payment
+        const month = addMonths(currMonth, i)
 
         history.push({
           num: i + 1,
-          date: dateFilter(currMonth, false),
-          datetime: currMonth,
-          year: `${(currMonth).getFullYear()}`,
+          date: dateFilter(month, false),
+          datetime: month,
+          year: `${(month).getFullYear()}`,
           payment,
           interest: payment - S / n,
           body: S / n,
           amountLeft: amountLeft,
           amountPayed: paymentTotal
         })
-
-        currMonth = new Date(currMonth.setMonth(currMonth.getMonth() + 1))
 
       }
 

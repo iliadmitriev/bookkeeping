@@ -16,4 +16,11 @@ const validateEmail = (email) => {
   return re.test(String(email).toLowerCase());
 }
 
-export  { random_rgba, validateEmail }
+const addMonths = (dt, n) =>
+{
+  const newDt = new Date(dt)
+  newDt.setMonth(dt.getMonth() + n)
+  return newDt
+}
+
+export  { random_rgba, validateEmail, addMonths }
