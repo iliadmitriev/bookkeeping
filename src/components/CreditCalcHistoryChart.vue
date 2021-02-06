@@ -11,6 +11,10 @@
 import numberFilter from "@/filters/number.filter";
 import {random_rgba} from "@/utils/helpers";
 import Chart from "chart.js";
+import moment from "moment/moment"
+import "moment/locale/ru"
+import "moment/locale/en-gb"
+
 
 export default {
   name: "CreditCalcHistoryChart",
@@ -161,6 +165,8 @@ export default {
     }
   },
   mounted() {
+
+    moment.locale('ru')
 
     const originalLineDraw = Chart.controllers.line.prototype.draw;
     Chart.helpers.extend(Chart.controllers.line.prototype, {
