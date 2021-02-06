@@ -22,7 +22,16 @@ export default {
   data: () => ({
     paymentsTimeline: null,
     debtTimeline: null,
-    options: {}
+    options: {
+      tooltips: {
+        mode: 'index',
+        intersect: false
+      },
+      hover: {
+        mode: 'nearest',
+        intersect: true
+      }
+    }
   }),
   computed: {
     paymentsTimelineData() {
@@ -36,23 +45,23 @@ export default {
         datasets: [
           {
             label: 'Платежи',
-            data: this.data.map(item => item.payment),
-            fillColor: backgroundColors[0],
-            strokeColor: borderColors[0],
+            data: this.data.map(item => Math.round(item.payment)),
+            backgroundColor: backgroundColors[0],
+            borderColor: borderColors[0],
             borderWidth: 1
           },
           {
             label: 'Проценты',
-            data: this.data.map(item => item.interest),
-            fillColor: backgroundColors[1],
-            strokeColor: borderColors[1],
+            data: this.data.map(item => Math.round(item.interest)),
+            backgroundColor: backgroundColors[1],
+            borderColor: borderColors[1],
             borderWidth: 1
           },
           {
             label: 'Погашение',
-            data: this.data.map(item => item.body),
-            fillColor: backgroundColors[2],
-            strokeColor: borderColors[2],
+            data: this.data.map(item => Math.round(item.body)),
+            backgroundColor: backgroundColors[2],
+            borderColor: borderColors[2],
             borderWidth: 1
           }
         ]
@@ -69,16 +78,16 @@ export default {
         datasets: [
           {
             label: 'Остаток долга',
-            data: this.data.map(item => item.amountLeft),
-            fillColor: backgroundColors[0],
-            strokeColor: borderColors[0],
+            data: this.data.map(item => Math.round(item.amountLeft)),
+            backgroundColor: backgroundColors[0],
+            borderColor: borderColors[0],
             borderWidth: 1
           },
           {
             label: 'Выплачено',
-            data: this.data.map(item => item.amountPayed),
-            fillColor: backgroundColors[1],
-            strokeColor: borderColors[1],
+            data: this.data.map(item => Math.round(item.amountPayed)),
+            backgroundColor: backgroundColors[1],
+            borderColor: borderColors[1],
             borderWidth: 1
           }
         ]
