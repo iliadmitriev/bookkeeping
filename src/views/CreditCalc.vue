@@ -161,6 +161,7 @@
         </v-card>
       </v-col>
       <v-col
+        v-if="displayBlock"
         cols="12"
         md="8"
         class="d-none d-md-block"
@@ -176,19 +177,20 @@
         ></CreditCalcHistory>
       </v-col>
       <v-col
+        v-if="displayBlock"
         cols="12"
         md="12"
         class="d-none d-md-block"
       >
         <v-card elevation="0">
           <v-card-title>
-            График выплат и долга
+            Диаграммы погашения
           </v-card-title>
 
           <v-card-text/>
           <CreditCalcHistoryChart
             :data="calculateLoanHistory"
-            :key="calculateLoanHistory"
+            :key="redrawChartsKey"
           />
           <v-card-text/>
 
@@ -239,7 +241,8 @@ export default {
       {text: 'мес', value: 'm'},
       {text: 'лет', value: 'y'},
     ],
-    calculateLoanHistory: []
+    calculateLoanHistory: [],
+    redrawChartsKey: 0
   }),
   mounted() {
 
@@ -259,6 +262,7 @@ export default {
   methods: {
     dataset(value) {
       this.calculateLoanHistory = value
+      this.redrawChartsKey++
     },
     paymentDifferentiated(num, f) {
       const S = this.creditAmount
@@ -282,6 +286,16 @@ export default {
     },
   },
   computed: {
+    displayBlock() {
+      switch (this.$vuetify.breakpoint.name) {
+        case 'xs':
+        case 'sm': return false
+        case 'md':
+        case 'lg':
+        case 'xl':
+        default: return true
+      }
+    },
     creditTermUnitText() {
       return this.creditTermUnits.find(i => this.creditTermUnit === i.value).text
     },

@@ -22,19 +22,32 @@ export default {
   data: () => ({
     paymentsTimeline: null,
     debtTimeline: null,
-    options: {
-      defaultFontColor: '#fff',
-      tooltips: {
-        mode: 'index',
-        intersect: false
-      },
-      hover: {
-        mode: 'nearest',
-        intersect: true
-      }
-    }
   }),
   computed: {
+    options() {
+      return {
+        legend: {
+          labels: {}
+        },
+        scales: {
+          yAxes: [{
+            ticks: {},
+//            stacked: true // combine data
+          }],
+          xAxes: [{
+            ticks: {},
+          }]
+        },
+        tooltips: {
+          mode: 'index',
+          intersect: false
+        },
+        hover: {
+          mode: 'nearest',
+          intersect: true
+        }
+      }
+    },
     paymentsTimelineData() {
       const {backgroundColors, borderColors} = random_rgba(3, 0.2)
       return {
