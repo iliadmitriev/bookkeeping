@@ -6,6 +6,7 @@
 <script>
 import {random_rgba} from "@/utils/helpers";
 import Chart from "chart.js";
+import numberFilter from "@/filters/number.filter";
 
 export default {
   name: "CreditCalcChart",
@@ -44,6 +45,13 @@ export default {
         options: {
           legend: {
             display: false
+          },
+          tooltips: {
+            callbacks: {
+              label: (value, data) => {
+                return `${data.labels[value.index]}: ${numberFilter(data.datasets[value.datasetIndex].data[value.index])}`;
+              },
+            }
           },
           responsive : true,
           onClick: (ev, el) => {
