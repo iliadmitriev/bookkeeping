@@ -165,7 +165,7 @@ export default {
       const dataset = this.annuity
         ? this.calculateLoanAnnuity
         : this.calculateLoanDifferential
-      this.$emit('dataset', dataset)
+      this.$emit('dataset', dataset, new Date(this.dateStartPayment))
       return dataset
     },
 

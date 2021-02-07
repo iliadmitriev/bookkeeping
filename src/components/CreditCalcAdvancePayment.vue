@@ -206,8 +206,32 @@ import dateFilter from "@/filters/date.filter";
 export default {
   name: "CreditCalcAdvancePayment",
   props: {
-    history: {
-      type: Array,
+    annuity: {
+      type: Boolean,
+      required: true
+    },
+    paymentAnnuity: {
+      type: Number,
+      required: true
+    },
+    totalInterest: {
+      type: Number,
+      required: true
+    },
+    creditAmount: {
+      type: Number,
+      required: true
+    },
+    numberOfPayments: {
+      type: Number,
+      required: true
+    },
+    periodRate: {
+      type: Number,
+      required: true
+    },
+    dateStartPayment: {
+      type: Date,
       required: true
     }
   },

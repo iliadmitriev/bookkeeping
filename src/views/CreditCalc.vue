@@ -185,7 +185,13 @@
         class="d-none d-md-block"
       >
         <CreditCalcAdvancePayment
-          :history="calculateLoanHistory"
+          :annuity="annuity"
+          :credit-amount="creditAmount"
+          :total-interest="totalInterest"
+          :payment-annuity="paymentAnnuity"
+          :number-of-payments="numberOfPayments"
+          :period-rate="periodRate"
+          :date-start-payment="startDate"
         ></CreditCalcAdvancePayment>
       </v-col>
       <v-col
@@ -253,6 +259,7 @@ export default {
       {text: 'мес', value: 'm'},
       {text: 'лет', value: 'y'},
     ],
+    startDate: new Date(),
     calculateLoanHistory: [],
     redrawChartsKey: 0
   }),
@@ -272,8 +279,9 @@ export default {
     }
   },
   methods: {
-    dataset(value) {
-      this.calculateLoanHistory = value
+    dataset(history, startDate) {
+      this.startDate = startDate
+      this.calculateLoanHistory = history
       this.redrawChartsKey++
     },
     paymentDifferentiated(num, f) {
