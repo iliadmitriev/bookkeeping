@@ -184,7 +184,9 @@
         md="5"
         class="d-none d-md-block"
       >
-        <CreditCalcAdvancePayment />
+        <CreditCalcAdvancePayment
+          :history="calculateLoanHistory"
+        ></CreditCalcAdvancePayment>
       </v-col>
       <v-col
         v-if="displayBlock"
@@ -212,7 +214,6 @@
 
 <script>
 import localizeFilter from "@/filters/localize.filter";
-import numberFilter from "@/filters/number.filter";
 import CreditCalcChart from '@/components/CreditCalcChart'
 import CreditCalcHistory from "@/components/CreditCalcHistory";
 import CreditCalcHistoryChart from "@/components/CreditCalcHistoryChart";

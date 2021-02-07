@@ -116,6 +116,22 @@
                       </v-row>
                     </v-container>
                   </v-card-text>
+                  <v-card-text
+                    v-if="valid"
+                  >
+                    <v-alert
+                      v-if="editedItem.type === 'payment'"
+                      type="info"
+                    >
+                      Ежемесячный платеж сократится с - на -
+                    </v-alert>
+                    <v-alert
+                      v-else-if="editedItem.type === 'term'"
+                      type="info"
+                    >
+                      Срок кредита сократится на - мес
+                    </v-alert>
+                  </v-card-text>
                   <v-card-actions>
                     <v-spacer></v-spacer>
                     <v-btn
@@ -189,6 +205,12 @@ import dateFilter from "@/filters/date.filter";
 
 export default {
   name: "CreditCalcAdvancePayment",
+  props: {
+    history: {
+      type: Array,
+      required: true
+    }
+  },
   data: () => ({
     calcInflation: false,
     inflationRate: 4.5,
@@ -205,7 +227,8 @@ export default {
     advancePayments: [],
     editedItem: {amount: null, datetime: null, type: null},
     amountRules: [
-      v => !!v || 'Введите сумму досрочного погашения'
+      v => !!v || 'Введите сумму досрочного погашения',
+      v => v > 0 || 'Сумма должна быть больше 0'
     ],
     datetimeRules: [
       v => !!v || 'Введите дату досрочного погашения',
@@ -225,7 +248,7 @@ export default {
   }),
   computed: {
     formTitle() {
-      return this.itemIndex === -1 ? 'Создать' : 'Редактировать'
+      return this.itemIndex === -1 ? 'Добавить' : 'Редактировать'
     }
   },
   methods: {
