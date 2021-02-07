@@ -181,7 +181,7 @@
       <v-col
         v-if="displayBlock"
         cols="12"
-        md="4"
+        md="5"
         class="d-none d-md-block"
       >
         <CreditCalcAdvancePayment />
@@ -189,7 +189,7 @@
       <v-col
         v-if="displayBlock"
         cols="12"
-        md="8"
+        md="7"
         class="d-none d-md-block"
       >
         <v-card elevation="0">

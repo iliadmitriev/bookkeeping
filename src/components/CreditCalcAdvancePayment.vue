@@ -69,14 +69,41 @@
                         >
                           <v-text-field
                             :label="'Сумма'"
+                            type="number"
+                            :rules="amountRules"
+                            v-model="editedItem.amount"
                           ></v-text-field>
                         </v-col>
                         <v-col>
+                          <v-menu
+                            v-model="dateOfPaymentMenu"
+                            :close-on-content-click="false"
+                            :nudge-right="40"
+                            transition="scale-transition"
+                            offset-y
+                            min-width="auto"
+                          >
+                            <template v-slot:activator="{ on, attrs }">
                           <v-text-field
                             :label="'Дата платежа'"
+                            prepend-icon="mdi-calendar"
+                            v-model="dateOfPayment"
+                            readonly
+                            v-bind="attrs"
+                            v-on="on"
+                            :rules="datetimeRules"
                           ></v-text-field>
+                            </template>
+                            <v-date-picker
+                              v-model="dateOfPayment"
+                              @input="dateOfPaymentMenu = false"
+                            ></v-date-picker>
+                          </v-menu>
                         </v-col>
-                        <v-radio-group>
+                        <v-radio-group
+                          v-model="editedItem.type"
+                          :rules="typeRules"
+                        >
                           <v-radio
                             :label="'Уменьшение ежемесячного платежа'"
                             :value="'payment'"
@@ -107,6 +134,17 @@
                     </v-btn>
                   </v-card-actions>
                 </v-form>
+              </v-card>
+            </v-dialog>
+            <v-dialog v-model="dialogDelete" max-width="500px">
+              <v-card>
+                <v-card-title class="headline">Вы хотите удалить эту запись?</v-card-title>
+                <v-card-actions>
+                  <v-spacer></v-spacer>
+                  <v-btn color="blue darken-1" text @click="closeDelete">{{ 'Cancel' | localize }}</v-btn>
+                  <v-btn color="blue darken-1" text @click="deleteItemConfirm">OK</v-btn>
+                  <v-spacer></v-spacer>
+                </v-card-actions>
               </v-card>
             </v-dialog>
           </v-toolbar>
@@ -164,31 +202,73 @@ export default {
       term: 'Срок',
       payment: 'Платеж'
     },
-    advancePayments: [
-      {id: 1, amount: 1000000, datetime: new Date('2022-05-07'), type: 'payment'}
+    advancePayments: [],
+    editedItem: {amount: null, datetime: null, type: null},
+    amountRules: [
+      v => !!v || 'Введите сумму досрочного погашения'
     ],
-    editedItem: {},
+    datetimeRules: [
+      v => !!v || 'Введите дату досрочного погашения',
+      v => /\d{4}-\d{2}-\d{2}/.test(v) || 'Введитие корректную дату'
+    ],
+    typeRules: [
+      v => !!v || 'Выберите тип досрочного погашения'
+    ],
+    itemIndex: -1,
     valid: false,
-    dialog: false
+    dialog: false,
+    newItem: {amount: null, datetime: null, type: null},
+    dialogDelete: false,
+    dateOfPayment: null,
+    dateOfPaymentMenu: false,
 
   }),
   computed: {
     formTitle() {
-      return 'Создать'
+      return this.itemIndex === -1 ? 'Создать' : 'Редактировать'
     }
   },
   methods: {
     editItem(item) {
-
+      this.editedItem = Object.assign({}, item)
+      this.dateOfPayment = item.datetime.toJSON().substr(0,10)
+      this.itemIndex = this.advancePayments.indexOf(item)
+      this.dialog = true
     },
     deleteItem(item) {
-
+      this.itemIndex = this.advancePayments.indexOf(item)
+      this.dialogDelete = true
     },
     save() {
+      if (!this.valid) {
+        this.$refs.editForm.validate()
+        return
+      }
 
+      this.editedItem.datetime = new Date(this.dateOfPayment)
+      if (this.itemIndex === -1) {
+        this.advancePayments.push(Object.assign({}, this.editedItem))
+      } else {
+        Object.assign(this.advancePayments[this.itemIndex], this.editedItem)
+      }
+      this.close()
     },
     close() {
-
+      this.dialog = false
+      this.$nextTick(() => {
+        this.$refs.editForm.reset()
+        this.itemIndex = -1
+        this.editedItem = Object.assign({}, this.newItem)
+      })
+    },
+    closeDelete() {
+      this.itemIndex = -1
+      this.dialogDelete = false
+    },
+    deleteItemConfirm() {
+      this.advancePayments.splice(this.itemIndex, 1)
+      this.itemIndex = -1
+      this.closeDelete()
     }
   }
 }
