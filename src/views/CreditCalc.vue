@@ -488,7 +488,7 @@ export default {
         const month = addMonths(currMonth, i)
 
         const advPayment = this.additionalPayments.filter(item => {
-          return (addMonths(currMonth, i) <= item.datetime && item.datetime < addMonths(currMonth, i + 1))
+          return (addMonths(currMonth, i-1) <= item.datetime && item.datetime < addMonths(currMonth, i))
         })
 
         if (advPayment && advPayment.length) {
