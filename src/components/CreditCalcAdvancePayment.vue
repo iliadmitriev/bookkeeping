@@ -4,20 +4,6 @@
       Досрочное погашение
     </v-card-title>
 
-    <v-card-text>
-      <v-checkbox
-        v-model="calcInflation"
-        :label="`Учитывать инфляцию`"
-      ></v-checkbox>
-      <v-text-field
-        v-if="calcInflation"
-        type="number"
-        prepend-inner-icon="mdi-percent"
-        label="Среднее значение инфляции в год"
-        v-model="inflationRate"
-      ></v-text-field>
-
-    </v-card-text>
 
     <v-card-text>
       <v-data-table
@@ -74,7 +60,11 @@
                             v-model.number="editedItem.amount"
                           ></v-text-field>
                         </v-col>
-                        <v-col>
+                        <v-col
+                          cols="12"
+                          sm="6"
+                          md="6"
+                        >
                           <v-menu
                             v-model="dateOfPaymentMenu"
                             :close-on-content-click="false"
@@ -130,7 +120,7 @@
                       type="info"
                     >
                       Срок кредита сократится c {{ numberOfPayments }}
-                      до {{ numberOfPaymentsLeft(paymentAnnuity, periodRate, creditAmount - editedItem.amount) }} мес
+                      до {{ newNumberOfPayments }} мес
                     </v-alert>
                   </v-card-text>
                   <v-card-actions>
@@ -198,14 +188,12 @@
 
     </v-card-text>
 
-    <pre>{{ calculateLoanAnnuity }}</pre>
-
   </v-card>
 </template>
 
 <script>
 import dateFilter from "@/filters/date.filter";
-import {addMonths, baseLog} from "@/utils/helpers";
+import {addMonths, numberOfPaymentsLeft} from "@/utils/helpers";
 
 export default {
   name: "CreditCalcAdvancePayment",
@@ -241,8 +229,6 @@ export default {
   },
   data() {
     return {
-      calcInflation: false,
-      inflationRate: 4.5,
       advancePaymentsHeaders: [
         {value: 'amount', text: 'Сумма'},
         {value: 'datetime', text: 'Дата платежа'},
@@ -281,82 +267,12 @@ export default {
     formTitle() {
       return this.itemIndex === -1 ? 'Добавить' : 'Редактировать'
     },
-
-    calculateLoanAnnuity() {
-
-      const currMonth = new Date(this.dateStartPayment)
-      const r = this.periodRate
-      const history = []
-      let amountLeft = this.creditAmount
-      let paymentTotal = 0
-      let i = 0
-      let paymentAnnuity = this.paymentAnnuity
-      let payment = 0
-      let body = 0
-      let n = this.numberOfPayments
-      let month = null
-
-      while (amountLeft > 1) {
-        const interest = amountLeft * r
-        // amountLeft += interest
-
-        if (payment - interest < amountLeft) {
-          payment = paymentAnnuity
-        } else {
-          payment = amountLeft + interest
-        }
-        body = payment - interest
-        month = addMonths(currMonth, i)
-        amountLeft -= body
-        paymentTotal += payment
-
-        history.push({
-          i,
-          datetime: month,
-          payment: payment,
-          interest: interest,
-          body: body,
-          amountLeft: amountLeft,
-          amountPayed: paymentTotal
-        })
-
-        const advPayment = this.advancePayments.find(item => {
-          return (addMonths(currMonth, i) <= item.datetime && item.datetime < addMonths(currMonth, i + 1))
-        })
-
-        if (advPayment && advPayment.type && +advPayment.amount > 0) {
-          payment = +advPayment.amount
-          n = this.numberOfPaymentsLeft(paymentAnnuity, r, amountLeft)
-          body = payment
-          month = advPayment.datetime
-          amountLeft -= body
-          paymentTotal += payment
-          if (advPayment.type === 'payment') {
-            paymentAnnuity = amountLeft * (r * (1 + r) ** n) / ((1 + r) ** n - 1)
-          }
-          history.push({
-            i,
-            datetime: month,
-            payment: payment,
-            interest: 0,
-            body: body,
-            amountLeft: amountLeft,
-            amountPayed: paymentTotal
-          })
-        }
-
-        ++i
-        n--
-
-      }
-      return history
+    newNumberOfPayments() {
+      const amountLeft = this.creditAmount - this.editedItem.amount
+      return numberOfPaymentsLeft(this.paymentAnnuity, this.periodRate, amountLeft)
     }
-
   },
   methods: {
-    numberOfPaymentsLeft(payment, interestRate, amountLeft) {
-      return Math.ceil(baseLog(1 + interestRate, payment / (payment - interestRate * amountLeft)))
-    },
     editItem(item) {
       this.editedItem = Object.assign({}, item)
       this.dateOfPayment = item.datetime.toJSON().substr(0, 10)
@@ -382,6 +298,7 @@ export default {
         Object.assign(this.advancePayments[this.itemIndex], this.editedItem)
       }
       this.close()
+      this.$emit('advancePayments', this.advancePayments)
     }
     ,
     close() {

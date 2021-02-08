@@ -27,4 +27,8 @@ const baseLog = (base, argument) => {
   return  Math.log(argument) / Math.log(base)
 }
 
-export  { random_rgba, validateEmail, addMonths, baseLog }
+const numberOfPaymentsLeft = (payment, interestRate, amountLeft) => {
+  return Math.ceil(baseLog(1 + interestRate, payment / (payment - interestRate * amountLeft)))
+}
+
+export  { random_rgba, validateEmail, addMonths, baseLog, numberOfPaymentsLeft }

@@ -111,6 +111,30 @@
               </template>
             </v-switch>
 
+            <v-menu
+              v-model="startDateMenu"
+              :close-on-content-click="false"
+              :nudge-right="40"
+              transition="scale-transition"
+              offset-y
+              min-width="auto"
+            >
+              <template v-slot:activator="{ on, attrs }">
+                <v-text-field
+                  v-model="startDate"
+                  label="Дата начала платежей"
+                  prepend-icon="mdi-calendar"
+                  readonly
+                  v-bind="attrs"
+                  v-on="on"
+                ></v-text-field>
+              </template>
+              <v-date-picker
+                v-model="startDate"
+                @input="startDateMenu = false"
+              ></v-date-picker>
+            </v-menu>
+
           </v-card-text>
 
           <v-divider></v-divider>
@@ -132,7 +156,7 @@
           </v-card-text>
           <v-card-text
             v-else
-            >
+          >
             <v-row>
               <v-col>Первый платеж</v-col>
               <v-col><span class="payments">{{ paymentDifferentiatedFirst | number }}</span></v-col>
@@ -161,44 +185,40 @@
         </v-card>
       </v-col>
       <v-col
-        v-if="displayBlock"
         cols="12"
         md="8"
-        class="d-none d-md-block"
       >
-        <CreditCalcHistory
-          :annuity="annuity"
-          :credit-amount="creditAmount"
-          :total-interest="totalInterest"
-          :payment-annuity="paymentAnnuity"
-          :number-of-payments="numberOfPayments"
-          :period-rate="periodRate"
-          @dataset="dataset"
-        ></CreditCalcHistory>
-      </v-col>
+        <v-row>
+          <v-col
+            cols="12"
+          >
+            <CreditCalcAdvancePayment
+              :annuity="annuity"
+              :credit-amount="creditAmount"
+              :total-interest="totalInterest"
+              :payment-annuity="paymentAnnuity"
+              :number-of-payments="numberOfPayments"
+              :period-rate="periodRate"
+              :date-start-payment="new Date(startDate)"
+              @advancePayments="advancePayments"
 
+            ></CreditCalcAdvancePayment>
+          </v-col>
+          <v-col
+            cols="12"
+          >
+            <CreditCalcHistory
+              :history="calculateLoanHistory"
+            ></CreditCalcHistory>
+          </v-col>
+        </v-row>
+
+      </v-col>
+    </v-row>
+    <v-row>
 
       <v-col
-        v-if="displayBlock"
         cols="12"
-        md="5"
-        class="d-none d-md-block"
-      >
-        <CreditCalcAdvancePayment
-          :annuity="annuity"
-          :credit-amount="creditAmount"
-          :total-interest="totalInterest"
-          :payment-annuity="paymentAnnuity"
-          :number-of-payments="numberOfPayments"
-          :period-rate="periodRate"
-          :date-start-payment="startDate"
-        ></CreditCalcAdvancePayment>
-      </v-col>
-      <v-col
-        v-if="displayBlock"
-        cols="12"
-        md="7"
-        class="d-none d-md-block"
       >
         <v-card elevation="0">
           <v-card-title>
@@ -207,8 +227,7 @@
 
           <v-card-text/>
           <CreditCalcHistoryChart
-            :data="calculateLoanHistory"
-            :key="redrawChartsKey"
+            :history="calculateLoanHistory"
           />
           <v-card-text/>
 
@@ -224,6 +243,8 @@ import CreditCalcChart from '@/components/CreditCalcChart'
 import CreditCalcHistory from "@/components/CreditCalcHistory";
 import CreditCalcHistoryChart from "@/components/CreditCalcHistoryChart";
 import CreditCalcAdvancePayment from "@/components/CreditCalcAdvancePayment";
+import {addMonths, numberOfPaymentsLeft} from "@/utils/helpers";
+import dateFilter from "@/filters/date.filter";
 
 
 export default {
@@ -259,8 +280,9 @@ export default {
       {text: 'мес', value: 'm'},
       {text: 'лет', value: 'y'},
     ],
-    startDate: new Date(),
-    calculateLoanHistory: [],
+    startDate: (new Date()).toISOString().substr(0, 10),
+    startDateMenu: false,
+    additionalPayments: [],
     redrawChartsKey: 0
   }),
   mounted() {
@@ -279,9 +301,11 @@ export default {
     }
   },
   methods: {
-    dataset(history, startDate) {
-      this.startDate = startDate
-      this.calculateLoanHistory = history
+    advancePayments(advPayments) {
+      this.additionalPayments = advPayments
+      this.redrawChartsKey++
+    },
+    dataset(history) {
       this.redrawChartsKey++
     },
     paymentDifferentiated(num, f) {
@@ -300,7 +324,7 @@ export default {
       }
 
       if (!!f && typeof f === 'function') {
-        return f({ payment, amountLeft, paymentTotal })
+        return f({payment, amountLeft, paymentTotal})
       }
       return payment
     },
@@ -309,11 +333,13 @@ export default {
     displayBlock() {
       switch (this.$vuetify.breakpoint.name) {
         case 'xs':
-        case 'sm': return false
+        case 'sm':
+          return false
         case 'md':
         case 'lg':
         case 'xl':
-        default: return true
+        default:
+          return true
       }
     },
     creditTermUnitText() {
@@ -365,7 +391,122 @@ export default {
       return this.creditTermUnit === 'y'
         ? +this.loanTerm * 12
         : +this.loanTerm
+    },
+    calculateLoanHistory() {
+      const dataset = this.annuity
+        ? this.calculateLoanAnnuity
+        : this.calculateLoanDifferential
+      this.$emit('dataset', dataset)
+      return dataset
+    },
+    calculateLoanAnnuity() {
+
+      const currMonth = new Date(this.startDate)
+      const r = this.periodRate
+      const history = []
+      let amountLeft = this.creditAmount
+      let paymentTotal = 0
+      let i = 0
+      let paymentAnnuity = this.paymentAnnuity
+      let payment = 0
+      let body = 0
+      let n = this.numberOfPayments
+      let month = null
+
+      while (amountLeft > 1) {
+        const interest = amountLeft * r
+        // amountLeft += interest
+
+        if (payment - interest < amountLeft) {
+          payment = paymentAnnuity
+        } else {
+          payment = amountLeft + interest
+        }
+        body = payment - interest
+        month = addMonths(currMonth, i)
+        amountLeft -= body
+        paymentTotal += payment
+
+        history.push({
+          num: i,
+          date: dateFilter(month, false),
+          datetime: month,
+          year: `${(month).getFullYear()}`,
+          payment: payment,
+          interest: interest,
+          body: body,
+          amountLeft: amountLeft,
+          amountPayed: paymentTotal
+        })
+
+        const advPayment = this.additionalPayments.find(item => {
+          return (addMonths(currMonth, i) <= item.datetime && item.datetime < addMonths(currMonth, i + 1))
+        })
+
+        if (advPayment && advPayment.type && +advPayment.amount > 0) {
+          payment = +advPayment.amount
+          n = numberOfPaymentsLeft(paymentAnnuity, r, amountLeft)
+          body = payment
+          month = advPayment.datetime
+          amountLeft -= body
+          paymentTotal += payment
+          if (advPayment.type === 'payment') {
+            paymentAnnuity = amountLeft * (r * (1 + r) ** n) / ((1 + r) ** n - 1)
+          }
+          history.push({
+            num: i,
+            date: dateFilter(month, false),
+            datetime: month,
+            year: `${(month).getFullYear()}`,
+            payment: payment,
+            interest: 0,
+            body: body,
+            amountLeft: amountLeft,
+            amountPayed: paymentTotal
+          })
+        }
+
+        ++i
+        n--
+
+      }
+      return history
+    },
+    calculateLoanDifferential() {
+      const history = []
+
+      const S = this.creditAmount
+      const r = this.periodRate
+      const n = this.numberOfPayments
+
+      const currMonth = new Date(this.startDate)
+      let amountLeft = S
+      let payment = 0
+      let paymentTotal = 0
+
+      for (let i = 0; i < n; i++) {
+        payment = S / n + amountLeft * r
+        paymentTotal += payment
+        amountLeft += amountLeft * r - payment
+        const month = addMonths(currMonth, i)
+
+        history.push({
+          num: i + 1,
+          date: dateFilter(month, false),
+          datetime: month,
+          year: `${(month).getFullYear()}`,
+          payment,
+          interest: payment - S / n,
+          body: S / n,
+          amountLeft: amountLeft,
+          amountPayed: paymentTotal
+        })
+
+      }
+
+      return history
     }
+
   }
 }
 </script>

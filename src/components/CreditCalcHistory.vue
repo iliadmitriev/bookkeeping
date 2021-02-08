@@ -4,39 +4,9 @@
 
     <v-card-text>
 
-      <v-col
-        cols="12"
-        sm="6"
-        md="4"
-      >
-        <v-menu
-          v-model="dateStartMenu"
-          :close-on-content-click="false"
-          :nudge-right="40"
-          transition="scale-transition"
-          offset-y
-          min-width="auto"
-        >
-          <template v-slot:activator="{ on, attrs }">
-            <v-text-field
-              v-model="dateStartPayment"
-              label="Дата начала платежей"
-              prepend-icon="mdi-calendar"
-              readonly
-              v-bind="attrs"
-              v-on="on"
-            ></v-text-field>
-          </template>
-          <v-date-picker
-            v-model="dateStartPayment"
-            @input="dateStartMenu = false"
-          ></v-date-picker>
-        </v-menu>
-      </v-col>
-
       <v-data-table
-        :items="calculateLoanHistory"
-        :item-key="calculateLoanHistory.num"
+        :items="history"
+        :item-key="history.num"
         :headers="historyHeaders"
         :items-per-page="12"
         :group-by="'year'"
@@ -49,21 +19,21 @@
           nextIcon: 'mdi-chevron-right'
         }"
       >
-        <template slot="body.prepend">
+
+        <template v-slot:body.prepend="{isMobile}" v-if="!isMobile">
           <tr>
             <th>
               <v-icon @click="toggleCollapse">
                 {{ collapseAll ? 'mdi-chevron-down' : 'mdi-chevron-up' }}
               </v-icon>
             </th>
-            <th></th>
-            <th class="th-text-right">{{ creditAmount + totalInterest | number }}</th>
-            <th class="th-text-right">{{ totalInterest | number }}</th>
-            <th class="th-text-right">{{ creditAmount | number }}</th>
+            <th class="th-text-right">{{ '' }}</th>
+            <th class="th-text-right">{{ '' }}</th>
+            <th class="th-text-right">{{ '' }}</th>
             <th></th>
           </tr>
         </template>
-        <template v-slot:group.header="{items, isOpen, toggle}">
+        <template v-slot:group.header="{items, isOpen, toggle, isMobile}" v-if="!isMobile">
           <th>
             <v-icon
               @click="toggle"
@@ -71,13 +41,14 @@
               :ref="'group' + items[0].year"
             >{{ isOpen ? 'mdi-minus' : 'mdi-plus' }}
             </v-icon>
+            {{ items[0].year }}
           </th>
-          <th class="th-text-center">{{ items[0].year }}</th>
           <th class="th-text-right">{{ sum(items, 'payment') | number }}</th>
           <th class="th-text-right">{{ sum(items, 'interest') | number }}</th>
           <th class="th-text-right">{{ sum(items, 'body') | number }}</th>
           <th class="th-text-right">{{ items[items.length - 1].amountLeft | number }}</th>
         </template>
+
         <template v-slot:item.payment="{item}">
           {{ item.payment | number }}
         </template>
@@ -100,34 +71,11 @@
 </template>
 
 <script>
-import dateFilter from '@/filters/date.filter'
-import {addMonths} from '@/utils/helpers'
-
 export default {
   name: "CreditCalcHistory",
   props: {
-    annuity: {
-      type: Boolean,
-      required: true
-    },
-    paymentAnnuity: {
-      type: Number,
-      required: true
-    },
-    totalInterest: {
-      type: Number,
-      required: true
-    },
-    creditAmount: {
-      type: Number,
-      required: true
-    },
-    numberOfPayments: {
-      type: Number,
-      required: true
-    },
-    periodRate: {
-      type: Number,
+    history: {
+      type: Array,
       required: true
     }
   },
@@ -136,10 +84,9 @@ export default {
     collapseAll: false,
     dateStartMenu: false,
     historyHeaders: [
-      {value: 'num', text: '#', align: 'right'},
       {value: 'year', text: 'Год', groupable: true},
       {value: 'date', text: 'Дата платежа', align: 'center'},
-      {value: 'payment', text: 'Платежи', align: 'right'},
+      {value: 'payment', text: 'Платеж', align: 'right'},
       {value: 'interest', text: 'Проценты', align: 'right'},
       {value: 'body', text: 'Основной долг', align: 'right'},
       {value: 'amountLeft', text: 'Остаток долга', align: 'right'}
@@ -159,86 +106,7 @@ export default {
       })
     }
   },
-  computed: {
-
-    calculateLoanHistory() {
-      const dataset = this.annuity
-        ? this.calculateLoanAnnuity
-        : this.calculateLoanDifferential
-      this.$emit('dataset', dataset, new Date(this.dateStartPayment))
-      return dataset
-    },
-
-    calculateLoanAnnuity() {
-
-      const currMonth = new Date(this.dateStartPayment)
-      const history = []
-      let amountLeft = this.creditAmount
-      let paymentTotal = 0
-
-      for (let i = 0; i < this.numberOfPayments; i++) {
-        const interest = amountLeft * this.periodRate
-        const body = this.paymentAnnuity - interest
-        const num = i + 1
-        amountLeft += (interest - this.paymentAnnuity)
-        paymentTotal += this.paymentAnnuity
-
-        const month = addMonths(currMonth, i)
-
-        history.push({
-          num,
-          date: dateFilter(month, false),
-          datetime: month,
-          year: `${(month).getFullYear()}`,
-          payment: this.paymentAnnuity,
-          interest: interest,
-          body: body,
-          amountLeft: amountLeft,
-          amountPayed: paymentTotal
-        })
-
-      }
-
-      return history
-
-    },
-
-    calculateLoanDifferential() {
-      const history = []
-
-      const S = this.creditAmount
-      const r = this.periodRate
-      const n = this.numberOfPayments
-
-      const currMonth = new Date(this.dateStartPayment)
-      let amountLeft = S
-      let payment = 0
-      let paymentTotal = 0
-
-      for (let i = 0; i < n; i++) {
-        payment = S / n + amountLeft * r
-        paymentTotal += payment
-        amountLeft += amountLeft * r - payment
-        const month = addMonths(currMonth, i)
-
-        history.push({
-          num: i + 1,
-          date: dateFilter(month, false),
-          datetime: month,
-          year: `${(month).getFullYear()}`,
-          payment,
-          interest: payment - S / n,
-          body: S / n,
-          amountLeft: amountLeft,
-          amountPayed: paymentTotal
-        })
-
-      }
-
-      return history
-    }
-
-  },
+  computed: {},
 
 }
 </script>
