@@ -71,7 +71,7 @@
                             :label="'Сумма'"
                             type="number"
                             :rules="amountRules"
-                            v-model="editedItem.amount"
+                            v-model.number="editedItem.amount"
                           ></v-text-field>
                         </v-col>
                         <v-col>
@@ -84,15 +84,15 @@
                             min-width="auto"
                           >
                             <template v-slot:activator="{ on, attrs }">
-                          <v-text-field
-                            :label="'Дата платежа'"
-                            prepend-icon="mdi-calendar"
-                            v-model="dateOfPayment"
-                            readonly
-                            v-bind="attrs"
-                            v-on="on"
-                            :rules="datetimeRules"
-                          ></v-text-field>
+                              <v-text-field
+                                :label="'Дата платежа'"
+                                prepend-icon="mdi-calendar"
+                                v-model="dateOfPayment"
+                                readonly
+                                v-bind="attrs"
+                                v-on="on"
+                                :rules="datetimeRules"
+                              ></v-text-field>
                             </template>
                             <v-date-picker
                               v-model="dateOfPayment"
@@ -129,7 +129,8 @@
                       v-else-if="editedItem.type === 'term'"
                       type="info"
                     >
-                      Срок кредита сократится на - мес
+                      Срок кредита сократится c {{ numberOfPayments }}
+                      до {{ numberOfPaymentsLeft(paymentAnnuity, periodRate, creditAmount - editedItem.amount) }} мес
                     </v-alert>
                   </v-card-text>
                   <v-card-actions>
@@ -196,12 +197,15 @@
       </v-data-table>
 
     </v-card-text>
-  </v-card>
 
+    <pre>{{ calculateLoanAnnuity }}</pre>
+
+  </v-card>
 </template>
 
 <script>
 import dateFilter from "@/filters/date.filter";
+import {addMonths, baseLog} from "@/utils/helpers";
 
 export default {
   name: "CreditCalcAdvancePayment",
@@ -235,57 +239,136 @@ export default {
       required: true
     }
   },
-  data: () => ({
-    calcInflation: false,
-    inflationRate: 4.5,
-    advancePaymentsHeaders: [
-      {value: 'amount', text: 'Сумма'},
-      {value: 'datetime', text: 'Дата платежа'},
-      {value: 'type', text: 'Погашение'},
-      {value: 'actions', text: 'Действия'}
-    ],
-    typeAdvance: {
-      term: 'Срок',
-      payment: 'Платеж'
-    },
-    advancePayments: [],
-    editedItem: {amount: null, datetime: null, type: null},
-    amountRules: [
-      v => !!v || 'Введите сумму досрочного погашения',
-      v => v > 0 || 'Сумма должна быть больше 0'
-    ],
-    datetimeRules: [
-      v => !!v || 'Введите дату досрочного погашения',
-      v => /\d{4}-\d{2}-\d{2}/.test(v) || 'Введитие корректную дату'
-    ],
-    typeRules: [
-      v => !!v || 'Выберите тип досрочного погашения'
-    ],
-    itemIndex: -1,
-    valid: false,
-    dialog: false,
-    newItem: {amount: null, datetime: null, type: null},
-    dialogDelete: false,
-    dateOfPayment: null,
-    dateOfPaymentMenu: false,
+  data() {
+    return {
+      calcInflation: false,
+      inflationRate: 4.5,
+      advancePaymentsHeaders: [
+        {value: 'amount', text: 'Сумма'},
+        {value: 'datetime', text: 'Дата платежа'},
+        {value: 'type', text: 'Погашение'},
+        {value: 'actions', text: 'Действия'}
+      ],
+      typeAdvance: {
+        term: 'Срок',
+        payment: 'Платеж'
+      },
+      advancePayments: [],
+      editedItem: {amount: null, datetime: null, type: null},
+      amountRules: [
+        v => !!v || 'Введите сумму досрочного погашения',
+        v => v > 0 || 'Сумма должна быть больше 0',
+        v => +v <= this.creditAmount || 'Сумма не может быть больше полного погашения'
+      ],
+      datetimeRules: [
+        v => !!v || 'Введите дату досрочного погашения',
+        v => /\d{4}-\d{2}-\d{2}/.test(v) || 'Введитие корректную дату'
+      ],
+      typeRules: [
+        v => !!v || 'Выберите тип досрочного погашения'
+      ],
+      itemIndex: -1,
+      valid: false,
+      dialog: false,
+      newItem: {amount: null, datetime: null, type: null},
+      dialogDelete: false,
+      dateOfPayment: null,
+      dateOfPaymentMenu: false,
 
-  }),
+    }
+  },
   computed: {
     formTitle() {
       return this.itemIndex === -1 ? 'Добавить' : 'Редактировать'
+    },
+
+    calculateLoanAnnuity() {
+
+      const currMonth = new Date(this.dateStartPayment)
+      const r = this.periodRate
+      const history = []
+      let amountLeft = this.creditAmount
+      let paymentTotal = 0
+      let i = 0
+      let paymentAnnuity = this.paymentAnnuity
+      let payment = 0
+      let body = 0
+      let n = this.numberOfPayments
+      let month = null
+
+      while (amountLeft > 1) {
+        const interest = amountLeft * r
+        // amountLeft += interest
+
+        if (payment - interest < amountLeft) {
+          payment = paymentAnnuity
+        } else {
+          payment = amountLeft + interest
+        }
+        body = payment - interest
+        month = addMonths(currMonth, i)
+        amountLeft -= body
+        paymentTotal += payment
+
+        history.push({
+          i,
+          datetime: month,
+          payment: payment,
+          interest: interest,
+          body: body,
+          amountLeft: amountLeft,
+          amountPayed: paymentTotal
+        })
+
+        const advPayment = this.advancePayments.find(item => {
+          return (addMonths(currMonth, i) <= item.datetime && item.datetime < addMonths(currMonth, i + 1))
+        })
+
+        if (advPayment && advPayment.type && +advPayment.amount > 0) {
+          payment = +advPayment.amount
+          n = this.numberOfPaymentsLeft(paymentAnnuity, r, amountLeft)
+          body = payment
+          month = advPayment.datetime
+          amountLeft -= body
+          paymentTotal += payment
+          if (advPayment.type === 'payment') {
+            paymentAnnuity = amountLeft * (r * (1 + r) ** n) / ((1 + r) ** n - 1)
+          }
+          history.push({
+            i,
+            datetime: month,
+            payment: payment,
+            interest: 0,
+            body: body,
+            amountLeft: amountLeft,
+            amountPayed: paymentTotal
+          })
+        }
+
+        ++i
+        n--
+
+      }
+      return history
     }
+
   },
   methods: {
+    numberOfPaymentsLeft(payment, interestRate, amountLeft) {
+      return Math.ceil(baseLog(1 + interestRate, payment / (payment - interestRate * amountLeft)))
+    },
     editItem(item) {
       this.editedItem = Object.assign({}, item)
-      this.dateOfPayment = item.datetime.toJSON().substr(0,10)
+      this.dateOfPayment = item.datetime.toJSON().substr(0, 10)
       this.itemIndex = this.advancePayments.indexOf(item)
       this.dialog = true
-    },
+    }
+    ,
     deleteItem(item) {
       this.itemIndex = this.advancePayments.indexOf(item)
       this.dialogDelete = true
-    },
+    }
+    ,
     save() {
       if (!this.valid) {
         this.$refs.editForm.validate()
@@ -299,7 +382,8 @@ export default {
         Object.assign(this.advancePayments[this.itemIndex], this.editedItem)
       }
       this.close()
-    },
+    }
+    ,
     close() {
       this.dialog = false
       this.$nextTick(() => {
@@ -307,11 +391,13 @@ export default {
         this.itemIndex = -1
         this.editedItem = Object.assign({}, this.newItem)
       })
-    },
+    }
+    ,
     closeDelete() {
       this.itemIndex = -1
       this.dialogDelete = false
-    },
+    }
+    ,
     deleteItemConfirm() {
       this.advancePayments.splice(this.itemIndex, 1)
       this.itemIndex = -1
