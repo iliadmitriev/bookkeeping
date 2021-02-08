@@ -478,12 +478,12 @@ export default {
       let i = 0
 
       while ( amountLeft > 0 ) {
+
         interest = amountLeft * r
         body = amountLeft / n
         payment = body + interest
         paymentTotal += payment
         amountLeft -= body
-
 
         const month = addMonths(currMonth, i)
 
@@ -497,7 +497,7 @@ export default {
             amountLeft -= payment
             paymentTotal += payment
             if (item.type === 'term') {
-              n = amountLeft / body
+              n = Math.ceil(amountLeft / body)
             }
 
           })
