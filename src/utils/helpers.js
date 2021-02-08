@@ -23,4 +23,8 @@ const addMonths = (dt, n) =>
   return newDt
 }
 
-export  { random_rgba, validateEmail, addMonths }
+const baseLog = (base, argument) => {
+  return  Math.log(argument) / Math.log(base)
+}
+
+export  { random_rgba, validateEmail, addMonths, baseLog }
