@@ -20,8 +20,8 @@
         }"
       >
 
-        <template v-slot:body.prepend="{isMobile}" v-if="!isMobile">
-          <tr>
+        <template v-slot:body.prepend="{isMobile}">
+          <tr v-if="!isMobile">
             <th>
               <v-icon @click="toggleCollapse">
                 {{ collapseAll ? 'mdi-chevron-down' : 'mdi-chevron-up' }}
@@ -33,8 +33,8 @@
             <th></th>
           </tr>
         </template>
-        <template v-slot:group.header="{items, isOpen, toggle, isMobile}" v-if="!isMobile">
-          <th>
+        <template v-slot:group.header="{items, isOpen, toggle, isMobile}">
+          <th v-if="!isMobile">
             <v-icon
               @click="toggle"
               :data-open="isOpen"
@@ -43,10 +43,10 @@
             </v-icon>
             {{ items[0].year }}
           </th>
-          <th class="th-text-right">{{ sum(items, 'payment') | number }}</th>
-          <th class="th-text-right">{{ sum(items, 'interest') | number }}</th>
-          <th class="th-text-right">{{ sum(items, 'body') | number }}</th>
-          <th class="th-text-right">{{ items[items.length - 1].amountLeft | number }}</th>
+          <th class="th-text-right" v-if="!isMobile">{{ sum(items, 'payment') | number }}</th>
+          <th class="th-text-right" v-if="!isMobile">{{ sum(items, 'interest') | number }}</th>
+          <th class="th-text-right" v-if="!isMobile">{{ sum(items, 'body') | number }}</th>
+          <th class="th-text-right" v-if="!isMobile">{{ items[items.length - 1].amountLeft | number }}</th>
         </template>
 
         <template v-slot:item.payment="{item}">
@@ -80,7 +80,6 @@ export default {
     }
   },
   data: () => ({
-    dateStartPayment: new Date().toISOString().substr(0, 10),
     collapseAll: false,
     dateStartMenu: false,
     historyHeaders: [
