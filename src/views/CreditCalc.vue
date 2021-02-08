@@ -427,6 +427,23 @@ export default {
         amountLeft -= body
         paymentTotal += payment
 
+        const advPayment = this.additionalPayments.filter(item => {
+          return (addMonths(currMonth, i) <= item.datetime && item.datetime < addMonths(currMonth, i + 1))
+        })
+
+        if (advPayment && advPayment.length) {
+          advPayment.forEach((item) => {
+            payment += +item.amount
+            n = numberOfPaymentsLeft(paymentAnnuity, r, amountLeft)
+            body = +payment
+            amountLeft -= body
+            paymentTotal += payment
+            if (item.type === 'payment') {
+              paymentAnnuity = amountLeft * (r * (1 + r) ** n) / ((1 + r) ** n - 1)
+            }
+          })
+        }
+
         history.push({
           num: i,
           date: dateFilter(month, false),
@@ -439,35 +456,6 @@ export default {
           amountPayed: paymentTotal
         })
 
-        const advPayment = this.additionalPayments.filter(item => {
-          return (addMonths(currMonth, i) <= item.datetime && item.datetime < addMonths(currMonth, i + 1))
-        })
-
-        if (advPayment && advPayment.length) {
-          advPayment.forEach((item) => {
-            payment = +item.amount
-            n = numberOfPaymentsLeft(paymentAnnuity, r, amountLeft)
-            body = payment
-            month = item.datetime
-            amountLeft -= body
-            paymentTotal += payment
-            if (item.type === 'payment') {
-              paymentAnnuity = amountLeft * (r * (1 + r) ** n) / ((1 + r) ** n - 1)
-            }
-            history.push({
-              num: i,
-              date: dateFilter(month, false),
-              datetime: month,
-              year: `${(month).getFullYear()}`,
-              payment: payment,
-              interest: 0,
-              body: body,
-              amountLeft: amountLeft,
-              amountPayed: paymentTotal
-            })
-          })
-        }
-
         ++i
         n--
 
@@ -479,30 +467,57 @@ export default {
 
       const S = this.creditAmount
       const r = this.periodRate
-      const n = this.numberOfPayments
 
       const currMonth = new Date(this.startDate)
+      let n = this.numberOfPayments
       let amountLeft = S
       let payment = 0
       let paymentTotal = 0
+      let interest = 0
+      let body = 0
+      let i = 0
 
-      for (let i = 0; i < n; i++) {
-        payment = S / n + amountLeft * r
+      while ( amountLeft > 0 ) {
+        interest = amountLeft * r
+        body = amountLeft / n
+        payment = body + interest
         paymentTotal += payment
-        amountLeft += amountLeft * r - payment
+        amountLeft -= body
+
+
         const month = addMonths(currMonth, i)
+
+        const advPayment = this.additionalPayments.filter(item => {
+          return (addMonths(currMonth, i) <= item.datetime && item.datetime < addMonths(currMonth, i + 1))
+        })
+
+        if (advPayment && advPayment.length) {
+          advPayment.forEach((item) => {
+            payment += +item.amount
+            amountLeft -= payment
+            paymentTotal += payment
+            if (item.type === 'term') {
+              n = amountLeft / body
+            }
+
+          })
+        }
+
 
         history.push({
           num: i + 1,
           date: dateFilter(month, false),
           datetime: month,
           year: `${(month).getFullYear()}`,
-          payment,
-          interest: payment - S / n,
-          body: S / n,
+          payment: payment,
+          interest: interest,
+          body: body,
           amountLeft: amountLeft,
           amountPayed: paymentTotal
         })
+
+        i++
+        n--
 
       }
 
