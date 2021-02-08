@@ -20,16 +20,16 @@
         }"
       >
 
-        <template v-slot:body.prepend="{isMobile}">
+        <template v-slot:body.prepend="{items, isMobile}">
           <tr v-if="!isMobile">
             <th>
               <v-icon @click="toggleCollapse">
                 {{ collapseAll ? 'mdi-chevron-down' : 'mdi-chevron-up' }}
               </v-icon>
             </th>
-            <th class="th-text-right">{{ '' }}</th>
-            <th class="th-text-right">{{ '' }}</th>
-            <th class="th-text-right">{{ '' }}</th>
+            <th class="th-text-right">{{ totalPayments | number }}</th>
+            <th class="th-text-right">{{ totalInterest | number }}</th>
+            <th class="th-text-right">{{ totalBody| number }}</th>
             <th></th>
           </tr>
         </template>
@@ -105,7 +105,18 @@ export default {
       })
     }
   },
-  computed: {},
+  computed: {
+    totalPayments() {
+      //return this.history[this.history.length - 1].amountPayed
+      return this.sum(this.history, 'payment')
+    },
+    totalInterest() {
+      return this.sum(this.history, 'interest')
+    },
+    totalBody() {
+      return this.sum(this.history, 'body')
+    }
+  },
 
 }
 </script>

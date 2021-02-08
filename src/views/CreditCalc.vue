@@ -417,7 +417,7 @@ export default {
         const interest = amountLeft * r
         // amountLeft += interest
 
-        if (payment - interest < amountLeft) {
+        if (paymentAnnuity - interest < amountLeft) {
           payment = paymentAnnuity
         } else {
           payment = amountLeft + interest
