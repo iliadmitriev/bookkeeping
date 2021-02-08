@@ -439,30 +439,32 @@ export default {
           amountPayed: paymentTotal
         })
 
-        const advPayment = this.additionalPayments.find(item => {
+        const advPayment = this.additionalPayments.filter(item => {
           return (addMonths(currMonth, i) <= item.datetime && item.datetime < addMonths(currMonth, i + 1))
         })
 
-        if (advPayment && advPayment.type && +advPayment.amount > 0) {
-          payment = +advPayment.amount
-          n = numberOfPaymentsLeft(paymentAnnuity, r, amountLeft)
-          body = payment
-          month = advPayment.datetime
-          amountLeft -= body
-          paymentTotal += payment
-          if (advPayment.type === 'payment') {
-            paymentAnnuity = amountLeft * (r * (1 + r) ** n) / ((1 + r) ** n - 1)
-          }
-          history.push({
-            num: i,
-            date: dateFilter(month, false),
-            datetime: month,
-            year: `${(month).getFullYear()}`,
-            payment: payment,
-            interest: 0,
-            body: body,
-            amountLeft: amountLeft,
-            amountPayed: paymentTotal
+        if (advPayment && advPayment.length) {
+          advPayment.forEach((item) => {
+            payment = +item.amount
+            n = numberOfPaymentsLeft(paymentAnnuity, r, amountLeft)
+            body = payment
+            month = item.datetime
+            amountLeft -= body
+            paymentTotal += payment
+            if (item.type === 'payment') {
+              paymentAnnuity = amountLeft * (r * (1 + r) ** n) / ((1 + r) ** n - 1)
+            }
+            history.push({
+              num: i,
+              date: dateFilter(month, false),
+              datetime: month,
+              year: `${(month).getFullYear()}`,
+              payment: payment,
+              interest: 0,
+              body: body,
+              amountLeft: amountLeft,
+              amountPayed: paymentTotal
+            })
           })
         }
 
