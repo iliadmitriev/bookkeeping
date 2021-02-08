@@ -16,4 +16,19 @@ const validateEmail = (email) => {
   return re.test(String(email).toLowerCase());
 }
 
-export  { random_rgba, validateEmail }
+const addMonths = (dt, n) =>
+{
+  const newDt = new Date(dt)
+  newDt.setMonth(dt.getMonth() + n)
+  return newDt
+}
+
+const baseLog = (base, argument) => {
+  return  Math.log(argument) / Math.log(base)
+}
+
+const numberOfPaymentsLeft = (payment, interestRate, amountLeft) => {
+  return Math.ceil(baseLog(1 + interestRate, payment / (payment - interestRate * amountLeft)))
+}
+
+export  { random_rgba, validateEmail, addMonths, baseLog, numberOfPaymentsLeft }
