@@ -98,7 +98,6 @@ export default {
     toggleCollapse() {
       this.collapseAll = !this.collapseAll
       Object.keys(this.$refs).forEach(k => {
-        console.log(this.$refs[k])
         if (this.$refs[k]) {
           this.$refs[k].$el.click()
         }
