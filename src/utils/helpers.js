@@ -31,4 +31,9 @@ const numberOfPaymentsLeft = (payment, interestRate, amountLeft) => {
   return Math.ceil(baseLog(1 + interestRate, payment / (payment - interestRate * amountLeft)))
 }
 
-export  { random_rgba, validateEmail, addMonths, baseLog, numberOfPaymentsLeft }
+const paymentAnnuity = (numberOfPayments, interestRate, amountLeft) => {
+  return amountLeft * (interestRate * (1 + interestRate) ** numberOfPayments) /
+                          ((1 + interestRate) ** numberOfPayments - 1)
+}
+
+export  { random_rgba, validateEmail, addMonths, baseLog, numberOfPaymentsLeft, paymentAnnuity }
