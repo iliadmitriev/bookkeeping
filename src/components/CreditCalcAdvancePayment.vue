@@ -113,7 +113,7 @@
                       v-if="editedItem.type === 'payment'"
                       type="info"
                     >
-                      Ежемесячный платеж сократится с - на -
+                      Ежемесячный платеж сократится с {{ paymentAnnuity | number }} на {{ newPaymentAnnuity | number }}
                     </v-alert>
                     <v-alert
                       v-else-if="editedItem.type === 'term'"
@@ -193,7 +193,7 @@
 
 <script>
 import dateFilter from "@/filters/date.filter";
-import {addMonths, numberOfPaymentsLeft} from "@/utils/helpers";
+import {addMonths, numberOfPaymentsLeft, paymentAnnuity} from "@/utils/helpers";
 
 export default {
   name: "CreditCalcAdvancePayment",
@@ -270,6 +270,10 @@ export default {
     newNumberOfPayments() {
       const amountLeft = this.creditAmount - this.editedItem.amount
       return numberOfPaymentsLeft(this.paymentAnnuity, this.periodRate, amountLeft)
+    },
+    newPaymentAnnuity() {
+      const amountLeft = this.creditAmount - this.editedItem.amount
+      return paymentAnnuity(this.numberOfPayments, this.periodRate, amountLeft)
     }
   },
   methods: {
