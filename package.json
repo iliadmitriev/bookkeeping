@@ -19,11 +19,11 @@
     "vuex": "^3.6.2"
   },
   "devDependencies": {
-    "@vue/cli": "^4.5.13",
-    "@vue/cli-plugin-babel": "^4.5.13",
-    "@vue/cli-plugin-pwa": "^4.5.13",
-    "@vue/cli-plugin-router": "~4.5.13",
-    "@vue/cli-plugin-vuex": "~4.5.13",
+    "@vue/cli": "^4.5.0",
+    "@vue/cli-plugin-babel": "^4.5.0",
+    "@vue/cli-plugin-pwa": "^4.5.0",
+    "@vue/cli-plugin-router": "^4.5.0",
+    "@vue/cli-plugin-vuex": "^4.5.0",
     "sass": "^1.35.1",
     "sass-loader": "^10.0.0",
     "vue-cli-plugin-vuetify": "^2.4.1",
