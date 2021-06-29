@@ -267,7 +267,7 @@ export default {
     creditAmountRules: [
       v => !!v || localizeFilter('Required')
     ],
-    interestRate: 8.5,
+    interestRate: 7.5,
     interestRateUnit: 'y',
     interestRateUnits: [
       {text: 'в мес', value: 'm'},
