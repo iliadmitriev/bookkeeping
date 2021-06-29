@@ -75,8 +75,10 @@
 import localize from '@/filters/localize.filter'
 import date from "@/filters/date.filter";
 import Loader from "@/components/app/Loader"
-import {Pie} from 'vue-chartjs/src/BaseCharts'
+
 import {random_rgba} from "@/utils/helpers"
+
+import Chart from "chart.js/auto";
 
 export default {
   name: "History",
@@ -85,7 +87,7 @@ export default {
       title: this.$title('History')
     }
   },
-  mixins: [Pie],
+
   data() {
     return {
       loading: true,
@@ -109,7 +111,8 @@ export default {
         multiSort: false,
         groupBy: [],
         groupDesc: []
-      }
+      },
+      Chart: null
     }
   },
   async mounted() {
@@ -152,21 +155,28 @@ export default {
 
       const {backgroundColors, borderColors} = random_rgba(categories.length, 0.2)
 
-      this.renderChart({
-        labels: categories.map(c => c.title),
-        datasets: [{
-          label: localize('HistoryExpenses'),
-          data: categories.map(c => {
-            return this.records
-              .filter(r => r.type === 'outcome')
-              .filter(r => r.categoryId === c.id)
-              .reduce((total, r) => total += +r.amount, 0)
-          }),
-          backgroundColor: backgroundColors,
-          borderColor: borderColors,
-          borderWidth: 1
-        }]
-      })
+
+      this.Chart = new Chart(this.$refs.canvas, {
+        type: 'pie',
+        data: {
+          labels: categories.map(c => c.title),
+          datasets: [{
+            label: localize('HistoryExpenses'),
+            data: categories.map(c => {
+              return this.records
+                .filter(r => r.type === 'outcome')
+                .filter(r => r.categoryId === c.id)
+                .reduce((total, r) => total += +r.amount, 0)
+            }),
+            backgroundColor: backgroundColors,
+            borderColor: borderColors,
+            borderWidth: 1
+          }]
+        },
+        options: {
+          responsive: true,
+        }
+      });
 
     },
 
@@ -184,6 +194,11 @@ export default {
             itemsPerPage: pagination.itemsPerPage
           }
         })
+    }
+  },
+  destroyed() {
+    if (this.Chart && this.Chart.destroy) {
+      this.Chart.destroy()
     }
   },
   components: {Loader},

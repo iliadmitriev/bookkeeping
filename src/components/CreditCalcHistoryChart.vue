@@ -31,10 +31,43 @@
 <script>
 import numberFilter from "@/filters/number.filter";
 import {random_rgba} from "@/utils/helpers";
-import Chart from "chart.js";
+import {
+  ArcElement,
+  CategoryScale,
+  Chart,
+  Legend,
+  LinearScale,
+  LineController,
+  LineElement,
+  PieController,
+  PointElement,
+  RadialLinearScale,
+  TimeScale,
+  TimeSeriesScale,
+  Title,
+  Tooltip
+} from 'chart.js';
+import 'chartjs-adapter-moment';
 import moment from "moment/moment"
-import "moment/locale/ru"
-import "moment/locale/en-gb"
+
+Chart.register(
+  ArcElement,
+  LineElement,
+  PointElement,
+  LineController,
+  PieController,
+  CategoryScale,
+  LinearScale,
+  RadialLinearScale,
+  TimeScale,
+  TimeSeriesScale,
+  Legend,
+  Title,
+  Tooltip
+);
+
+// import "moment/locale/ru"
+// import "moment/locale/en-gb"
 
 
 export default {
@@ -67,33 +100,44 @@ export default {
         legend: {
           labels: {}
         },
+        responsive: true,
+        interaction: {
+          mode: 'index',
+          intersect: false,
+        },
         scales: {
           yAxes: [{
             ticks: {
-              callback: v => numberFilter(v)
+              callback: v => numberFilter(v),
             },
 //            stacked: true // combine data
           }],
-          xAxes: [{
+          x: {
             type: 'time',
             time: {
-              tooltipFormat: "MMM YYYY"
+              unit: "month",
+              displayFormats: {
+                month: 'MMM YYYY',
+                tooltipFormat: "MMM YYYY"
+              }
             },
-            ticks: {},
-          }]
+            ticks: {
+              major: {
+                enabled: true
+              },
+            },
+          }
+        },
+        plugins: {
+          tooltip: {
+            enabled: true,
+            mode: 'index',
+            position: 'average'
+          }
         },
         elements: {
           line: {
             tension: 0.1 // disables bezier curves
-          }
-        },
-        tooltips: {
-          mode: 'index',
-          intersect: false,
-          callbacks: {
-            label: (value, data) => {
-              return `${data.datasets[value.datasetIndex].label}: ${numberFilter(value.value)}`;
-            },
           }
         },
         hover: {
@@ -107,6 +151,10 @@ export default {
         legend: {
           labels: {}
         },
+        interaction: {
+          mode: 'index',
+          intersect: false,
+        },
         scales: {
           yAxes: [{
             ticks: {
@@ -114,26 +162,23 @@ export default {
               callback: v => numberFilter(v)
             }
           }],
-          xAxes: [{
+          x: {
             type: 'time',
-            ticks: {},
             time: {
-              tooltipFormat: "MMM YYYY"
-            }
-          }]
+              unit: "month",
+              displayFormats: {
+                month: 'MMM YYYY',
+                tooltipFormat: "MMM YYYY"
+              }
+            },
+            ticks: {
+              source: 'auto'
+            },
+          }
         },
         elements: {
           line: {
             tension: 0.1 // disables bezier curves
-          }
-        },
-        tooltips: {
-          mode: 'index',
-          intersect: false,
-          callbacks: {
-            label: (value, data) => {
-              return `${data.datasets[value.datasetIndex].label}: ${numberFilter(value.value)}`;
-            },
           }
         },
         hover: {
@@ -153,6 +198,7 @@ export default {
         datasets: [
           {
             label: 'Платеж',
+            fill: true,
             data: this.history.map(item => item.payment),
             backgroundColor: backgroundColors[0],
             borderColor: borderColors[0],
@@ -161,6 +207,7 @@ export default {
           },
           {
             label: 'Проценты',
+            fill: true,
             data: this.history.map(item => item.interest),
             backgroundColor: backgroundColors[1],
             borderColor: borderColors[1],
@@ -169,6 +216,7 @@ export default {
           },
           {
             label: 'Погашение',
+            fill: true,
             data: this.history.map(item => item.body),
             backgroundColor: backgroundColors[2],
             borderColor: borderColors[2],
@@ -189,6 +237,7 @@ export default {
         datasets: [
           {
             label: 'Остаток долга',
+            fill: true,
             data: this.history.map(item => item.amountLeft),
             backgroundColor: backgroundColors[0],
             borderColor: borderColors[0],
@@ -197,6 +246,7 @@ export default {
           },
           {
             label: 'Выплачено',
+            fill: true,
             data: this.history.map(item => item.amountPayed),
             backgroundColor: backgroundColors[1],
             borderColor: borderColors[1],
@@ -211,30 +261,31 @@ export default {
 
     moment.locale('ru')
 
-    const originalLineDraw = Chart.controllers.line.prototype.draw;
-    Chart.helpers.extend(Chart.controllers.line.prototype, {
-      draw: function () {
-        originalLineDraw.apply(this, arguments);
-
-
-        if (this.chart.tooltip._active && this.chart.tooltip._active.length) {
-          const activePoint = this.chart.tooltip._active[0];
-          const ctx = this.chart.ctx;
-          const x = activePoint.tooltipPosition().x;
-          const topY = this.chart.scales['y-axis-0'].top;
-          const bottomY = this.chart.scales['y-axis-0'].bottom;
-
-          ctx.save();
-          ctx.beginPath();
-          ctx.moveTo(x, topY);
-          ctx.lineTo(x, bottomY);
-          ctx.lineWidth = 0.5;
-          ctx.strokeStyle = '#666';
-          ctx.stroke();
-          ctx.restore();
-        }
-      }
-    })
+    // console.log(Chart)
+    // const originalLineDraw = Chart.controllers.line.prototype.draw;
+    // Chart.helpers.extend(Chart.controllers.line.prototype, {
+    //   draw: function () {
+    //     originalLineDraw.apply(this, arguments);
+    //
+    //
+    //     if (this.chart.tooltip._active && this.chart.tooltip._active.length) {
+    //       const activePoint = this.chart.tooltip._active[0];
+    //       const ctx = this.chart.ctx;
+    //       const x = activePoint.tooltipPosition().x;
+    //       const topY = this.chart.scales['y-axis-0'].top;
+    //       const bottomY = this.chart.scales['y-axis-0'].bottom;
+    //
+    //       ctx.save();
+    //       ctx.beginPath();
+    //       ctx.moveTo(x, topY);
+    //       ctx.lineTo(x, bottomY);
+    //       ctx.lineWidth = 0.5;
+    //       ctx.strokeStyle = '#666';
+    //       ctx.stroke();
+    //       ctx.restore();
+    //     }
+    //   }
+    // })
 
     this.paymentsTimeline = new Chart(this.$refs.paymentsTimeline, {
       type: 'line',
