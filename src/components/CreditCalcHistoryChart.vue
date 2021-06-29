@@ -95,7 +95,7 @@ export default {
     }
   },
   computed: {
-    paymentsTimelineOptions() {
+    timelineOptions() {
       return {
         legend: {
           labels: {}
@@ -106,12 +106,12 @@ export default {
           intersect: false,
         },
         scales: {
-          yAxes: [{
+          y: {
             ticks: {
               callback: v => numberFilter(v),
             },
-//            stacked: true // combine data
-          }],
+            stacked: false
+          },
           x: {
             type: 'time',
             time: {
@@ -133,47 +133,6 @@ export default {
             enabled: true,
             mode: 'index',
             position: 'average'
-          }
-        },
-        elements: {
-          line: {
-            tension: 0.1 // disables bezier curves
-          }
-        },
-        hover: {
-          mode: 'nearest',
-          intersect: true
-        }
-      }
-    },
-    debtTimelineOptions() {
-      return {
-        legend: {
-          labels: {}
-        },
-        interaction: {
-          mode: 'index',
-          intersect: false,
-        },
-        scales: {
-          yAxes: [{
-            ticks: {
-              min: 0,
-              callback: v => numberFilter(v)
-            }
-          }],
-          x: {
-            type: 'time',
-            time: {
-              unit: "month",
-              displayFormats: {
-                month: 'MMM YYYY',
-                tooltipFormat: "MMM YYYY"
-              }
-            },
-            ticks: {
-              source: 'auto'
-            },
           }
         },
         elements: {
@@ -290,13 +249,13 @@ export default {
     this.paymentsTimeline = new Chart(this.$refs.paymentsTimeline, {
       type: 'line',
       data: this.paymentsTimelineData,
-      options: this.paymentsTimelineOptions
+      options: this.timelineOptions
     });
 
     this.debtTimeline = new Chart(this.$refs.debtTimeline, {
       type: 'line',
       data: this.debtTimelineData,
-      options: this.debtTimelineOptions
+      options: this.timelineOptions
     });
 
   },
