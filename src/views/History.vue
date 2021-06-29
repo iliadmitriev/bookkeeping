@@ -77,7 +77,8 @@ import date from "@/filters/date.filter";
 import Loader from "@/components/app/Loader"
 
 import {random_rgba} from "@/utils/helpers"
-import Chart from "chart.js";
+
+import Chart from "chart.js/auto";
 
 export default {
   name: "History",

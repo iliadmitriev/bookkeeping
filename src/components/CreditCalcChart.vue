@@ -5,7 +5,7 @@
 
 <script>
 import {random_rgba} from "@/utils/helpers";
-import Chart from "chart.js";
+import Chart from "chart.js/auto";
 import numberFilter from "@/filters/number.filter";
 
 export default {
