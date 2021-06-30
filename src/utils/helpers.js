@@ -1,9 +1,9 @@
-const random_rgba = (len, coefficient=0.2) => {
+const random_rgba = (len, coefficient = 0.2) => {
   const o = Math.round, rnd = Math.random, s = 255
-  const backgroundColors=[], borderColors = []
+  const backgroundColors = [], borderColors = []
 
-  for (let i = 0; i<len; i++) {
-    const r = o(rnd()*s), g = o(rnd()*s), b = o(rnd()*s)
+  for (let i = 0; i < len; i++) {
+    const r = o(rnd() * s), g = o(rnd() * s), b = o(rnd() * s)
     backgroundColors.push(`rgba(${r},${g},${b}, ${coefficient})`)
     borderColors.push(`rgba(${r},${g},${b}, 1)`)
   }
@@ -16,15 +16,26 @@ const validateEmail = (email) => {
   return re.test(String(email).toLowerCase());
 }
 
-const addMonths = (dt, n) =>
-{
+const addMonths = (dt, n) => {
   const newDt = new Date(dt)
-  newDt.setMonth(dt.getMonth() + n)
-  return newDt
+  const days = newDt.getDate();
+  newDt.setDate(1);
+  newDt.setMonth(newDt.getMonth() + n);
+  newDt.setDate(Math.min(days,
+    [31,
+      (
+        (((newDt.getFullYear() % 4 === 0)
+          && (newDt.getFullYear() % 100 !== 0))
+          || (newDt.getFullYear() % 400 === 0))
+          ? 29 : 28
+      ),
+      31, 30, 31, 30, 31, 31, 30, 31, 30, 31][newDt.getMonth()]
+  ));
+  return newDt;
 }
 
 const baseLog = (base, argument) => {
-  return  Math.log(argument) / Math.log(base)
+  return Math.log(argument) / Math.log(base)
 }
 
 const numberOfPaymentsLeft = (payment, interestRate, amountLeft) => {
@@ -33,7 +44,7 @@ const numberOfPaymentsLeft = (payment, interestRate, amountLeft) => {
 
 const paymentAnnuity = (numberOfPayments, interestRate, amountLeft) => {
   return amountLeft * (interestRate * (1 + interestRate) ** numberOfPayments) /
-                          ((1 + interestRate) ** numberOfPayments - 1)
+    ((1 + interestRate) ** numberOfPayments - 1)
 }
 
-export  { random_rgba, validateEmail, addMonths, baseLog, numberOfPaymentsLeft, paymentAnnuity }
+export {random_rgba, validateEmail, addMonths, baseLog, numberOfPaymentsLeft, paymentAnnuity}
