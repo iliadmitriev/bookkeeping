@@ -1,4 +1,4 @@
-import store from '../store'
+import store from '@/store'
 import ru from '@/locales/ru.json'
 import en from '@/locales/en.json'
 
