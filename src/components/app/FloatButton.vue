@@ -13,7 +13,7 @@
         fixed
         right
         link
-        :to="'/record'"
+        :to="{name: 'record'}"
       >
         <v-icon>mdi-plus</v-icon>
       </v-btn>

@@ -30,7 +30,7 @@
       >
         <v-list-item
             link
-            :to="'/profile'"
+            :to="{name: 'profile'}"
             :exact="true"
             nav
         >
