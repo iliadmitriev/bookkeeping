@@ -31,19 +31,15 @@
       </v-col>
     </v-row>
 
-    <Loader v-if="loading"></Loader>
-
+    <Loader v-if="loading" />
     <v-row v-else>
-
       <HomeAccount
         :rates="currency.Valute"
       />
-
       <HomeCurrency
         :rates="currency.Valute"
         :date="currency.Timestamp"
       />
-
     </v-row>
 
   </div>
