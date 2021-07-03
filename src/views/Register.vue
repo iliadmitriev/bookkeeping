@@ -155,7 +155,7 @@ export default {
 
       try {
         await this.$store.dispatch('register', registerFormData)
-        await this.$router.push('/')
+        await this.$router.push({name: 'home'})
       } catch (e) {
       } finally {
         this.loading = false
