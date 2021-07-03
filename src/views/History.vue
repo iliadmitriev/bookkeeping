@@ -59,7 +59,7 @@
           <v-icon
             small
             class="mr-2"
-            @click="$router.push('/detail/' + item.id)"
+            @click="$router.push({name: 'detail', params: {recordId: item.id}})"
           >
             mdi-open-in-new
           </v-icon>

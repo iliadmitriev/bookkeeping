@@ -8,7 +8,7 @@
     <v-list>
       <v-list-item
         v-for="link in links"
-        :key="link.url"
+        :key="link.url.name"
         active-class="active"
         :to="link.url"
         :exact="link.exact"

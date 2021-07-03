@@ -2,7 +2,7 @@
   <v-app-bar
   >
     <v-app-bar-nav-icon
-        @click="$emit('drawer')"
+      @click="$emit('drawer')"
     >
     </v-app-bar-nav-icon>
     <v-toolbar-title>
@@ -12,27 +12,27 @@
     <v-spacer></v-spacer>
 
     <v-menu
-        left
-        bottom
+      left
+      bottom
     >
       <template v-slot:activator="{ on, attrs }">
         <v-btn
-            icon
-            v-bind="attrs"
-            v-on="on"
+          icon
+          v-bind="attrs"
+          v-on="on"
         >
           <v-icon>mdi-dots-vertical</v-icon>
         </v-btn>
       </template>
 
       <v-list
-          v-model="selectedItem"
+        v-model="selectedItem"
       >
         <v-list-item
-            link
-            :to="{name: 'profile'}"
-            :exact="true"
-            nav
+          link
+          :to="{name: 'profile'}"
+          :exact="true"
+          nav
         >
           <v-list-item-icon>
             <v-icon>mdi-cog</v-icon>
@@ -43,7 +43,7 @@
         </v-list-item>
 
         <v-list-item
-            @click="switchDarkMode"
+          @click="switchDarkMode"
         >
           <v-list-item-icon>
             <v-icon>mdi-theme-light-dark</v-icon>
@@ -54,7 +54,7 @@
         </v-list-item>
 
         <v-list-item
-            @click="logout"
+          @click="logout"
         >
           <v-list-item-icon>
             <v-icon>mdi-exit-to-app</v-icon>
@@ -83,7 +83,7 @@ export default {
   methods: {
     async logout() {
       await this.$store.dispatch('logout')
-      await this.$router.push(`/login?message=logout&path=${this.$route.path}`)
+      await this.$router.push({name: 'login', query: {message: 'logout', 'path': this.$route.path}})
     },
     switchDarkMode() {
       this.darkMode = !this.darkMode
@@ -104,8 +104,5 @@ export default {
 </script>
 
 <style scoped>
-.navbar-header {
-  font-size: 2rem;
-  cursor: pointer;
-}
+
 </style>

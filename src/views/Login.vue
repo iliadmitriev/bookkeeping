@@ -193,7 +193,8 @@ export default {
       }
       try {
         await this.$store.dispatch('login', loginFormData)
-        await this.$router.push(this.$route.query.path ? this.$route.query.path : '/')
+        console.log(this.$route.query.path)
+        await this.$router.push(this.$route.query.path ? this.$route.query.path : {name: 'home'})
       } catch (err) {
       } finally {
         this.loading = false
@@ -211,21 +212,21 @@ export default {
     async btnGoogleSingIn() {
       try {
         await this.$store.dispatch('loginWithGoogle')
-        await this.$router.push(this.$route.query.path ? this.$route.query.path : '/')
+        await this.$router.push(this.$route.query.path ? this.$route.query.path : {name: 'home'})
       } catch (e) {
       }
     },
     async btnFacebookSingIn() {
       try {
         await this.$store.dispatch('loginWithFacebook')
-        await this.$router.push(this.$route.query.path ? this.$route.query.path : '/')
+        await this.$router.push(this.$route.query.path ? this.$route.query.path : {name: 'home'})
       } catch (e) {
       }
     },
     async btnGithubSingIn() {
       try {
         await this.$store.dispatch('loginWithGithub')
-        await this.$router.push(this.$route.query.path ? this.$route.query.path : '/')
+        await this.$router.push(this.$route.query.path ? this.$route.query.path : {name: 'home'})
       } catch (e) {
       }
     }

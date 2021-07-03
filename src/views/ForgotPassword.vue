@@ -88,7 +88,7 @@ export default {
       try {
         await this.$store.dispatch('forgot', this.email)
         this.email = ''
-        await this.$router.push('/login?message=recover')
+        await this.$router.push({name: 'login', query: {message: 'recover'}})
       } catch (e) {
       } finally {
         this.loading = false
