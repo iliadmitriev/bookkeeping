@@ -43,7 +43,7 @@ export default {
         const info = {
           bill: prevInfo && prevInfo.bill ? prevInfo.bill : fallbackUser.bill,
           name: prevInfo && prevInfo.name ? prevInfo.name : fallbackUser.name,
-          accepted: prevInfo && prevInfo.accepted ? prevInfo.accepted : fallbackUser.accepted || 'true',
+          accepted: prevInfo && prevInfo.accepted ? prevInfo.accepted : fallbackUser.accepted || true,
           locale: prevInfo && prevInfo.locale ? prevInfo.locale : fallbackUser.locale || 'ru-RU'
         }
         await db.ref(`/users/${uid}/info`).set(info)

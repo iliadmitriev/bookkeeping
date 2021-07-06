@@ -6,13 +6,18 @@ const localVue = createLocalVue()
 localVue.use(Vuex)
 
 global.fetch = jest.fn()
-const mockFbInfoUpdate = jest.fn(() => ({}))
-const mockFbInfoGet = jest.fn(() => ({
+const mockInfoGet = jest.fn(() => ({
   accepted: true,
   bill: 10000,
   locale: "en-US",
   name: "Ivan"
 }))
+
+const mockFbUpdate = jest.fn(() => ({}))
+const mockFbOnce = jest.fn(() => ({
+  val: mockInfoGet
+}))
+const mockFbSet = jest.fn(() => ({}))
 
 jest.mock('firebase/app', () => ({
   auth: jest.fn(() => ({
@@ -23,10 +28,9 @@ jest.mock('firebase/app', () => ({
   initializeApp: jest.fn(),
   database: jest.fn(() => ({
     ref: jest.fn(() => ({
-      once: jest.fn(() => ({
-        val: mockFbInfoGet
-      })),
-      update: mockFbInfoUpdate
+      once: mockFbOnce,
+      update: mockFbUpdate,
+      set: mockFbSet
     }))
   }))
 }));
@@ -90,6 +94,12 @@ describe('Vuex Store modules testsuite', () => {
 
   describe('Info module tests', () => {
 
+    beforeEach(() => {
+      mockFbOnce.mockClear()
+      mockFbUpdate.mockClear()
+      mockInfoGet.mockClear()
+    })
+
     it('setInfo mutation', async () => {
       store.commit('setInfo', {
         accepted: true,
@@ -123,7 +133,7 @@ describe('Vuex Store modules testsuite', () => {
 
       await store.dispatch('fetchInfo')
 
-      expect(mockFbInfoGet).toBeCalledTimes(1)
+      expect(mockInfoGet).toBeCalledTimes(1)
 
       expect(store.state.info).toStrictEqual({
         info: {
@@ -141,6 +151,25 @@ describe('Vuex Store modules testsuite', () => {
       })
     })
 
+    it('fetchInfo action throw exception', async () => {
+      const testError = new Error('This is error message')
+      mockFbOnce.mockImplementationOnce(() => ({
+        val: () => {
+          throw testError
+        }
+      }))
+      await expect(store.dispatch('fetchInfo'))
+        .rejects.toThrowError(testError)
+      expect(store.getters.error).toStrictEqual(testError)
+      expect(store.getters.info).toStrictEqual({
+        accepted: true,
+        bill: 10000,
+        locale: "en-US",
+        name: "Ivan"
+      })
+
+    })
+
     it('updateInfo action', async () => {
       await store.dispatch('updateInfo', {
         name: "John",
@@ -153,6 +182,108 @@ describe('Vuex Store modules testsuite', () => {
         locale: "en-US",
         name: "John"
       })
+
+    })
+
+    it('updateInfo action throw exception', async () => {
+      const testError = new Error('This is test error message')
+      mockFbUpdate.mockImplementationOnce(() => {
+        throw testError
+      })
+      await expect(store.dispatch('updateInfo', {}))
+        .rejects.toThrowError(testError)
+      expect(store.getters.error).toStrictEqual(testError)
+      expect(store.getters.info).toStrictEqual({
+        accepted: true,
+        bill: 20000,
+        locale: "en-US",
+        name: "John"
+      })
+
+    })
+
+    it('fetchOrCreateInfo action fallback with partial data and without info', async () => {
+      mockFbOnce.mockImplementationOnce(() => ({
+        val: () => null
+      }))
+
+      await store.dispatch('fetchOrCreateInfo', {
+        bill: 10000,
+        name: "Ivan"
+      })
+
+      expect(store.getters.info).toStrictEqual({
+        accepted: true,
+        bill: 10000,
+        locale: "ru-RU",
+        name: "Ivan"
+      })
+
+    })
+
+    it('fetchOrCreateInfo action fallback without info', async () => {
+      mockFbOnce.mockImplementationOnce(() => ({
+        val: () => null
+      }))
+
+      await store.dispatch('fetchOrCreateInfo', {
+        accepted: true,
+        bill: 10000,
+        locale: "ru-RU",
+        name: "Ivan"
+      })
+
+      expect(store.getters.info).toStrictEqual({
+        accepted: true,
+        bill: 10000,
+        locale: "ru-RU",
+        name: "Ivan"
+      })
+
+    })
+
+    it('fetchOrCreateInfo action with info', async () => {
+      mockFbOnce.mockImplementationOnce(() => ({
+        val: () => ({
+          accepted: true,
+          bill: 20000,
+          locale: "en-US",
+          name: "John"
+        })
+      }))
+
+      await store.dispatch('fetchOrCreateInfo', {
+        accepted: true,
+        bill: 20000,
+        locale: "en-US",
+        name: "John"
+      })
+
+      expect(store.getters.info).toStrictEqual({
+        accepted: true,
+        bill: 20000,
+        locale: "en-US",
+        name: "John"
+      })
+
+    })
+
+    it('fetchOrCreateInfo action with throw error', async () => {
+      const testError = new Error('This is test error message')
+      mockFbOnce.mockImplementationOnce(() => ({
+        val: () => {
+          throw testError
+        }
+      }))
+
+      await expect(store.dispatch('fetchOrCreateInfo', {
+        accepted: true,
+        bill: 10000,
+        locale: "ru-RU",
+        name: "Ivan"
+      })).rejects.toThrowError(testError)
+
+      expect(store.getters.error).toStrictEqual(testError)
 
     })
 
