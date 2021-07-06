@@ -6,6 +6,31 @@ const localVue = createLocalVue()
 localVue.use(Vuex)
 
 global.fetch = jest.fn()
+const mockFbInfoUpdate = jest.fn(() => ({}))
+const mockFbInfoGet = jest.fn(() => ({
+  accepted: true,
+  bill: 10000,
+  locale: "en-US",
+  name: "Ivan"
+}))
+
+jest.mock('firebase/app', () => ({
+  auth: jest.fn(() => ({
+    currentUser: {
+      email: 'user@example.com', uid: 123, emailVerified: true
+    }
+  })),
+  initializeApp: jest.fn(),
+  database: jest.fn(() => ({
+    ref: jest.fn(() => ({
+      once: jest.fn(() => ({
+        val: mockFbInfoGet
+      })),
+      update: mockFbInfoUpdate
+    }))
+  }))
+}));
+
 
 describe('Vuex Store modules testsuite', () => {
   beforeEach(() => {
@@ -55,12 +80,82 @@ describe('Vuex Store modules testsuite', () => {
     })
   })
 
-  it('Set error and clear error message', ()=> {
+  it('Set error and clear error message', () => {
     store.commit('clearError')
     expect(store.getters.error).toBe(null)
     const err = new Error('Test error message')
     store.commit('setError', err)
     expect(store.getters.error).toStrictEqual(err)
+  })
+
+  describe('Info module tests', () => {
+
+    it('setInfo mutation', async () => {
+      store.commit('setInfo', {
+        accepted: true,
+        bill: 10000,
+        locale: "en-US",
+        name: "Ivan"
+      })
+      expect(store.state.info).toStrictEqual({
+        info: {
+          accepted: true,
+          bill: 10000,
+          locale: "en-US",
+          name: "Ivan"
+        }
+      })
+      expect(store.getters.info).toStrictEqual({
+        accepted: true,
+        bill: 10000,
+        locale: "en-US",
+        name: "Ivan"
+      })
+    })
+
+    it('clearInfo mutation', async () => {
+      store.commit('clearInfo')
+      expect(store.state.info).toStrictEqual({info: {}})
+      expect(store.getters.info).toStrictEqual({})
+    })
+
+    it('fetchInfo action', async () => {
+
+      await store.dispatch('fetchInfo')
+
+      expect(mockFbInfoGet).toBeCalledTimes(1)
+
+      expect(store.state.info).toStrictEqual({
+        info: {
+          accepted: true,
+          bill: 10000,
+          locale: "en-US",
+          name: "Ivan"
+        }
+      })
+      expect(store.getters.info).toStrictEqual({
+        accepted: true,
+        bill: 10000,
+        locale: "en-US",
+        name: "Ivan"
+      })
+    })
+
+    it('updateInfo action', async () => {
+      await store.dispatch('updateInfo', {
+        name: "John",
+        bill: 20000
+      })
+
+      expect(store.getters.info).toStrictEqual({
+        accepted: true,
+        bill: 20000,
+        locale: "en-US",
+        name: "John"
+      })
+
+    })
+
   })
 
 })
