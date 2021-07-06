@@ -154,9 +154,9 @@ describe('Vuex Store modules testsuite', () => {
     it('fetchInfo action throw exception', async () => {
       const testError = new Error('This is error message')
       mockFbOnce.mockImplementationOnce(() => ({
-        val: () => {
+        val: jest.fn(() => {
           throw testError
-        }
+        })
       }))
       await expect(store.dispatch('fetchInfo'))
         .rejects.toThrowError(testError)
@@ -204,7 +204,7 @@ describe('Vuex Store modules testsuite', () => {
 
     it('fetchOrCreateInfo action fallback with partial data and without info', async () => {
       mockFbOnce.mockImplementationOnce(() => ({
-        val: () => null
+        val: jest.fn(() => undefined)
       }))
 
       await store.dispatch('fetchOrCreateInfo', {
@@ -223,7 +223,7 @@ describe('Vuex Store modules testsuite', () => {
 
     it('fetchOrCreateInfo action fallback without info', async () => {
       mockFbOnce.mockImplementationOnce(() => ({
-        val: () => null
+        val: jest.fn(() => undefined)
       }))
 
       await store.dispatch('fetchOrCreateInfo', {
@@ -244,12 +244,12 @@ describe('Vuex Store modules testsuite', () => {
 
     it('fetchOrCreateInfo action with info', async () => {
       mockFbOnce.mockImplementationOnce(() => ({
-        val: () => ({
+        val: jest.fn(() => ({
           accepted: true,
           bill: 20000,
           locale: "en-US",
           name: "John"
-        })
+        }))
       }))
 
       await store.dispatch('fetchOrCreateInfo', {
@@ -271,9 +271,9 @@ describe('Vuex Store modules testsuite', () => {
     it('fetchOrCreateInfo action with throw error', async () => {
       const testError = new Error('This is test error message')
       mockFbOnce.mockImplementationOnce(() => ({
-        val: () => {
+        val: jest.fn(() => {
           throw testError
-        }
+        })
       }))
 
       await expect(store.dispatch('fetchOrCreateInfo', {
