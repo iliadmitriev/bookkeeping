@@ -7,15 +7,16 @@ const localVue = createLocalVue()
 localVue.use(Vuex)
 
 global.fetch = jest.fn()
-const mockInfoGet = jest.fn(() => ({
+const mockOnceVal = jest.fn(() => ({
   accepted: true,
   bill: 10000,
   locale: "en-US",
   name: "Ivan"
 }))
 const mockFbUpdate = jest.fn(() => ({}))
+const mockFbPush = jest.fn()
 const mockFbOnce = jest.fn(() => ({
-  val: mockInfoGet
+  val: mockOnceVal
 }))
 const mockFbSet = jest.fn(() => ({}))
 const mockAuthProvider = {
@@ -41,13 +42,15 @@ jest.mock('firebase/app', () => {
     createUserWithEmailAndPassword: jest.fn(),
     sendPasswordResetEmail: jest.fn(),
     initializeApp: jest.fn(),
-    database: jest.fn(() => ({
+    database: () => ({
       ref: jest.fn(() => ({
+        child: jest.fn().mockReturnThis(),
         once: mockFbOnce,
         update: mockFbUpdate,
+        push: mockFbPush,
         set: mockFbSet
       }))
-    }))
+    })
   }
 });
 
@@ -115,7 +118,7 @@ describe('Vuex Store modules testsuite', () => {
     beforeEach(() => {
       mockFbOnce.mockClear()
       mockFbUpdate.mockClear()
-      mockInfoGet.mockClear()
+      mockOnceVal.mockClear()
     })
 
     it('setInfo mutation', async () => {
@@ -151,7 +154,7 @@ describe('Vuex Store modules testsuite', () => {
 
       await store.dispatch('fetchInfo')
 
-      expect(mockInfoGet).toBeCalledTimes(1)
+      expect(mockOnceVal).toBeCalledTimes(1)
 
       expect(store.state.info).toStrictEqual({
         info: {
@@ -311,7 +314,7 @@ describe('Vuex Store modules testsuite', () => {
     beforeEach(() => {
       mockFbOnce.mockClear()
       mockFbUpdate.mockClear()
-      mockInfoGet.mockClear()
+      mockOnceVal.mockClear()
       firebase.auth().useDeviceLanguage.mockClear()
       firebase.auth().signInWithPopup.mockClear()
       firebase.auth().fetchSignInMethodsForEmail.mockClear()
@@ -585,7 +588,7 @@ describe('Vuex Store modules testsuite', () => {
           throw createError
         })
 
-       await expect(store.dispatch('register', {
+      await expect(store.dispatch('register', {
         email: 'email19@exmaple.com',
         password: 'secret',
         name: 'Mike',
@@ -625,10 +628,167 @@ describe('Vuex Store modules testsuite', () => {
     })
   })
 
+  describe('Category module tests', () => {
+    describe('fetchCategories action test', () => {
+      it('fetch with multiple entries response', async () => {
+        const response = {
+          "100": {
+            "limit": 10000,
+            "title": "Дом"
+          },
+          "101": {
+            "limit": 20000,
+            "title": "Транспорт"
+          },
+          "102": {
+            "limit": 8000,
+            "title": "Одежда"
+          },
+          "103": {
+            "limit": 10000,
+            "title": "Обучение"
+          },
+          "104": {
+            "limit": 1000,
+            "title": "Связь"
+          },
+          "105": {
+            "limit": 100000,
+            "title": "Заработная плата"
+          },
+          "106": {
+            "limit": 15000,
+            "title": "Развлечения"
+          },
+          "107": {
+            "limit": "5000",
+            "title": "Прочее"
+          },
+          "108": {
+            "limit": 15000,
+            "title": "Бытовая техника"
+          }
+        }
+        mockOnceVal.mockImplementationOnce(() => response)
+        const res = await store.dispatch('fetchCategories')
+        expect(res.length).toBe(9)
+        expect(res).toStrictEqual(Object.entries(response).map(el => ({id: el[0], ...el[1]})))
+      })
+
+      it('fetch with throwing an error', async () => {
+        const testError = new Error('Test fetch error message')
+        mockOnceVal.mockImplementationOnce(() => {
+          throw testError
+        })
+        await expect(store.dispatch('fetchCategories'))
+          .rejects.toThrowError(testError)
+      })
+
+      it('fetch with null response', async () => {
+        mockOnceVal.mockImplementationOnce(() => null)
+        const res = await store.dispatch('fetchCategories')
+        expect(res.length).toBe(0)
+        expect(res).toStrictEqual([])
+      })
+    })
+
+    describe('fetchCategoryById action test', () => {
+      it('fetch with single response', async () => {
+        const response = {
+          "limit": 20000,
+          "title": "Транспорт"
+        }
+        mockOnceVal.mockImplementationOnce(() => response)
+        const res = await store.dispatch('fetchCategoryById', 'ID123')
+        expect(res).toStrictEqual({
+          id: 'ID123',
+          limit: 20000,
+          title: "Транспорт"
+        })
+      })
+
+      it('fetch with empty response', async () => {
+        const response = null
+        mockOnceVal.mockImplementationOnce(() => response)
+        const res = await store.dispatch('fetchCategoryById', 'ID155')
+        expect(res).toStrictEqual({
+          id: 'ID155'
+        })
+      })
+
+      it('fetch with throwing an error', async () => {
+        const testError = new Error('Test fetch error message')
+        mockOnceVal.mockImplementationOnce(() => {
+          throw testError
+        })
+        await expect(store.dispatch('fetchCategoryById'))
+          .rejects.toThrowError(testError)
+      })
+    })
+
+    describe('createCategory action test', () => {
+      it('create category', async () => {
+        const response = {
+          key: 'ID1333'
+        }
+        mockFbPush.mockImplementationOnce(() => response)
+        const res = await store.dispatch('createCategory', {
+          limit: 10000,
+          title: "Питание"
+        })
+        expect(res).toStrictEqual({
+          id: 'ID1333',
+          limit: 10000,
+          title: "Питание"
+        })
+      })
+
+      it('create category throwing an error', async () => {
+        const testError = new Error('Test fetch error message')
+        mockFbPush.mockImplementationOnce(() => {
+          throw testError
+        })
+        await expect(store.dispatch('createCategory', {
+          limit: 10000,
+          title: "Питание"
+        }))
+          .rejects.toThrowError(testError)
+      })
+
+    })
+
+    describe('updateCategory action test', () => {
+      it('update category', async () => {
+        const request = {
+          id: 'ID123',
+          limit: 20000,
+          title: "Транспорт"
+        }
+        mockFbUpdate.mockImplementationOnce(() => request)
+        expect(await store.dispatch('updateCategory', request))
+          .toStrictEqual(request)
+      })
+
+      it('update category throwing an error', async () => {
+        const testError = new Error('Test fetch error message')
+        mockFbUpdate.mockImplementationOnce(() => {
+          throw testError
+        })
+        const request = {
+          id: 'ID123',
+          limit: 20000,
+          title: "Транспорт"
+        }
+        const res = await expect(store.dispatch('updateCategory', request))
+          .rejects.toThrowError(testError)
+        expect(res).toBeUndefined()
+      })
+
+    })
+  })
+
   describe('Record module tests', () => {
   })
 
-  describe('Category module tests', () => {
-  })
 
 })
