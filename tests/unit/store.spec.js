@@ -788,6 +788,121 @@ describe('Vuex Store modules testsuite', () => {
   })
 
   describe('Record module tests', () => {
+    describe('fetchRecords action test', () => {
+      it('fetch with multiple entries response', async () => {
+        const response = {
+          "200": {
+            amount: 100,
+            categoryId: "100",
+            datetime: "2021-01-21T16:31:42.899Z",
+            description: "лампочки",
+            type: "outcome"
+          },
+          "201": {
+            amount: 200,
+            categoryId: "101",
+            datetime: "2021-01-21T16:31:42.899Z",
+            description: "Туалетная бумага",
+            type: "outcome"
+          }
+        }
+        mockOnceVal.mockImplementationOnce(() => response)
+        const res = await store.dispatch('fetchRecords')
+        expect(res.length).toBe(2)
+        expect(res).toStrictEqual(Object.entries(response).map(el => ({id: el[0], ...el[1]})))
+      })
+
+      it('fetch with throwing an error', async () => {
+        const testError = new Error('Test fetch error message')
+        mockOnceVal.mockImplementationOnce(() => {
+          throw testError
+        })
+        await expect(store.dispatch('fetchRecords'))
+          .rejects.toThrowError(testError)
+      })
+
+      it('fetch with null response', async () => {
+        mockOnceVal.mockImplementationOnce(() => null)
+        const res = await store.dispatch('fetchRecords')
+        expect(res.length).toBe(0)
+        expect(res).toStrictEqual([])
+      })
+    })
+
+    describe('fetchRecordById action test', () => {
+      it('fetch with single response', async () => {
+        const response = {
+          amount: 100,
+          categoryId: "100",
+          datetime: "2021-01-21T16:31:42.899Z",
+          description: "лампочки",
+          type: "outcome"
+        }
+        mockOnceVal.mockImplementationOnce(() => response)
+        const res = await store.dispatch('fetchRecordById', '123')
+        expect(res).toStrictEqual({
+          id: '123',
+          amount: 100,
+          categoryId: "100",
+          datetime: "2021-01-21T16:31:42.899Z",
+          description: "лампочки",
+          type: "outcome"
+        })
+      })
+
+      it('fetch with empty response', async () => {
+        const response = null
+        mockOnceVal.mockImplementationOnce(() => response)
+        const res = await store.dispatch('fetchRecordById', '155')
+        expect(res).toStrictEqual({
+          id: '155'
+        })
+      })
+
+      it('fetch with throwing an error', async () => {
+        const testError = new Error('Test fetch error message')
+        mockOnceVal.mockImplementationOnce(() => {
+          throw testError
+        })
+        await expect(store.dispatch('fetchRecordById'))
+          .rejects.toThrowError(testError)
+      })
+    })
+
+    describe('createRecord action test', () => {
+      it('create record', async () => {
+        const response = {
+          id: '1333',
+          amount: 100,
+          categoryId: "100",
+          datetime: "2021-01-21T16:31:42.899Z",
+          description: "лампочки",
+          type: "outcome"
+        }
+        mockFbPush.mockImplementationOnce(() => response)
+        const res = await store.dispatch('createRecord', response)
+        expect(res).toStrictEqual(response)
+      })
+
+      it('create record throwing an error', async () => {
+        const testError = new Error('Test fetch error message')
+        mockFbPush.mockImplementationOnce(() => {
+          throw testError
+        })
+        await expect(store.dispatch('createRecord', {
+          id: '123',
+          amount: 100,
+          categoryId: "100",
+          datetime: "2021-01-21T16:31:42.899Z",
+          description: "лампочки",
+          type: "outcome"
+        }))
+          .rejects.toThrowError(testError)
+      })
+
+    })
+
+
   })
 
 
