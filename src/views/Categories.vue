@@ -8,6 +8,7 @@
       :mobile-breakpoint="520"
       :no-data-text="'NoCategories' | localize"
       class="elevation-1"
+      id="dataTable"
     >
 
       <template v-slot:top>
@@ -22,6 +23,7 @@
           >
             <template v-slot:activator="{ on, attrs }">
               <v-btn
+                id="btnNewCategory"
                 color="primary"
                 dark
                 class="mb-2"
@@ -40,60 +42,65 @@
                 v-model="valid"
                 ref="editForm"
                 @submit.prevent="save"
+                id="editForm"
               >
-              <v-card-text>
-                <v-container>
-                  <v-row>
-                    <v-col
-                      cols="12"
-                      sm="6"
-                      md="4"
-                    >
-                      <v-text-field
-                        v-model="editedItem.title"
-                        :rules="titleRules"
-                        :label="'Title' | localize"
-                      ></v-text-field>
-                    </v-col>
-                    <v-col
-                      cols="12"
-                      sm="6"
-                      md="4"
-                    >
-                      <v-text-field
-                        v-model="editedItem.limit"
-                        :rules="limitRules"
-                        :label="'Limit' | localize"
-                      ></v-text-field>
-                    </v-col>
-                    <v-col
-                      cols="12"
-                      sm="6"
-                      md="4"
-                    >
+                <v-card-text>
+                  <v-container>
+                    <v-row>
+                      <v-col
+                        cols="12"
+                        sm="6"
+                        md="4"
+                      >
+                        <v-text-field
+                          v-model="editedItem.title"
+                          :rules="titleRules"
+                          :label="'Title' | localize"
+                          id="inputTitle"
+                        ></v-text-field>
+                      </v-col>
+                      <v-col
+                        cols="12"
+                        sm="6"
+                        md="4"
+                      >
+                        <v-text-field
+                          v-model.number.trim="editedItem.limit"
+                          :rules="limitRules"
+                          :label="'Limit' | localize"
+                          id="inputLimit"
+                        ></v-text-field>
+                      </v-col>
+                      <v-col
+                        cols="12"
+                        sm="6"
+                        md="4"
+                      >
 
-                    </v-col>
-                  </v-row>
-                </v-container>
-              </v-card-text>
+                      </v-col>
+                    </v-row>
+                  </v-container>
+                </v-card-text>
 
-              <v-card-actions>
-                <v-spacer></v-spacer>
-                <v-btn
-                  color="blue darken-1"
-                  text
-                  @click="close"
-                >
-                  {{ 'Cancel' | localize }}
-                </v-btn>
-                <v-btn
-                  color="blue darken-1"
-                  text
-                  @click="save"
-                >
-                  {{ 'Save' | localize }}
-                </v-btn>
-              </v-card-actions>
+                <v-card-actions>
+                  <v-spacer></v-spacer>
+                  <v-btn
+                    color="blue darken-1"
+                    text
+                    @click="close"
+                    id="dialogClose"
+                  >
+                    {{ 'Cancel' | localize }}
+                  </v-btn>
+                  <v-btn
+                    color="blue darken-1"
+                    text
+                    @click="save"
+                    id="dialogSave"
+                  >
+                    {{ 'Save' | localize }}
+                  </v-btn>
+                </v-card-actions>
               </v-form>
             </v-card>
           </v-dialog>
@@ -110,6 +117,7 @@
           small
           class="mr-2"
           @click="editItem(item)"
+          data-edit
         >
           mdi-pencil
         </v-icon>
@@ -212,11 +220,13 @@ export default {
       }
 
       if (!!this.editedItem.id) {
-        await this.updateCategory(this.editedItem)
-        Object.assign(this.categories[this.editedIndex], this.editedItem)
+        const updatedCategory = await this.updateCategory(this.editedItem)
+        !!updatedCategory && Object.assign(
+          this.categories[this.editedIndex], this.editedItem
+        )
       } else {
         const newCategory = await this.createCategory(this.editedItem)
-        this.categories.push(newCategory)
+        !!newCategory && this.categories.push(newCategory)
       }
       this.close()
     },
