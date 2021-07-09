@@ -10,6 +10,11 @@ module.exports = {
     'vue'
   ],
 
+  transformIgnorePatterns: [
+    'node_modules/(?!vuetify)'
+  ],
+
+
   moduleNameMapper: {
     "^.+\\.(css|styl|less|sass|scss|png|jpg|ttf|woff|woff2)$": "jest-transform-stub",
     // enable import beginning with @/ - as reference to <root>/src/ folder
@@ -32,10 +37,10 @@ module.exports = {
   coveragePathIgnorePatterns: [],
   coverageThreshold: {
     global: {
-      branches: 14,
-      functions: 15,
-      lines: 24,
-      statements: 25
+      branches: 24,
+      functions: 20,
+      lines: 29,
+      statements: 29
     }
   },
 
