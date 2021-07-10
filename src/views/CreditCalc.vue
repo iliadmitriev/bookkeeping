@@ -24,12 +24,14 @@
               label="Стоимость объекта"
               v-model="objectCostText"
               :rules="objectCostRules"
+              id="inputObjectCost"
             ></v-text-field>
             <v-text-field
               prepend-inner-icon="mdi-finance"
               label="Сумма кредита"
               v-model="creditAmountText"
               :rules="creditAmountRules"
+              id="inputCreditAmount"
             ></v-text-field>
 
             <v-text-field
@@ -94,6 +96,7 @@
 
             <v-switch
               v-model="annuity"
+              id="inputIsAnnuity"
             >
               <template v-slot:label>
                 {{ annuity ? 'Аннуитетный' : 'Дифференцированный' }}
@@ -330,18 +333,18 @@ export default {
     },
   },
   computed: {
-    displayBlock() {
-      switch (this.$vuetify.breakpoint.name) {
-        case 'xs':
-        case 'sm':
-          return false
-        case 'md':
-        case 'lg':
-        case 'xl':
-        default:
-          return true
-      }
-    },
+    // displayBlock() {
+    //   switch (this.$vuetify.breakpoint.name) {
+    //     case 'xs':
+    //     case 'sm':
+    //       return false
+    //     case 'md':
+    //     case 'lg':
+    //     case 'xl':
+    //     default:
+    //       return true
+    //   }
+    // },
     creditTermUnitText() {
       return this.creditTermUnits.find(i => this.creditTermUnit === i.value).text
     },
