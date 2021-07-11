@@ -30,7 +30,7 @@ describe('CreditCalc view component testsuite', () => {
     wrapper.find('#inputObjectCost').setValue('6000000')
     wrapper.find('#inputCreditAmount').setValue('5000000')
     wrapper.find('#inputIsAnnuity').setChecked(false)
-    console.log(wrapper.vm.$data.creditAmountText)
+    //console.log(wrapper.vm.$data.creditAmountText)
 
     expect(wrapper.vm.objectCostText).toBe('6000000')
     expect(wrapper.vm.creditAmountText).toBe('5000000')
