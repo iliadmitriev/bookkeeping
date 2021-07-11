@@ -176,7 +176,6 @@ export default {
     this.locale = localStorage.getItem('locale')
     this.darkMode = localStorage.getItem('darkMode') === 'true' || false
     this.$vuetify.theme.dark = this.darkMode
-    console.log(this.$route.query)
     if (messages[this.$route.query.message]) {
       this.$message(messages[this.$route.query.message])
     }
