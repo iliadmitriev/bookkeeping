@@ -22,6 +22,7 @@
                   v-bind="attrs"
                   v-on="on"
                   @click="switchDarkMode"
+                  id="switchDarkMode"
                 >
                   <v-icon dark>
                     mdi-theme-light-dark
@@ -81,7 +82,7 @@
             </p>
             <p class="center">
               {{ 'Language' | localize }}
-              <a href="#" @click="changeLocale">
+              <a href="#" @click="changeLocale" id="changeLocale">
                 {{ locale === 'ru-RU' ? 'English' : 'Russian' | localize }}
               </a>
             </p>
@@ -91,7 +92,8 @@
           <v-btn
             block
             outlined
-            @click.prevent="btnGoogleSingIn"
+            @click.prevent="btnProvideSingIn('loginWithGoogle')"
+            id="loginWithGoogle"
           >
             {{ 'Google' | localize }}
             <svg class="btn-img" viewBox="0 0 20 20" fit="" preserveAspectRatio="xMidYMid meet" focusable="false">
@@ -112,7 +114,7 @@
           <v-btn
             block
             outlined
-            @click.prevent="btnFacebookSingIn"
+            @click.prevent="btnProvideSingIn('loginWithFacebook')"
           >
             {{ 'Facebook' | localize }}
             <svg class="btn-img" viewBox="0 0 20 20" fit="" preserveAspectRatio="xMidYMid meet" focusable="false">
@@ -124,7 +126,7 @@
           <v-btn
             outlined
             block
-            @click.prevent="btnGithubSingIn"
+            @click.prevent="btnProvideSingIn('loginWithGithub')"
           >
             {{ 'Github' | localize }}
             <svg class="btn-img" viewBox="0 0 20 20" fit="" preserveAspectRatio="xMidYMid meet" focusable="false">
@@ -193,7 +195,6 @@ export default {
       }
       try {
         await this.$store.dispatch('login', loginFormData)
-        console.log(this.$route.query.path)
         await this.$router.push(this.$route.query.path ? this.$route.query.path : {name: 'home'})
       } catch (err) {
       } finally {
@@ -209,24 +210,12 @@ export default {
       this.$vuetify.theme.dark = this.darkMode
       localStorage.setItem('darkMode', this.darkMode.toString())
     },
-    async btnGoogleSingIn() {
+    async btnProvideSingIn(provider) {
       try {
-        await this.$store.dispatch('loginWithGoogle')
-        await this.$router.push(this.$route.query.path ? this.$route.query.path : {name: 'home'})
-      } catch (e) {
-      }
-    },
-    async btnFacebookSingIn() {
-      try {
-        await this.$store.dispatch('loginWithFacebook')
-        await this.$router.push(this.$route.query.path ? this.$route.query.path : {name: 'home'})
-      } catch (e) {
-      }
-    },
-    async btnGithubSingIn() {
-      try {
-        await this.$store.dispatch('loginWithGithub')
-        await this.$router.push(this.$route.query.path ? this.$route.query.path : {name: 'home'})
+        await this.$store.dispatch(provider)
+        await this.$router.push(
+          this.$route.query.path ? this.$route.query.path : {name: 'home'}
+        )
       } catch (e) {
       }
     }
