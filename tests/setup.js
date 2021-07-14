@@ -27,7 +27,9 @@ localVue.filter('number', numberFilter)
 localVue.filter('date', dateFilter)
 localVue.filter('currency', currencyFilter)
 
-global.mockLocalStorageGetItem = jest.fn(key => key === 'locale' && 'ru-RU')
+global.mockLocalStorageGetItem = jest.fn(
+  key => key === 'locale' ? 'ru-RU' : null
+)
 global.mockLocalStorageSetItem = jest.fn()
 Storage.prototype.getItem = mockLocalStorageGetItem
 Storage.prototype.setItem = mockLocalStorageSetItem
@@ -74,3 +76,9 @@ jest.mock('firebase/app', () => {
     })
   }
 });
+
+// for message plugin
+// to mount somewhere
+const app = document.createElement('div');
+app.setAttribute('id', 'v-app');
+document.body.append(app);

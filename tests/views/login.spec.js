@@ -9,12 +9,6 @@ const mockRouterPush = jest.fn()
 describe('Login.vue component testsuite', () => {
   let wrapper
 
-  // for message plugin
-  // to mount somewhere
-  const app = document.createElement('div');
-  app.setAttribute('id', 'v-app');
-  document.body.append(app);
-
   beforeEach(() => {
     firebase.signInWithEmailAndPassword.mockClear()
     firebase.signInWithPopup.mockClear()
