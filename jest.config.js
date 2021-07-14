@@ -14,6 +14,7 @@ module.exports = {
     'node_modules/(?!vuetify)'
   ],
 
+  setupFilesAfterEnv: ["<rootDir>/tests/setup.js"],
 
   moduleNameMapper: {
     "^.+\\.(css|styl|less|sass|scss|png|jpg|ttf|woff|woff2)$": "jest-transform-stub",

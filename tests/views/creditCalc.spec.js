@@ -1,19 +1,8 @@
 import CreditCalc from "@/views/CreditCalc";
-import {createLocalVue, mount} from "@vue/test-utils"
-import localizeFilter from "@/filters/localize.filter";
-import numberFilter from "@/filters/number.filter";
-import Vue from "vue";
-import Vuetify from "vuetify";
+import {mount} from "@vue/test-utils"
 import 'jest-canvas-mock';
 
-
 global.ResizeObserver = require('resize-observer-polyfill')
-
-const vuetify = new Vuetify()
-Vue.use(Vuetify)
-const localVue = createLocalVue()
-localVue.filter('localize', localizeFilter)
-localVue.filter('number', numberFilter)
 
 describe('CreditCalc view component testsuite', () => {
   let wrapper

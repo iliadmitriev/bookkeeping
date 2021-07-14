@@ -3,17 +3,12 @@ import currencyFilter from "@/filters/currency.filter"
 import numberFilter from "@/filters/number.filter"
 import localizeFilter from "@/filters/localize.filter"
 
-jest.mock('@/store', () => ({
-  getters: {info: {locale: 'ru-RU'}}
-}))
-const store = require('@/store')
-
-const localStorageMock = jest.fn(() => 'ru-RU')
-Storage.prototype.getItem = localStorageMock
+import store from '@/store'
 
 
 describe('Filters Testsuite', () => {
   it('dateFilter function', () => {
+    store.commit('setInfo', {locale: 'ru-RU'})
     const res = dateFilter(new Date('2004-01-31T07:00:00'))
     expect(res).toBe('31.01.2004, 07:00:00')
 
@@ -22,6 +17,8 @@ describe('Filters Testsuite', () => {
 
     const res3 = dateFilter('2004-01-31T07:00:00', false)
     expect(res3).toBe('31.01.2004')
+    store.commit('clearInfo')
+
   })
 
   it('currencyFilter function', () => {
@@ -45,42 +42,45 @@ describe('Filters Testsuite', () => {
 
   it('localizeFilter function, from profile info', () => {
 
-    store.getters.info.locale = 'en-US'
-    localStorageMock.mockClear()
+    store.commit('setInfo', {locale: 'en-US'})
+    mockLocalStorageGetItem.mockClear()
     expect(localizeFilter('Language')).toBe('Language')
-    expect(localStorageMock).not.toBeCalled()
+    expect(mockLocalStorageGetItem).not.toBeCalled()
+    store.commit('clearInfo')
   })
 
   it('localizeFilter function, from local storage', () => {
 
-    store.getters.info.locale = null
-    localStorageMock.mockClear()
-    localStorageMock.mockImplementationOnce(() => 'en-US')
+    store.commit('clearInfo')
+    mockLocalStorageGetItem.mockClear()
+    mockLocalStorageGetItem.mockImplementationOnce(() => 'en-US')
     expect(localizeFilter('Language')).toBe('Language')
-    expect(localStorageMock).toBeCalledTimes(1)
-    expect(localStorageMock).toBeCalledWith('locale')
+    expect(mockLocalStorageGetItem).toBeCalledTimes(1)
+    expect(mockLocalStorageGetItem).toBeCalledWith('locale')
 
   })
 
   it('localizeFilter function, no local storage, no profile info', () => {
 
-    store.getters.info.locale = null
-    localStorageMock.mockClear()
-    localStorageMock.mockImplementationOnce(() => null)
+    store.commit('clearInfo')
+
+    mockLocalStorageGetItem.mockClear()
+    mockLocalStorageGetItem.mockImplementationOnce(() => null)
     expect(localizeFilter('Language')).toBe('Язык')
-    expect(localStorageMock).toBeCalledTimes(1)
-    expect(localStorageMock).toBeCalledWith('locale')
+    expect(mockLocalStorageGetItem).toBeCalledTimes(1)
+    expect(mockLocalStorageGetItem).toBeCalledWith('locale')
 
   })
 
   it('localizeFilter function, key does not exists', () => {
 
-    store.getters.info.locale = 'en-US'
-    localStorageMock.mockClear()
-    localStorageMock.mockImplementationOnce(() => null)
+    store.commit('setInfo', {locale: 'en-US'})
+    mockLocalStorageGetItem.mockClear()
+    mockLocalStorageGetItem.mockImplementationOnce(() => null)
     expect(localizeFilter('NonExistentRandomKey'))
       .toBe('[localize error]: key NonExistentRandomKey not found')
-    expect(localStorageMock).not.toBeCalled()
+    expect(mockLocalStorageGetItem).not.toBeCalled()
+    store.commit('clearInfo')
 
 
   })
