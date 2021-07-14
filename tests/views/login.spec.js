@@ -1,67 +1,10 @@
 import Login from "@/views/Login";
-import {createLocalVue, mount} from "@vue/test-utils"
-import localizeFilter from "@/filters/localize.filter";
-import numberFilter from "@/filters/number.filter";
-import Vue from "vue";
-import Vuetify from "vuetify";
-import titlePlugin from "@/utils/title.plugin"
-import messagePlugin from "@/plugins/message.plugin"
-import VueMeta from 'vue-meta'
-import Vuex from "vuex";
-import store from '@/store'
+import {mount} from "@vue/test-utils"
+import store from "@/store"
 
 import firebase from "firebase/app";
 
-const vuetify = new Vuetify()
-Vue.use(Vuetify)
-
-const localVue = createLocalVue()
-localVue.filter('localize', localizeFilter)
-localVue.filter('number', numberFilter)
-localVue.use(VueMeta)
-localVue.use(Vuex)
-localVue.use(titlePlugin)
-localVue.use(messagePlugin)
-
 const mockRouterPush = jest.fn()
-const mockOnceVal = jest.fn()
-const mockFbSet = jest.fn()
-
-const mockLocalStorageGetItem = jest.fn(key => key === 'locale' && 'ru-RU')
-const mockLocalStorageSetItem = jest.fn()
-Storage.prototype.getItem = mockLocalStorageGetItem
-Storage.prototype.setItem = mockLocalStorageSetItem
-
-jest.mock('firebase/app', () => {
-  const auth = jest.fn().mockReturnThis()
-  auth.GoogleAuthProvider = jest.fn(() => ({
-    addScope: jest.fn(),
-    setCustomParameters: jest.fn()
-  }))
-  return {
-    auth,
-    currentUser: {
-      email: 'signerUser123@example.com', uid: 123, emailVerified: true
-    },
-    useDeviceLanguage: jest.fn(),
-    signInWithEmailAndPassword: jest.fn(),
-    signInWithPopup: jest.fn(),
-    fetchSignInMethodsForEmail: jest.fn(),
-    signOut: jest.fn(),
-    createUserWithEmailAndPassword: jest.fn(),
-    sendPasswordResetEmail: jest.fn(),
-    initializeApp: jest.fn(),
-    database: () => ({
-      ref: jest.fn(() => ({
-        child: jest.fn().mockReturnThis(),
-        set: mockFbSet,
-        once: jest.fn(() => ({
-          val: mockOnceVal
-        }))
-      }))
-    })
-  }}
-)
 
 describe('Login.vue component testsuite', () => {
   let wrapper

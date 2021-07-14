@@ -1,56 +1,7 @@
 import Categories from "@/views/Categories";
-import {createLocalVue, mount, shallowMount} from "@vue/test-utils"
-import Vuex from 'vuex';
+import {mount, shallowMount} from "@vue/test-utils"
 import store from '@/store'
-import localizeFilter from "@/filters/localize.filter";
 import numberFilter from "@/filters/number.filter";
-import titlePlugin from "@/utils/title.plugin"
-import VueMeta from 'vue-meta'
-
-import Vue from "vue";
-import Vuetify from "vuetify";
-
-const vuetify = new Vuetify()
-Vue.use(Vuetify)
-const localVue = createLocalVue()
-localVue.use(Vuex)
-localVue.use(VueMeta)
-localVue.use(titlePlugin)
-
-localVue.filter('localize', localizeFilter)
-localVue.filter('number', numberFilter)
-
-const mockOnceVal = jest.fn()
-const mockFbUpdate = jest.fn()
-const mockFbPush = jest.fn()
-const mockFbSet = jest.fn()
-
-jest.mock('firebase/app', () => ({
-    auth: jest.fn().mockReturnThis(),
-    currentUser: {
-      email: 'user123@example.com', uid: 123, emailVerified: true
-    },
-    useDeviceLanguage: jest.fn(),
-    signInWithEmailAndPassword: jest.fn(),
-    signInWithPopup: jest.fn(),
-    fetchSignInMethodsForEmail: jest.fn(),
-    signOut: jest.fn(),
-    createUserWithEmailAndPassword: jest.fn(),
-    sendPasswordResetEmail: jest.fn(),
-    initializeApp: jest.fn(),
-    database: () => ({
-      ref: jest.fn(() => ({
-        child: jest.fn().mockReturnThis(),
-        once: jest.fn(() => ({
-          val: mockOnceVal
-        })),
-        update: mockFbUpdate,
-        push: mockFbPush,
-        set: mockFbSet
-      }))
-    })
-  })
-)
 
 
 describe('Categories.vue view testsuite', () => {
@@ -128,12 +79,9 @@ describe('Categories.vue view testsuite', () => {
       mockOnceVal.mockImplementationOnce(() => {
         throw mountError
       })
-      const localTestVue = createLocalVue()
-      localTestVue.use(Vuex)
-      localTestVue.filter('localize', localizeFilter)
 
       shallowMount(Categories, {
-        localVue: localTestVue,
+        localVue: localVue,
         store,
       })
     })

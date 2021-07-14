@@ -1,35 +1,9 @@
 import Home from "@/views/Home";
 import HomeCurrency from "@/components/HomeCurrency";
 import HomeAccount from "@/components/HomeAccount";
+import store from '@/store'
 
-import {mount, createLocalVue} from "@vue/test-utils";
-
-import Vuetify from "vuetify";
-import Vue from "vue";
-
-Vue.use(Vuetify)
-
-import Vuex from "vuex";
-import VueMeta from "vue-meta";
-import titlePlugin from "@/utils/title.plugin"
-import store from "@/store"
-import localizeFilter from "@/filters/localize.filter";
-import currencyFilter from "@/filters/currency.filter";
-
-const vuetify = new Vuetify()
-const localVue = createLocalVue()
-localVue.use(Vuex)
-localVue.use(VueMeta)
-localVue.use(titlePlugin)
-localVue.filter('localize', localizeFilter)
-localVue.filter('currency', currencyFilter)
-
-Storage.prototype.getItem = jest.fn(
-  key => key === 'locale' && 'ru-RU'
-)
-
-
-global.fetch = jest.fn()
+import {mount} from "@vue/test-utils";
 
 describe('Home.vue view component testsuite', () => {
   let wrapper

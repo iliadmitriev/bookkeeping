@@ -1,4 +1,3 @@
-
 describe('main.js test', () => {
 
   it('stub test', () => {

@@ -1,58 +1,7 @@
-import {createLocalVue} from "@vue/test-utils";
-import Vuex from 'vuex';
 import store from '@/store'
 import firebase from 'firebase/app';
 
-const localVue = createLocalVue()
-localVue.use(Vuex)
-
 global.fetch = jest.fn()
-const mockOnceVal = jest.fn(() => ({
-  accepted: true,
-  bill: 10000,
-  locale: "en-US",
-  name: "Ivan"
-}))
-const mockFbUpdate = jest.fn(() => ({}))
-const mockFbPush = jest.fn()
-const mockFbOnce = jest.fn(() => ({
-  val: mockOnceVal
-}))
-const mockFbSet = jest.fn(() => ({}))
-const mockAuthProvider = {
-  addScope: jest.fn(),
-  setCustomParameters: jest.fn()
-}
-
-jest.mock('firebase/app', () => {
-  const auth = jest.fn().mockReturnThis()
-  auth.GoogleAuthProvider = jest.fn(() => mockAuthProvider)
-  auth.FacebookAuthProvider = jest.fn(() => mockAuthProvider)
-  auth.GithubAuthProvider = jest.fn(() => mockAuthProvider)
-  return {
-    auth,
-    currentUser: {
-      email: 'user@example.com', uid: 123, emailVerified: true
-    },
-    useDeviceLanguage: jest.fn(),
-    signInWithEmailAndPassword: jest.fn(),
-    signInWithPopup: jest.fn(),
-    fetchSignInMethodsForEmail: jest.fn(),
-    signOut: jest.fn(),
-    createUserWithEmailAndPassword: jest.fn(),
-    sendPasswordResetEmail: jest.fn(),
-    initializeApp: jest.fn(),
-    database: () => ({
-      ref: jest.fn(() => ({
-        child: jest.fn().mockReturnThis(),
-        once: mockFbOnce,
-        update: mockFbUpdate,
-        push: mockFbPush,
-        set: mockFbSet
-      }))
-    })
-  }
-});
 
 describe('Vuex Store modules testsuite', () => {
 
@@ -145,12 +94,21 @@ describe('Vuex Store modules testsuite', () => {
     })
 
     it('clearInfo mutation', async () => {
+      store.commit('setInfo', {name: 'John'})
+      expect(store.getters.info).not.toStrictEqual({})
       store.commit('clearInfo')
       expect(store.state.info).toStrictEqual({info: {}})
       expect(store.getters.info).toStrictEqual({})
     })
 
     it('fetchInfo action', async () => {
+
+      mockOnceVal.mockImplementationOnce(() => ({
+          accepted: true,
+          bill: 10000,
+          locale: "en-US",
+          name: "Ivan"
+      }))
 
       await store.dispatch('fetchInfo')
 

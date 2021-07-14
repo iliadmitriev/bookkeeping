@@ -1,46 +1,7 @@
 import Planning from "@/views/Planning";
-import {mount, createLocalVue} from "@vue/test-utils";
+import {mount} from "@vue/test-utils";
 
-import Vuetify from "vuetify";
-import Vue from "vue";
-
-Vue.use(Vuetify)
-
-import Vuex from "vuex";
-import VueMeta from "vue-meta";
-import titlePlugin from "@/utils/title.plugin"
 import store from "@/store"
-import localizeFilter from "@/filters/localize.filter";
-import numberFilter from "@/filters/number.filter";
-
-const vuetify = new Vuetify()
-const localVue = createLocalVue()
-localVue.use(Vuex)
-localVue.use(VueMeta)
-localVue.use(titlePlugin)
-localVue.filter('localize', localizeFilter)
-localVue.filter('number', numberFilter)
-
-Storage.prototype.getItem = jest.fn(
-  key => key === 'locale' && 'ru-RU'
-)
-const mockOnceVal = jest.fn()
-jest.mock('firebase/app', () => ({
-    auth: jest.fn().mockReturnThis(),
-    currentUser: {
-      email: 'user@example.com', uid: 123, emailVerified: true
-    },
-    initializeApp: jest.fn(),
-    database: () => ({
-      ref: jest.fn(() => ({
-        child: jest.fn().mockReturnThis(),
-        once: () => ({
-          val: mockOnceVal
-        })
-      }))
-    })
-  })
-);
 
 describe('Planning.vue view component testsuite', () => {
   let wrapper
