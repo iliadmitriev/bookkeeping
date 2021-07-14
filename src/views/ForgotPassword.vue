@@ -40,7 +40,7 @@
               <router-link to="/register">{{ 'Register' | localize }}</router-link>
             </p>
             <p class="center">
-              <a href="#" @click="changeLocale">
+              <a href="#" @click="changeLocale" id="changeLocale">
                 {{ locale === 'ru-RU' ? 'English' : 'Russian' | localize }}
               </a>
             </p>
