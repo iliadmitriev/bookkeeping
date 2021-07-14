@@ -1,8 +1,6 @@
 import store from '@/store'
 import firebase from 'firebase/app';
 
-global.fetch = jest.fn()
-
 describe('Vuex Store modules testsuite', () => {
 
   describe('Index module tests', () => {
