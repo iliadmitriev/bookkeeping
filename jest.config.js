@@ -38,10 +38,10 @@ module.exports = {
   coveragePathIgnorePatterns: [],
   coverageThreshold: {
     global: {
-      branches: 50,
-      functions: 56,
-      lines: 64,
-      statements: 64
+      branches: 54,
+      functions: 58,
+      lines: 66,
+      statements: 66
     }
   },
 
