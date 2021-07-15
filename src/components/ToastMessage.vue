@@ -11,7 +11,7 @@
         color="red"
         text
         v-bind="attrs"
-        @click="dismiss"
+        @click="close"
       >
         &times;
       </v-btn>
