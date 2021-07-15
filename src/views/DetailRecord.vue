@@ -89,7 +89,7 @@ export default {
       this.record = {
         ...record,
         categoryName: category.title,
-        datetime: new Date(record.datetime),
+        datetime: record.datetime ? new Date(record.datetime) : null,
         typeClass: record.type === 'income' ? 'green' : 'red',
         typeName: record.type === 'income'
           ? localize('Income')

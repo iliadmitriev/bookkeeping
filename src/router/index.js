@@ -84,7 +84,7 @@ router.beforeEach((to, from, next) => {
   const requireAuth = to.matched.some( rec => rec.meta.auth )
 
   if (requireAuth && !currentUser) {
-    next('/login?message=login')
+    next({name: 'login', query: {message: 'login'}})
   } else {
     next()
   }
