@@ -25,6 +25,7 @@
         item-text="title"
         item-value="id"
         v-model="category"
+        id="category"
         :rules="categoryRules"
         :label="'Category' | localize"
         :placeholder="'SelectCategory' | localize"
@@ -96,7 +97,6 @@ export default {
     valid: false,
     categories: [],
     submitting: true,
-    select: null,
     category: null,
     categoryRules: [
       v => !!v || localize('SelectCategory')
@@ -165,7 +165,7 @@ export default {
           this.description = ''
 
         } catch (e) {
-          this.$error(e)
+
         } finally {
           this.submitting = false
         }
@@ -174,11 +174,6 @@ export default {
 
       }
 
-    }
-  },
-  beforeDestroy() {
-    if (this.select && this.select.destroy) {
-      this.select.destroy()
     }
   }
 }
