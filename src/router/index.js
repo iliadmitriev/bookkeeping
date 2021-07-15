@@ -81,7 +81,7 @@ const router = new VueRouter({
 
 router.beforeEach((to, from, next) => {
   const currentUser = fbAuth.currentUser
-  const requireAuth = to.matched.some( rec => rec.meta.auth )
+  const requireAuth = to.matched.some(rec => rec.meta.auth)
 
   if (requireAuth && !currentUser) {
     next({name: 'login', query: {message: 'login'}})

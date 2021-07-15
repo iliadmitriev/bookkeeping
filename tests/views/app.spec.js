@@ -3,6 +3,7 @@ import {mount} from "@vue/test-utils";
 import router from "@/router";
 import store from "@/store"
 import 'jest-canvas-mock';
+import firebase from "firebase/app";
 
 
 describe('App.vue main application testsuite', () => {
@@ -70,11 +71,21 @@ describe('App.vue main application testsuite', () => {
     {page: 'planning', layout: 'main-layout', params: null},
     {page: 'credit-calc', layout: 'main-layout', params: null},
     {page: 'detail', layout: 'main-layout', params: {recordId: 1001}}
-  ])('go to $page page',
+  ])('navigate to $page page',
     async ({page, params, layout}) => {
       await router.push({name: page, params: params})
       await flushPromises()
       expect(appWrapper.vm.layout).toBe(layout)
     })
+
+  it('navigate to profile (unauthorized)', async () => {
+    await router.push({name: 'register'})
+
+    firebase.auth().currentUser = null
+    store.commit('clearInfo')
+
+    await expect(router.push({name: 'profile'})).rejects.toThrow()
+
+  })
 
 })
