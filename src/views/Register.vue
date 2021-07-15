@@ -49,6 +49,7 @@
           </v-text-field>
 
           <v-checkbox
+            id="accepted"
             v-model="accepted"
             :key="locale + 'accepted'"
             :rules="ruleAccepted"
@@ -86,7 +87,7 @@
               <router-link to="/login">{{ 'SignIn' | localize }}</router-link>
             </p>
             <p class="center">
-              <a href="#" @click="changeLocale">
+              <a href="#" @click="changeLocale" id="changeLocale">
                 {{ locale === 'ru-RU' ? 'English' : 'Russian' | localize }}
               </a>
             </p>
@@ -136,7 +137,7 @@ export default {
     locale: localStorage.getItem('locale') || 'ru-RU'
   }),
   mounted() {
-    this.locale = localStorage.getItem('locale')
+    this.locale = localStorage.getItem('locale') || 'ru-RU'
   },
   methods: {
     async submitRegister() {
