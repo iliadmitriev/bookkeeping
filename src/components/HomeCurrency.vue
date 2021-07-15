@@ -71,9 +71,6 @@ export default {
     colorClass() {
       return this.$vuetify.theme.dark ? 'orange darken-3' : 'orange accent-1'
     },
-    base() {
-      return (this.rates['RUB'])
-    },
     data() {
       return this.currencies.map((c, i) => {
         return {

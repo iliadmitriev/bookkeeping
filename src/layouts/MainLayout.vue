@@ -43,10 +43,15 @@ export default {
     triggerDrawer: 0
   }),
   async mounted() {
-    if (!Object.keys(this.$store.getters.info).length) {
-      await this.$store.dispatch('fetchInfo')
+    try {
+      if (!Object.keys(this.$store.getters.info).length) {
+        await this.$store.dispatch('fetchInfo')
+      }
+    } catch (e) {
+
+    } finally {
+      this.loading = false
     }
-    this.loading = false
   },
   methods: {
     openDrawer() {
