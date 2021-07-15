@@ -4,6 +4,8 @@ import router from "@/router";
 import store from "@/store"
 import 'jest-canvas-mock';
 import firebase from "firebase/app";
+import MainLayout from "@/layouts/MainLayout";
+import Navbar from "@/components/app/Navbar";
 
 
 describe('App.vue main application testsuite', () => {
@@ -77,6 +79,85 @@ describe('App.vue main application testsuite', () => {
       await flushPromises()
       expect(appWrapper.vm.layout).toBe(layout)
     })
+
+  it('navigate to profile and throw message', async () => {
+    await router.push({name: 'profile'})
+
+    const testError = new Error('test error message')
+    testError.code = 'auth/user-disabled'
+    store.commit('setError', testError)
+    await flushPromises()
+
+    const testError2 = new Error('test error message')
+    testError2.code = 'auth/unknown'
+    store.commit('setError', testError2)
+    await flushPromises()
+
+  })
+
+  it('navigate to login and throw messages', async () => {
+    await router.push({name: 'login'})
+
+    const testError = new Error('test error message')
+    testError.code = 'auth/popup-blocked'
+    store.commit('setError', testError)
+    await flushPromises()
+
+    const testError2 = new Error('test error message')
+    testError2.code = 'auth/unknown'
+    store.commit('setError', testError2)
+    await flushPromises()
+  })
+
+  it('Drawer open and close', async () => {
+    await router.push({name: 'profile'})
+    const mainLayout = appWrapper.findComponent(MainLayout)
+    expect(mainLayout.vm.triggerDrawer).toBe(0)
+    mainLayout.vm.openDrawer()
+    expect(mainLayout.vm.triggerDrawer).toBe(1)
+
+  })
+
+  it('main layout update profile failed on mount', async () => {
+    store.commit('clearInfo')
+    mockOnceVal.mockImplementationOnce(() => {
+      const err = new Error('Test error')
+      err.code = 'auth/user-disabled'
+      throw err
+    })
+    const testAppWrapper = mount(App, {
+      localVue,
+      vuetify,
+      router,
+      store
+    })
+    await flushPromises()
+    expect(testAppWrapper.exists()).toBe(true)
+  })
+
+  it('switch to dark mode and back', async () => {
+    mockLocalStorageSetItem.mockClear()
+    appWrapper.find('#profileMenu').trigger('click')
+    await flushPromises()
+    const switchDarkMode = appWrapper.find('#switchDarkMode')
+    const navBar = appWrapper.findComponent(Navbar)
+    const darkMode = navBar.vm.darkMode
+    switchDarkMode.trigger('click')
+    await flushPromises()
+    expect(navBar.vm.darkMode).toBe(!darkMode)
+    expect(mockLocalStorageSetItem).toBeCalledTimes(1)
+    expect(mockLocalStorageSetItem).toBeCalledWith('darkMode', (!darkMode).toString())
+  })
+
+  it('logout', async () => {
+    mockLocalStorageSetItem.mockClear()
+    appWrapper.find('#profileMenu').trigger('click')
+    await flushPromises()
+    const logout = appWrapper.find('#logout')
+    logout.trigger('click')
+    await flushPromises()
+
+  })
 
   it('navigate to profile (unauthorized)', async () => {
     await router.push({name: 'register'})

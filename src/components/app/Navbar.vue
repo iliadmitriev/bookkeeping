@@ -17,6 +17,7 @@
     >
       <template v-slot:activator="{ on, attrs }">
         <v-btn
+          id="profileMenu"
           icon
           v-bind="attrs"
           v-on="on"
@@ -43,6 +44,7 @@
         </v-list-item>
 
         <v-list-item
+          id="switchDarkMode"
           @click="switchDarkMode"
         >
           <v-list-item-icon>
@@ -54,6 +56,7 @@
         </v-list-item>
 
         <v-list-item
+          id="logout"
           @click="logout"
         >
           <v-list-item-icon>
@@ -90,11 +93,6 @@ export default {
       this.$vuetify.theme.dark = this.darkMode
       localStorage.setItem('darkMode', this.darkMode.toString())
     },
-  },
-  computed: {
-    name() {
-      return this.$store.getters.info.name
-    }
   },
   mounted() {
     this.darkMode = localStorage.getItem('darkMode') === 'true' || false

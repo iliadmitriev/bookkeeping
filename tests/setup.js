@@ -79,8 +79,10 @@ jest.mock('firebase/app', () => {
 
 // for message plugin
 // to mount somewhere
+// and suppress [Vuetify] Unable to locate target [data-app]
 const app = document.createElement('div');
 app.setAttribute('id', 'v-app');
+app.setAttribute('data-app', null)
 document.body.append(app);
 
 // for chartjs to work in tests
