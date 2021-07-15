@@ -2,8 +2,6 @@ import CreditCalc from "@/views/CreditCalc";
 import {mount} from "@vue/test-utils"
 import 'jest-canvas-mock';
 
-global.ResizeObserver = require('resize-observer-polyfill')
-
 describe('CreditCalc view component testsuite', () => {
   let wrapper
 

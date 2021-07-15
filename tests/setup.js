@@ -28,7 +28,7 @@ localVue.filter('date', dateFilter)
 localVue.filter('currency', currencyFilter)
 
 global.mockLocalStorageGetItem = jest.fn(
-  key => key === 'locale' ? 'ru-RU' : null
+  (key = null) => key === 'locale' ? 'ru-RU' : null
 )
 global.mockLocalStorageSetItem = jest.fn()
 Storage.prototype.getItem = mockLocalStorageGetItem
@@ -82,3 +82,11 @@ jest.mock('firebase/app', () => {
 const app = document.createElement('div');
 app.setAttribute('id', 'v-app');
 document.body.append(app);
+
+// for chartjs to work in tests
+global.ResizeObserver = require('resize-observer-polyfill')
+
+// for awaiting finishing all the background tasks
+global.flushPromises = () => new Promise(
+  typeof setImmediate === 'function' ? setImmediate : setTimeout
+);
