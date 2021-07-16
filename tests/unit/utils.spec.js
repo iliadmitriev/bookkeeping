@@ -1,11 +1,5 @@
 import {minPassLen} from "@/utils/constants";
 
-jest.mock('firebase/app', () => ({
-  auth: jest.fn(() => ({})),
-  database: jest.fn(),
-  initializeApp: jest.fn()
-}))
-
 import {
   providerAuth,
   getProviderForProviderId,
@@ -91,21 +85,23 @@ describe('Utils testsuite', () => {
     beforeEach(() => {
     })
 
-    it('validateEmail positive test ', () => {
-      expect(validateEmail('idm.test@mail.ru')).toBe(true)
-      expect(validateEmail('idm123123.test@mail.domain.com')).toBe(true)
-      expect(validateEmail('z.check.test@mail.ru')).toBe(true)
-      expect(validateEmail('123123.test@google.com')).toBe(true)
-    })
+    it.each([
+      {email: 'idm.test@mail.ru', expected: true},
+      {email: 'idm123123.test@mail.domain.com', expected: true},
+      {email: 'z.check.test@mail.ru', expected: true},
+      {email: '123123.test@google.com', expected: true},
+      {email: 'idm.test@mail.ru', expected: true},
+      {email: '[]test@mail.ru', expected: false},
+      {email: '<test@mail.ru', expected: false},
+      {email: '.test@mail.ru', expected: false},
+      {email: '(test@mail.r', expected: false},
+      {email: '@test@mail.r', expected: false},
+    ])
+    ('validateEmail $email',
+      ({email, expected}) => {
+        expect(validateEmail(email)).toBe(expected)
+      })
 
-    it('validateEmail negative test ', () => {
-      expect(validateEmail('[]test@mail.ru')).toBe(false)
-      expect(validateEmail('<test@mail.ru')).toBe(false)
-      expect(validateEmail('.test@mail.ru')).toBe(false)
-      expect(validateEmail('(test@mail.r')).toBe(false)
-      expect(validateEmail('@test@mail.r')).toBe(false)
-
-    })
 
     it('addMonths', () => {
       expect(addMonths(new Date("1999-04-03"), 5).toISOString().split('T')[0])
