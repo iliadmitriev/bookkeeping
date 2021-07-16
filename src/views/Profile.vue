@@ -18,6 +18,7 @@
       </v-text-field>
 
       <v-select
+        id="locale"
         v-model="currentLocale"
         :items="locales"
         prepend-icon="mdi-translate"
