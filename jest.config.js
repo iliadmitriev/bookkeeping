@@ -35,13 +35,16 @@ module.exports = {
 
   collectCoverage: true,
   collectCoverageFrom: ['src/**/*.{js,vue}', '!**/node_modules/**'],
-  coveragePathIgnorePatterns: [],
+  coveragePathIgnorePatterns: [
+    'src/registerServiceWorker.js',
+    'src/main.js'
+  ],
   coverageThreshold: {
     global: {
-      branches: 83,
-      functions: 86,
-      lines: 87,
-      statements: 87
+      branches: 86,
+      functions: 90,
+      lines: 90,
+      statements: 90
     }
   },
 
