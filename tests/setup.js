@@ -42,9 +42,11 @@ global.mockFbOnce = jest.fn(() => ({
   val: mockOnceVal
 }))
 global.mockFbSet = jest.fn(() => ({}))
+global.mockAddScope = jest.fn()
+global.mockSetCustomParameters = jest.fn()
 global.mockAuthProvider = {
-  addScope: jest.fn(),
-  setCustomParameters: jest.fn()
+  addScope: mockAddScope,
+  setCustomParameters: mockSetCustomParameters
 }
 
 jest.mock('firebase/app', () => {
