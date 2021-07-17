@@ -4,23 +4,11 @@ import {
   providerAuth,
   getProviderForProviderId,
 } from "@/utils/firebase";
-import {addMonths, baseLog, numberOfPaymentsLeft, paymentAnnuity, random_rgba, validateEmail} from "@/utils/helpers";
+import {
+  addMonths, baseLog, numberOfPaymentsLeft,
+  paymentAnnuity, random_rgba, validateEmail
+} from "@/utils/helpers";
 
-const googleAddScope = jest.fn()
-const fbAddScope = jest.fn()
-const setCustomParameters = jest.fn()
-const githubAddScope = jest.fn()
-
-providerAuth.GoogleAuthProvider = jest.fn(() => ({
-  addScope: googleAddScope
-}))
-providerAuth.FacebookAuthProvider = jest.fn(() => ({
-  addScope: fbAddScope,
-  setCustomParameters: setCustomParameters
-}))
-providerAuth.GithubAuthProvider = jest.fn(() => ({
-  addScope: githubAddScope
-}))
 
 describe('Utils testsuite', () => {
 
@@ -34,6 +22,8 @@ describe('Utils testsuite', () => {
       providerAuth.GoogleAuthProvider.mockClear()
       providerAuth.FacebookAuthProvider.mockClear()
       providerAuth.GithubAuthProvider.mockClear()
+      mockAddScope.mockClear()
+      mockSetCustomParameters.mockClear()
     })
 
     it('getProviderForProviderId google.com', () => {
@@ -41,11 +31,10 @@ describe('Utils testsuite', () => {
       expect(providerAuth.GoogleAuthProvider).toHaveBeenCalledTimes(1)
       expect(providerAuth.FacebookAuthProvider).toHaveBeenCalledTimes(0)
       expect(providerAuth.GithubAuthProvider).toHaveBeenCalledTimes(0)
-      expect(googleAddScope).toHaveBeenCalledTimes(3)
-      expect(googleAddScope).toHaveBeenCalledWith("openid")
-      expect(googleAddScope).toHaveBeenCalledWith("profile")
-      expect(googleAddScope).toHaveBeenCalledWith("email")
-      expect(googleAddScope).not.toHaveBeenCalledWith("user:email")
+      expect(mockAddScope).toHaveBeenCalledTimes(3)
+      expect(mockAddScope).toHaveBeenCalledWith("openid")
+      expect(mockAddScope).toHaveBeenCalledWith("profile")
+      expect(mockAddScope).toHaveBeenCalledWith("email")
     })
 
     it('getProviderForProviderId facebook.com', () => {
@@ -53,10 +42,10 @@ describe('Utils testsuite', () => {
       expect(providerAuth.FacebookAuthProvider).toHaveBeenCalledTimes(1)
       expect(providerAuth.GoogleAuthProvider).toHaveBeenCalledTimes(0)
       expect(providerAuth.GithubAuthProvider).toHaveBeenCalledTimes(0)
-      expect(fbAddScope).toHaveBeenCalledTimes(1)
-      expect(fbAddScope).toHaveBeenCalledWith("email")
-      expect(setCustomParameters).toHaveBeenCalledTimes(1)
-      expect(setCustomParameters).toHaveBeenCalledWith({
+      expect(mockAddScope).toHaveBeenCalledTimes(1)
+      expect(mockAddScope).toHaveBeenCalledWith("email")
+      expect(mockSetCustomParameters).toHaveBeenCalledTimes(1)
+      expect(mockSetCustomParameters).toHaveBeenCalledWith({
         'display': 'popup'
       })
     })
@@ -66,9 +55,9 @@ describe('Utils testsuite', () => {
       expect(providerAuth.GithubAuthProvider).toHaveBeenCalledTimes(1)
       expect(providerAuth.FacebookAuthProvider).toHaveBeenCalledTimes(0)
       expect(providerAuth.GoogleAuthProvider).toHaveBeenCalledTimes(0)
-      expect(githubAddScope).toHaveBeenCalledTimes(2)
-      expect(githubAddScope).toHaveBeenCalledWith("user:email")
-      expect(githubAddScope).toHaveBeenCalledWith("read:user")
+      expect(mockAddScope).toHaveBeenCalledTimes(2)
+      expect(mockAddScope).toHaveBeenCalledWith("user:email")
+      expect(mockAddScope).toHaveBeenCalledWith("read:user")
     })
 
     it('getProviderForProviderId unknown', () => {
