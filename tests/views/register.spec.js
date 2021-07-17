@@ -62,8 +62,7 @@ describe('Register.vue view component testsuite', () => {
       wrapper.find('#name').setValue(name)
       wrapper.find('#accepted').setChecked(accepted)
 
-      await wrapper.vm.$nextTick()
-      await wrapper.vm.$nextTick()
+      await flushPromises()
 
       expect(wrapper.vm.valid).toBe(valid)
 

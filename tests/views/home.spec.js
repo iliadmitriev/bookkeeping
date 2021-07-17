@@ -54,9 +54,8 @@ describe('Home.vue view component testsuite', () => {
       store
     })
 
-    await wrapper.vm.$nextTick()
-    await wrapper.vm.$nextTick()
-    await wrapper.vm.$nextTick()
+    await flushPromises()
+
     const homeCurrency = wrapper.findComponent(HomeCurrency)
     const homeAccount = wrapper.findComponent(HomeAccount)
     expect(homeCurrency.exists()).toBe(true)
@@ -97,8 +96,7 @@ describe('Home.vue view component testsuite', () => {
     );
 
     await wrapper.vm.refresh()
-
-    await wrapper.vm.$nextTick()
+    await flushPromises()
     const homeCurrency = wrapper.findComponent(HomeCurrency)
     const homeAccount = wrapper.findComponent(HomeAccount)
 
@@ -114,7 +112,7 @@ describe('Home.vue view component testsuite', () => {
 
     await expect(wrapper.vm.refresh()).resolves.toBe(undefined)
 
-    await wrapper.vm.$nextTick()
+    await flushPromises()
 
   })
 

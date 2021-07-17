@@ -93,13 +93,7 @@ describe('Planning.vue view component testsuite', () => {
 
     expect(wrapper.vm.loading).toBe(true)
 
-    await wrapper.vm.$nextTick()
-    await wrapper.vm.$nextTick()
-    await wrapper.vm.$nextTick()
-    await wrapper.vm.$nextTick()
-    await wrapper.vm.$nextTick()
-    await wrapper.vm.$nextTick()
-
+    await flushPromises()
 
     expect(wrapper.vm.loading).toBe(false)
 

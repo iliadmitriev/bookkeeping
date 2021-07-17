@@ -48,10 +48,7 @@ describe('Categories.vue view testsuite', () => {
         }
       })
 
-      await wrapper.vm.$nextTick()
-      await wrapper.vm.$nextTick()
-      await wrapper.vm.$nextTick()
-      await wrapper.vm.$nextTick()
+      await flushPromises()
 
       const tableWrapper = wrapper.find('#dataTable')
       const table = tableWrapper.find('table')
@@ -101,19 +98,13 @@ describe('Categories.vue view testsuite', () => {
       inputLimit.setValue('1000')
 
 
-      await wrapper.vm.$nextTick()
-      await wrapper.vm.$nextTick()
+      await flushPromises()
 
       expect(wrapper.vm.$data.editedItem.title).toBe('Связь')
       expect(wrapper.vm.$data.editedItem.limit).toBe(1000)
 
       await wrapper.find('#dialogSave').trigger('click')
-      await wrapper.vm.$nextTick()
-      await wrapper.vm.$nextTick()
-      await wrapper.vm.$nextTick()
-      await wrapper.vm.$nextTick()
-      await wrapper.vm.$nextTick()
-      await wrapper.vm.$nextTick()
+      await flushPromises()
 
       expect(mockFbPush).toBeCalledTimes(1)
       const tableWrapper = wrapper.find('#dataTable')
@@ -140,13 +131,10 @@ describe('Categories.vue view testsuite', () => {
       expect(wrapper.vm.$data.editedItem.title).toBe('Помощь нуждающимся')
       expect(wrapper.vm.$data.editedItem.limit).toBe(2000)
 
-      await wrapper.vm.$nextTick()
-      await wrapper.vm.$nextTick()
+      await flushPromises()
 
       await expect(wrapper.vm.save()).resolves.not.toThrowError(testError)
-      for (let j = 0; j < 6; j++) {
-        await wrapper.vm.$nextTick()
-      }
+      await flushPromises()
 
       expect(mockFbPush).toBeCalledTimes(1)
       const tableWrapper = wrapper.find('#dataTable')
@@ -180,7 +168,7 @@ describe('Categories.vue view testsuite', () => {
 
       expect(wrapper.vm.$refs.editForm.validate).toBeCalledTimes(2)
       wrapper.vm.close()
-      await wrapper.vm.$nextTick()
+      await flushPromises()
 
     })
 
@@ -221,17 +209,14 @@ describe('Categories.vue view testsuite', () => {
         inputTitle.setValue(input.title)
         inputLimit.setValue(input.limit)
 
-        await wrapper.vm.$nextTick()
-        await wrapper.vm.$nextTick()
+        await flushPromises()
 
         expect(wrapper.vm.$data.editedItem.title).toBe(input.title)
         expect(wrapper.vm.$data.editedItem.limit).toBe(input.limit)
 
         await wrapper.find('#dialogSave').trigger('click')
 
-        for (let j = 0; j < 7; j++) {
-          await wrapper.vm.$nextTick()
-        }
+        await flushPromises()
 
         if (expected) {
           expect(store.getters.error).toBe(null)

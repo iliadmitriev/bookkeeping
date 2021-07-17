@@ -41,12 +41,7 @@ describe('DetailRecord.vue view component testsuite', () => {
         }
       })
 
-      await wrapper.vm.$nextTick()
-      await wrapper.vm.$nextTick()
-      await wrapper.vm.$nextTick()
-      await wrapper.vm.$nextTick()
-      await wrapper.vm.$nextTick()
-      await wrapper.vm.$nextTick()
+      await flushPromises()
 
       expect(mockOnceVal).toBeCalledTimes(2)
       expect(store.getters.error).toBe(null)
@@ -91,12 +86,8 @@ describe('DetailRecord.vue view component testsuite', () => {
       }
     })
 
-    await wp.vm.$nextTick()
-    await wp.vm.$nextTick()
-    await wp.vm.$nextTick()
-    await wp.vm.$nextTick()
-    await wp.vm.$nextTick()
-    await wp.vm.$nextTick()
+    await flushPromises()
+
     expect(wp.vm.record).toBe(null)
     expect(store.getters.error).toBe(testError)
     expect(wp.vm.pathItems).toBe(undefined)

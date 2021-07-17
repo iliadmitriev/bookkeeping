@@ -38,10 +38,7 @@ describe('Record.vue view component testsuite', () => {
     })
 
     expect(wrapper.vm.loading).toBe(true)
-    await wrapper.vm.$nextTick()
-    await wrapper.vm.$nextTick()
-    await wrapper.vm.$nextTick()
-    await wrapper.vm.$nextTick()
+    await flushPromises()
     expect(wrapper.vm.loading).toBe(false)
     expect(wrapper.vm.categories).toBeInstanceOf(Array)
     expect(wrapper.vm.categories.length).toBe(3)
@@ -70,15 +67,12 @@ describe('Record.vue view component testsuite', () => {
       wrapper.find('#description').setValue('Потрачено')
       wrapper.vm.type = 'outcome'
 
-      await wrapper.vm.$nextTick()
-      await wrapper.vm.$nextTick()
+      await flushPromises()
 
       expect(wrapper.vm.valid).toBe(valid)
 
       await wrapper.find('form').trigger('submit.prevent')
-      await wrapper.vm.$nextTick()
-      await wrapper.vm.$nextTick()
-      await wrapper.vm.$nextTick()
+      await flushPromises()
 
       expect(store.getters.info.bill).toBe(expected)
 

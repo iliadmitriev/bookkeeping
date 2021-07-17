@@ -58,14 +58,11 @@ describe('ForgotPassword.vue view component testsuite', () => {
       const emailInput = wrapper.find('#email')
       emailInput.setValue(email)
 
-      await wrapper.vm.$nextTick()
-      await wrapper.vm.$nextTick()
+      await flushPromises()
 
       expect(wrapper.vm.valid).toBe(valid)
       await wrapper.find('form').trigger('submit.prevent')
-      await wrapper.vm.$nextTick()
-      await wrapper.vm.$nextTick()
-      await wrapper.vm.$nextTick()
+      await flushPromises()
 
       if (valid && !throwing) {
         expect(routerPush).toBeCalledTimes(1)
