@@ -103,9 +103,7 @@ describe('Login.vue component testsuite', () => {
     wrapper.find('#email').setValue('sign.user123@example.com')
     wrapper.find('#password').setValue('secret123')
 
-    await wrapper.vm.$nextTick()
-    await wrapper.vm.$nextTick()
-    await wrapper.vm.$nextTick()
+    await flushPromises()
 
     expect(wrapper.vm.$data.email).toBe('sign.user123@example.com')
     expect(wrapper.vm.$data.password).toBe('secret123')
@@ -113,14 +111,9 @@ describe('Login.vue component testsuite', () => {
     const loginForm = wrapper.find('form')
     await loginForm.trigger('submit')
 
-    await wrapper.vm.$nextTick()
-    await wrapper.vm.$nextTick()
-
     expect(wrapper.vm.loading).toBe(true)
 
-    await wrapper.vm.$nextTick()
-    await wrapper.vm.$nextTick()
-    await wrapper.vm.$nextTick()
+    await flushPromises()
 
     expect(store.getters.error).toBe(null)
     expect(mockRouterPush).toBeCalledTimes(1)
@@ -147,11 +140,7 @@ describe('Login.vue component testsuite', () => {
     }))
 
     await wrapper.find('#loginWithGoogle').trigger('click.prevent')
-    await wrapper.vm.$nextTick()
-    await wrapper.vm.$nextTick()
-    await wrapper.vm.$nextTick()
-    await wrapper.vm.$nextTick()
-    await wrapper.vm.$nextTick()
+    await flushPromises()
 
     expect(store.getters.error).toBe(null)
     expect(mockRouterPush).toBeCalledTimes(1)
