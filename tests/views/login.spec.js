@@ -42,6 +42,28 @@ describe('Login.vue component testsuite', () => {
     expect(wrapper.find('#password').exists()).toBe(true)
   })
 
+  it('mount component without $route.query.message', () => {
+    mockLocalStorageGetItem.mockImplementationOnce(() => null)
+    wrapper = mount(Login, {
+      localVue,
+      store,
+      vuetify,
+      stubs: ['router-link'],
+      mocks: {
+        $route: {
+          path: '/login',
+          query: {}
+        },
+        $router: {
+          push: mockRouterPush
+        }
+      }
+    })
+
+    expect(wrapper.find('#email').exists()).toBe(true)
+    expect(wrapper.find('#password').exists()).toBe(true)
+  })
+
   it('change locale link click', async () => {
     mockLocalStorageSetItem.mockClear()
     expect(wrapper.vm.locale).toBe('ru-RU')
@@ -80,6 +102,7 @@ describe('Login.vue component testsuite', () => {
       wrapper.find('#email').setValue(email)
       wrapper.find('#password').setValue(password)
       await wrapper.find('form').trigger('submit')
+      await flushPromises()
 
       expect(wrapper.vm.valid).toBe(expected)
     })
@@ -109,7 +132,7 @@ describe('Login.vue component testsuite', () => {
     expect(wrapper.vm.$data.password).toBe('secret123')
 
     const loginForm = wrapper.find('form')
-    await loginForm.trigger('submit')
+    await loginForm.trigger('submit.prevent')
 
     expect(wrapper.vm.loading).toBe(true)
 
@@ -119,11 +142,30 @@ describe('Login.vue component testsuite', () => {
     expect(mockRouterPush).toBeCalledTimes(1)
 
     expect(wrapper.vm.loading).toBe(false)
+    expect(await store.dispatch('getUid')).toBe(123)
+
+
+  })
+
+  it('submit valid form with email and password throw error', async () => {
+    store.commit('clearError')
+    firebase.signInWithEmailAndPassword.mockImplementationOnce(() => {
+      throw new Error('signInWithEmailAndPassword error')
+    })
+
+    await wrapper.setData({
+      email: 'signed.user123@example.com',
+      password: 'holster123'
+    })
+
+    await wrapper.vm.submitLogin()
+    await flushPromises()
+    expect(store.getters.error).toBeInstanceOf(Error)
 
   })
 
 
-  it('submit with google auth', async () => {
+    it('submit with google auth', async () => {
     store.commit('clearError')
     mockRouterPush.mockClear()
 
@@ -153,8 +195,8 @@ describe('Login.vue component testsuite', () => {
       throw new Error('Test auth exception')
     })
 
-
     await wrapper.find('#loginWithGoogle').trigger('click.prevent')
+    await flushPromises()
   })
 
 })
