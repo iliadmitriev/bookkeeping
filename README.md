@@ -1,5 +1,7 @@
 # bookkeeping
 
+![CI tests](https://github.com/cookiecutter/cookiecutter/actions/workflows/main.yml/badge.svg?branch=master)
+
 ## Project setup
 ```
 npm install
