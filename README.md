@@ -1,6 +1,6 @@
 # bookkeeping
 
-![CI tests](https://github.com/iliadmitriev/bookkeeping/actions/workflows/firebase-hosting-merge.yml/badge.svg?branch=master)
+[![CI tests and deploy](https://github.com/iliadmitriev/bookkeeping/actions/workflows/firebase-hosting-merge.yml/badge.svg)](https://github.com/iliadmitriev/bookkeeping/actions/workflows/firebase-hosting-merge.yml)
 
 ## Project setup
 ```
